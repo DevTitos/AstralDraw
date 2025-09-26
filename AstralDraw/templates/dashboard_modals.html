@@ -1,0 +1,987 @@
+<!-- Forge Key Modal -->
+<div class="modal" id="forgeKeyModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title"><i class="fas fa-hammer"></i> Forge Star Key</h2>
+            <button class="modal-close" onclick="closeModal('forgeKeyModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="form-label">Select Convergence</label>
+                <select class="form-input" id="drawSelection">
+                    <option>Nebula-7 Convergence (42,000 ASTRA)</option>
+                    <option>Stellar-5 Alignment (28,500 ASTRA)</option>
+                    <option>Quantum-3 Event (15,000 ASTRA)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Enter 6-Digit Cosmic Code</label>
+                <div class="key-inputs">
+                    <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 1)" onkeypress="return isNumberKey(event)">
+                    <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 2)" onkeypress="return isNumberKey(event)">
+                    <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 3)" onkeypress="return isNumberKey(event)">
+                    <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 4)" onkeypress="return isNumberKey(event)">
+                    <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 5)" onkeypress="return isNumberKey(event)">
+                    <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 6)" onkeypress="return isNumberKey(event)">
+                </div>
+                <div class="form-hint">Enter numbers 0-9 for each digit</div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Star Key Parameters</label>
+                <div class="hologram" style="padding: 1rem; margin: 0;">
+                    <p style="margin-bottom: 0.5rem;"><strong>Quantum Entropy Source:</strong> Hedera Consensus</p>
+                    <p style="margin-bottom: 0.5rem;"><strong>Key Strength:</strong> Quantum-Encrypted</p>
+                    <p style="margin-bottom: 0.5rem;"><strong>NFT Minting:</strong> HBAR-Enabled</p>
+                    <p><strong>Security Level:</strong> <span id="securityLevel">CALCULATING...</span></p>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button class="action-btn btn-primary" onclick="submitStarKey()">
+                    <i class="fas fa-bolt"></i> Initiate Forging
+                </button>
+                <button class="action-btn" onclick="closeModal('forgeKeyModal')">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Draw Modal (Admin Only) -->
+<div class="modal" id="createDrawModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title"><i class="fas fa-plus"></i> Create Cosmic Convergence</h2>
+            <button class="modal-close" onclick="closeModal('createDrawModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="form-label">Convergence Title</label>
+                <input type="text" class="form-input" placeholder="Enter convergence name" id="drawTitle">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Prize Pool (ASTRA)</label>
+                <input type="number" class="form-input" placeholder="Enter prize amount" id="prizePool" min="1000" step="1000">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Convergence Date</label>
+                <input type="datetime-local" class="form-input" id="drawDateTime">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Winning Key Pattern</label>
+                <div class="key-inputs">
+                    <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 1)" onkeypress="return isNumberKey(event)">
+                    <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 2)" onkeypress="return isNumberKey(event)">
+                    <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 3)" onkeypress="return isNumberKey(event)">
+                    <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 4)" onkeypress="return isNumberKey(event)">
+                    <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 5)" onkeypress="return isNumberKey(event)">
+                    <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 6)" onkeypress="return isNumberKey(event)">
+                </div>
+                <div class="form-hint">Set the winning 6-digit pattern or leave blank for auto-generation</div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Quantum Parameters</label>
+                <div class="hologram" style="padding: 1rem; margin: 0;">
+                    <p style="margin-bottom: 0.5rem;"><strong>Entropy Source:</strong> Multi-dimensional</p>
+                    <p style="margin-bottom: 0.5rem;"><strong>Security Level:</strong> Quantum-Resistant</p>
+                    <p style="margin-bottom: 0.5rem;"><strong>Transparency:</strong> Hedera-Anchored</p>
+                    <p><strong>Consensus:</strong> Hashgraph-Validated</p>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button class="action-btn btn-primary" onclick="createNewDraw()">
+                    <i class="fas fa-rocket"></i> Launch Convergence
+                </button>
+                <button class="action-btn" onclick="closeModal('createDrawModal')">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Purchase ASTRA Modal -->
+<div class="modal" id="purchaseAstraModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title"><i class="fas fa-coins"></i> Acquire ASTRA Tokens</h2>
+            <button class="modal-close" onclick="closeModal('purchaseAstraModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="form-label">Select Amount</label>
+                <div class="astra-purchase-options">
+                    <div class="astra-option" onclick="selectAstraOption(this, 1000)">
+                        <div class="astra-amount">1,000 ASTRA</div>
+                        <div class="astra-price">$10.00</div>
+                        <div class="astra-bonus">+0 Bonus</div>
+                    </div>
+                    <div class="astra-option" onclick="selectAstraOption(this, 5000)">
+                        <div class="astra-amount">5,000 ASTRA</div>
+                        <div class="astra-price">$45.00</div>
+                        <div class="astra-bonus" style="color: var(--alien-green);">+250 Bonus</div>
+                    </div>
+                    <div class="astra-option" onclick="selectAstraOption(this, 10000)">
+                        <div class="astra-amount">10,000 ASTRA</div>
+                        <div class="astra-price">$85.00</div>
+                        <div class="astra-bonus" style="color: var(--alien-green);">+750 Bonus</div>
+                    </div>
+                    <div class="astra-option" onclick="selectAstraOption(this, 25000)">
+                        <div class="astra-amount">25,000 ASTRA</div>
+                        <div class="astra-price">$200.00</div>
+                        <div class="astra-bonus" style="color: var(--cosmic-gold);">+2,500 Bonus</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Payment Method</label>
+                <div class="payment-methods">
+                    <div class="payment-method selected" onclick="selectPaymentMethod(this, 'hbar')">
+                        <i class="fas fa-coins"></i> HBAR
+                    </div>
+                    <div class="payment-method" onclick="selectPaymentMethod(this, 'credit')">
+                        <i class="fas fa-credit-card"></i> Credit Card
+                    </div>
+                    <div class="payment-method" onclick="selectPaymentMethod(this, 'crypto')">
+                        <i class="fab fa-bitcoin"></i> Crypto
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Wallet Address</label>
+                <input type="text" class="form-input" placeholder="Enter your Hedera wallet address" id="walletAddress">
+                <div class="form-hint">Your ASTRA tokens will be sent to this address</div>
+            </div>
+            
+            <div class="purchase-summary">
+                <div class="summary-item">
+                    <span>Amount:</span>
+                    <span id="summaryAmount">0 ASTRA</span>
+                </div>
+                <div class="summary-item">
+                    <span>Bonus:</span>
+                    <span id="summaryBonus" style="color: var(--alien-green);">+0 ASTRA</span>
+                </div>
+                <div class="summary-item total">
+                    <span>Total:</span>
+                    <span id="summaryTotal" style="color: var(--cosmic-gold); font-weight: bold;">0 ASTRA</span>
+                </div>
+                <div class="summary-item">
+                    <span>Cost:</span>
+                    <span id="summaryCost">$0.00</span>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button class="action-btn btn-success" onclick="purchaseAstra()">
+                    <i class="fas fa-bolt"></i> Confirm Quantum Transfer
+                </button>
+                <button class="action-btn" onclick="closeModal('purchaseAstraModal')">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Notifications Modal -->
+<div class="modal" id="notificationsModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title"><i class="fas fa-bell"></i> Quantum Alerts</h2>
+            <button class="modal-close" onclick="closeModal('notificationsModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="notifications-list">
+                <div class="notification-item new">
+                    <div class="notification-icon">
+                        <i class="fas fa-trophy" style="color: var(--cosmic-gold);"></i>
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-title">Cosmic Victory!</div>
+                        <div class="notification-message">Your Star Key matched 5/6 digits in Nebula-6 Convergence</div>
+                        <div class="notification-time">2 minutes ago</div>
+                    </div>
+                </div>
+                
+                <div class="notification-item new">
+                    <div class="notification-icon">
+                        <i class="fas fa-rocket" style="color: var(--neon-cyan);"></i>
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-title">New Convergence Launched</div>
+                        <div class="notification-message">Nebula-7 Convergence is now active with 150,000 ASTRA prize pool</div>
+                        <div class="notification-time">1 hour ago</div>
+                    </div>
+                </div>
+                
+                <div class="notification-item">
+                    <div class="notification-icon">
+                        <i class="fas fa-key" style="color: var(--alien-green);"></i>
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-title">Star Key Forged</div>
+                        <div class="notification-message">Your Star Key for Stellar-5 Alignment has been successfully minted</div>
+                        <div class="notification-time">3 hours ago</div>
+                    </div>
+                </div>
+                
+                <div class="notification-item">
+                    <div class="notification-icon">
+                        <i class="fas fa-user-plus" style="color: var(--neon-magenta);"></i>
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-title">New Cosmic Citizen</div>
+                        <div class="notification-message">You've been promoted to Stardust Level with new privileges</div>
+                        <div class="notification-time">1 day ago</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button class="action-btn" onclick="markAllAsRead()">
+                    <i class="fas fa-check-double"></i> Mark All as Read
+                </button>
+                <button class="action-btn" onclick="closeModal('notificationsModal')">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="modal" id="settingsModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title"><i class="fas fa-cog"></i> Quantum Settings</h2>
+            <button class="modal-close" onclick="closeModal('settingsModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="settings-section">
+                <h3 class="settings-title"><i class="fas fa-user-astronaut"></i> Profile Settings</h3>
+                <div class="form-group">
+                    <label class="form-label">Cosmic Alias</label>
+                    <input type="text" class="form-input" value="Cosmic Citizen" id="userAlias">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Communication Frequency</label>
+                    <select class="form-input" id="commFrequency">
+                        <option>Real-time Quantum Pulses</option>
+                        <option>Stellar Updates (Daily)</option>
+                        <option>Galactic Summaries (Weekly)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="settings-section">
+                <h3 class="settings-title"><i class="fas fa-shield-alt"></i> Security Settings</h3>
+                <div class="setting-toggle">
+                    <span>Two-Factor Authentication</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="setting-toggle">
+                    <span>Quantum Encryption</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="setting-toggle">
+                    <span>Biometric Verification</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="settings-section">
+                <h3 class="settings-title"><i class="fas fa-palette"></i> Interface Settings</h3>
+                <div class="theme-options">
+                    <div class="theme-option active" data-theme="cosmic">
+                        <div class="theme-preview cosmic-theme"></div>
+                        <span>Cosmic Dark</span>
+                    </div>
+                    <div class="theme-option" data-theme="nebula">
+                        <div class="theme-preview nebula-theme"></div>
+                        <span>Nebula Purple</span>
+                    </div>
+                    <div class="theme-option" data-theme="quantum">
+                        <div class="theme-preview quantum-theme"></div>
+                        <span>Quantum Blue</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Hologram Intensity</label>
+                    <input type="range" min="0" max="100" value="75" class="slider" id="hologramIntensity">
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button class="action-btn btn-primary" onclick="saveSettings()">
+                    <i class="fas fa-save"></i> Save Quantum Configuration
+                </button>
+                <button class="action-btn" onclick="closeModal('settingsModal')">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Key Details Modal -->
+<div class="modal" id="keyDetailsModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title"><i class="fas fa-key"></i> Star Key Inspection</h2>
+            <button class="modal-close" onclick="closeModal('keyDetailsModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="key-visualization">
+                <div class="key-pattern">
+                    <span class="key-digit-display">7</span>
+                    <span class="key-digit-display">2</span>
+                    <span class="key-digit-display">9</span>
+                    <span class="key-digit-display">4</span>
+                    <span class="key-digit-display">1</span>
+                    <span class="key-digit-display">8</span>
+                </div>
+                <div class="key-serial">AK-729418-N7</div>
+            </div>
+            
+            <div class="key-details">
+                <div class="detail-item">
+                    <span class="detail-label">Convergence:</span>
+                    <span class="detail-value">Nebula-7</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Forged:</span>
+                    <span class="detail-value">2023-11-15 14:32 UTC</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Status:</span>
+                    <span class="detail-value status-active">Active</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Match Probability:</span>
+                    <span class="detail-value">0.0001%</span>
+                </div>
+            </div>
+            
+            <div class="key-metadata">
+                <h3>Quantum Signature</h3>
+                <div class="signature-code">
+                    0x8a3d7f2e1c6b5a9e4d2f7c1a8b6e5d3f2a1c7e9b4d6f8a3c2e1b7d5f9a4c6e8b2
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button class="action-btn btn-primary" onclick="shareKey()">
+                    <i class="fas fa-share-alt"></i> Share Quantum Signature
+                </button>
+                <button class="action-btn" onclick="closeModal('keyDetailsModal')">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Draw Details Modal -->
+<div class="modal" id="drawDetailsModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title"><i class="fas fa-dice"></i> Convergence Details</h2>
+            <button class="modal-close" onclick="closeModal('drawDetailsModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="draw-header">
+                <h3 id="drawModalTitle">Nebula-7 Convergence</h3>
+                <div class="draw-prize" id="drawModalPrize">150,000 ASTRA</div>
+            </div>
+            
+            <div class="draw-stats">
+                <div class="stat">
+                    <div class="stat-value" id="drawParticipants">2,847</div>
+                    <div class="stat-label">Participants</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="drawKeys">15,629</div>
+                    <div class="stat-label">Star Keys</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="drawTime">47:32:15</div>
+                    <div class="stat-label">Remaining</div>
+                </div>
+            </div>
+            
+            <div class="draw-progress">
+                <div class="progress-label">Prize Pool Growth</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 75%;"></div>
+                </div>
+                <div class="progress-stats">
+                    <span>Current: 150,000 ASTRA</span>
+                    <span>Target: 200,000 ASTRA</span>
+                </div>
+            </div>
+            
+            <div class="winning-pattern">
+                <h4>Winning Pattern</h4>
+                <div class="pattern-display">
+                    <span class="pattern-digit">?</span>
+                    <span class="pattern-digit">?</span>
+                    <span class="pattern-digit">?</span>
+                    <span class="pattern-digit">?</span>
+                    <span class="pattern-digit">?</span>
+                    <span class="pattern-digit">?</span>
+                </div>
+                <div class="pattern-hint">Revealed at convergence completion</div>
+            </div>
+            
+            <div class="form-actions">
+                <button class="action-btn btn-primary" onclick="openModal('forgeKeyModal')">
+                    <i class="fas fa-key"></i> Forge Star Key
+                </button>
+                <button class="action-btn" onclick="closeModal('drawDetailsModal')">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Additional styles for the modals */
+    .form-hint {
+        font-size: 0.8rem;
+        opacity: 0.7;
+        margin-top: 0.5rem;
+    }
+    
+    .purchase-summary {
+        background: rgba(15, 15, 35, 0.6);
+        border-radius: 10px;
+        padding: 1rem;
+        margin: 1.5rem 0;
+    }
+    
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }
+    
+    .summary-item.total {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 0.5rem;
+        margin-top: 0.5rem;
+        font-size: 1.1rem;
+    }
+    
+    .astra-bonus {
+        font-size: 0.8rem;
+        margin-top: 0.2rem;
+    }
+    
+    .notifications-list {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+    
+    .notification-item {
+        display: flex;
+        padding: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .notification-item.new {
+        background: rgba(0, 255, 255, 0.05);
+        border-left: 3px solid var(--neon-cyan);
+    }
+    
+    .notification-item:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .notification-icon {
+        font-size: 1.5rem;
+        margin-right: 1rem;
+        width: 40px;
+        text-align: center;
+    }
+    
+    .notification-content {
+        flex: 1;
+    }
+    
+    .notification-title {
+        font-weight: bold;
+        margin-bottom: 0.3rem;
+    }
+    
+    .notification-message {
+        opacity: 0.8;
+        font-size: 0.9rem;
+        margin-bottom: 0.3rem;
+    }
+    
+    .notification-time {
+        font-size: 0.8rem;
+        opacity: 0.6;
+    }
+    
+    .settings-section {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .settings-title {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        color: var(--neon-cyan);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .setting-toggle {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 24px;
+    }
+    
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(255, 255, 255, 0.2);
+        transition: .4s;
+        border-radius: 24px;
+    }
+    
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+        background-color: var(--neon-cyan);
+    }
+    
+    input:checked + .slider:before {
+        transform: translateX(26px);
+    }
+    
+    .theme-options {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .theme-option {
+        text-align: center;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+    
+    .theme-option.active {
+        background: rgba(0, 255, 255, 0.1);
+        border: 1px solid var(--neon-cyan);
+    }
+    
+    .theme-preview {
+        width: 60px;
+        height: 40px;
+        border-radius: 5px;
+        margin-bottom: 0.5rem;
+    }
+    
+    .cosmic-theme {
+        background: linear-gradient(135deg, #050510, #0a0a1f);
+        border: 1px solid var(--neon-cyan);
+    }
+    
+    .nebula-theme {
+        background: linear-gradient(135deg, #1a0a2a, #6040c0);
+        border: 1px solid var(--nebula-purple);
+    }
+    
+    .quantum-theme {
+        background: linear-gradient(135deg, #001a33, #0066cc);
+        border: 1px solid var(--quantum-blue);
+    }
+    
+    .key-visualization {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .key-pattern {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .key-digit-display {
+        width: 50px;
+        height: 70px;
+        background: rgba(0, 255, 255, 0.1);
+        border: 2px solid var(--neon-cyan);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--neon-cyan);
+    }
+    
+    .key-serial {
+        font-family: monospace;
+        font-size: 1.2rem;
+        color: var(--alien-green);
+    }
+    
+    .key-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .detail-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .detail-label {
+        opacity: 0.7;
+    }
+    
+    .status-active {
+        color: var(--alien-green);
+        font-weight: bold;
+    }
+    
+    .signature-code {
+        background: rgba(0, 0, 0, 0.5);
+        padding: 1rem;
+        border-radius: 5px;
+        font-family: monospace;
+        font-size: 0.8rem;
+        word-break: break-all;
+        margin-top: 0.5rem;
+    }
+    
+    .draw-header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .draw-prize {
+        font-size: 2rem;
+        color: var(--cosmic-gold);
+        font-weight: bold;
+        margin-top: 0.5rem;
+    }
+    
+    .draw-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .stat {
+        text-align: center;
+        padding: 1rem;
+        background: rgba(0, 255, 255, 0.05);
+        border-radius: 10px;
+    }
+    
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--neon-cyan);
+    }
+    
+    .stat-label {
+        font-size: 0.8rem;
+        opacity: 0.7;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .draw-progress {
+        margin-bottom: 1.5rem;
+    }
+    
+    .progress-label {
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .progress-bar {
+        height: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+        overflow: hidden;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--neon-cyan), var(--alien-green));
+        border-radius: 5px;
+    }
+    
+    .progress-stats {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 0.5rem;
+        font-size: 0.8rem;
+        opacity: 0.7;
+    }
+    
+    .winning-pattern {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .pattern-display {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin: 1rem 0;
+    }
+    
+    .pattern-digit {
+        width: 40px;
+        height: 60px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid var(--neon-magenta);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--neon-magenta);
+    }
+    
+    .pattern-hint {
+        font-size: 0.8rem;
+        opacity: 0.7;
+    }
+</style>
+
+<script>
+    // Modal functionality
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
+    
+    function moveToNextModal(input, nextIndex) {
+        if (input.value.length === 1) {
+            const inputs = input.parentElement.querySelectorAll('.key-digit');
+            if (nextIndex < inputs.length) {
+                inputs[nextIndex].focus();
+            }
+        }
+        
+        // Update security level based on input
+        updateSecurityLevel();
+    }
+    
+    function updateSecurityLevel() {
+        const inputs = document.querySelectorAll('#forgeKeyModal .key-digit');
+        let filled = 0;
+        inputs.forEach(input => {
+            if (input.value !== '') filled++;
+        });
+        
+        const securityLevel = document.getElementById('securityLevel');
+        if (filled === 6) {
+            securityLevel.textContent = 'QUANTUM SECURE';
+            securityLevel.style.color = 'var(--alien-green)';
+        } else if (filled >= 3) {
+            securityLevel.textContent = 'HIGH SECURITY';
+            securityLevel.style.color = 'var(--neon-cyan)';
+        } else {
+            securityLevel.textContent = 'CALCULATING...';
+            securityLevel.style.color = 'var(--star-white)';
+        }
+    }
+    
+    function submitStarKey() {
+        const inputs = document.querySelectorAll('#forgeKeyModal .key-digit');
+        let key = '';
+        let valid = true;
+        
+        inputs.forEach(input => {
+            if (input.value === '' || isNaN(input.value)) {
+                valid = false;
+                input.style.borderColor = 'var(--warning-red)';
+            } else {
+                key += input.value;
+                input.style.borderColor = 'var(--alien-green)';
+            }
+        });
+        
+        if (valid && key.length === 6) {
+            // Submit to your Django view
+            alert(`Star Key ${key} forged successfully!`);
+            closeModal('forgeKeyModal');
+            // Here you would send the key to your Django backend
+            // fetch('/submit-keys/', { method: 'POST', body: JSON.stringify({star_keys: key.split('')}) })
+        } else {
+            alert('Please enter 6 valid digits (0-9)');
+        }
+    }
+    
+    function createNewDraw() {
+        const title = document.getElementById('drawTitle').value;
+        const prize = document.getElementById('prizePool').value;
+        const date = document.getElementById('drawDateTime').value;
+        
+        if (title && prize && date) {
+            alert(`Convergence "${title}" created with ${prize} ASTRA prize pool!`);
+            closeModal('createDrawModal');
+        } else {
+            alert('Please fill in all required fields');
+        }
+    }
+    
+    let selectedAstraAmount = 0;
+    let selectedPaymentMethod = 'hbar';
+    
+    function selectAstraOption(element, amount) {
+        document.querySelectorAll('.astra-option').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+        element.classList.add('selected');
+        selectedAstraAmount = amount;
+        
+        updatePurchaseSummary();
+    }
+    
+    function selectPaymentMethod(element, method) {
+        document.querySelectorAll('.payment-method').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+        element.classList.add('selected');
+        selectedPaymentMethod = method;
+    }
+    
+    function updatePurchaseSummary() {
+        let bonus = 0;
+        if (selectedAstraAmount >= 25000) bonus = 2500;
+        else if (selectedAstraAmount >= 10000) bonus = 750;
+        else if (selectedAstraAmount >= 5000) bonus = 250;
+        
+        const total = selectedAstraAmount + bonus;
+        const cost = selectedAstraAmount / 100; // Simple conversion for demo
+        
+        document.getElementById('summaryAmount').textContent = selectedAstraAmount.toLocaleString() + ' ASTRA';
+        document.getElementById('summaryBonus').textContent = '+' + bonus.toLocaleString() + ' ASTRA';
+        document.getElementById('summaryTotal').textContent = total.toLocaleString() + ' ASTRA';
+        document.getElementById('summaryCost').textContent = '$' + cost.toLocaleString();
+    }
+    
+    function purchaseAstra() {
+        if (selectedAstraAmount > 0) {
+            const wallet = document.getElementById('walletAddress').value;
+            if (wallet) {
+                alert(`Purchasing ${selectedAstraAmount} ASTRA via ${selectedPaymentMethod.toUpperCase()} to ${wallet}`);
+                closeModal('purchaseAstraModal');
+            } else {
+                alert('Please enter your wallet address');
+            }
+        } else {
+            alert('Please select an ASTRA amount');
+        }
+    }
+    
+    function markAllAsRead() {
+        document.querySelectorAll('.notification-item.new').forEach(item => {
+            item.classList.remove('new');
+        });
+        alert('All notifications marked as read');
+    }
+    
+    function saveSettings() {
+        alert('Quantum settings saved successfully!');
+        closeModal('settingsModal');
+    }
+    
+    function shareKey() {
+        alert('Quantum signature shared across the cosmic network!');
+    }
+    
+    // Theme switching
+    document.querySelectorAll('.theme-option').forEach(option => {
+        option.addEventListener('click', function() {
+            document.querySelectorAll('.theme-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            this.classList.add('active');
+            
+            const theme = this.getAttribute('data-theme');
+            // Here you would implement theme switching logic
+            console.log('Switching to theme:', theme);
+        });
+    });
+</script>

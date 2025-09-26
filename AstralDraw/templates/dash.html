@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Dashboard - Astral Draw</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --cosmic-black: #050510;
+            --deep-space: #0a0a1f;
+            --neon-cyan: #0ff;
+            --neon-magenta: #f0f;
+            --alien-green: #0f6;
+            --star-white: #e6e6ff;
+            --nebula-purple: #6040c0;
+            --warning-red: #ff2a6d;
+            --quantum-blue: #00ccff;
+            --hologram-teal: #00ffcc;
+            --plasma-orange: #ff6600;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Orbitron', 'Exo 2', 'Chakra Petch', monospace;
+        }
+        
+        body {
+            background: var(--cosmic-black);
+            color: var(--star-white);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(96, 64, 192, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 255, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(240, 0, 240, 0.05) 0%, transparent 50%);
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 5s infinite ease-in-out;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+        
+        .grid-lines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        /* Dashboard Layout */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            grid-template-rows: 80px 1fr;
+            grid-template-areas: 
+                "sidebar header"
+                "sidebar main";
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        .header {
+            grid-area: header;
+            background: rgba(5, 5, 16, 0.8);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 100;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+            animation: scanline 3s linear infinite;
+        }
+        
+        @keyframes scanline {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            position: relative;
+        }
+        
+        .user-avatar::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
+            z-index: -1;
+            animation: pulse 2s infinite;
+        }
+        
+        .user-details h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.2rem;
+        }
+        
+        .user-details .role {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .admin-badge {
+            background: linear-gradient(45deg, var(--plasma-orange), var(--warning-red));
+            color: black;
+            padding: 0.2rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-left: 1rem;
+        }
+        
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .control-btn {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .control-btn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 15px var(--neon-cyan);
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            grid-area: sidebar;
+            background: rgba(5, 5, 16, 0.9);
+            border-right: 1px solid rgba(0, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 2rem 0;
+            position: relative;
+            overflow-y: auto;
+        }
+        
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, var(--neon-cyan), transparent);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.7; }
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0 2rem 2rem;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--nebula-purple));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            animation: pulse 4s infinite alternate;
+        }
+        
+        .logo-text {
+            font-size: 1.4rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--neon-cyan), var(--neon-magenta));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .nav-section {
+            margin: 2rem 0;
+        }
+        
+        .nav-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.5;
+            padding: 0 2rem 0.5rem;
+        }
+        
+        .nav-items {
+            list-style: none;
+        }
+        
+        .nav-item {
+            margin: 0.5rem 0;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            color: var(--star-white);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background: rgba(0, 255, 255, 0.1);
+            border-left-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::before {
+            width: 100%;
+        }
+        
+        .nav-icon {
+            font-size: 1.2rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .admin-only {
+            border-left: 3px solid var(--plasma-orange);
+        }
+        
+        .admin-only .nav-icon {
+            color: var(--plasma-orange);
+        }
+        
+        /* Main Content */
+        .main-content {
+            grid-area: main;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-header {
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, var(--neon-cyan), var(--hologram-teal));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .section-subtitle {
+            opacity: 0.7;
+            font-size: 1.1rem;
+        }
+        
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, rgba(10, 10, 31, 0.8), rgba(5, 5, 16, 0.8));
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, var(--neon-cyan), var(--hologram-teal));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .stat-label {
+            opacity: 0.7;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Data Tables */
+        .data-table {
+            background: rgba(10, 10, 31, 0.6);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .table-header {
+            background: rgba(0, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+        
+        .table-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .table-content {
+            padding: 0;
+        }
+        
+        .table-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            align-items: center;
+        }
+        
+        .table-row:last-child {
+            border-bottom: none;
+        }
+        
+        .table-row.header {
+            background: rgba(0, 255, 255, 0.05);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+        
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-active {
+            background: rgba(0, 255, 102, 0.2);
+            color: var(--alien-green);
+            border: 1px solid var(--alien-green);
+        }
+        
+        .status-pending {
+            background: rgba(255, 204, 0, 0.2);
+            color: #ffcc00;
+            border: 1px solid #ffcc00;
+        }
+        
+        .status-completed {
+            background: rgba(0, 204, 255, 0.2);
+            color: var(--quantum-blue);
+            border: 1px solid var(--quantum-blue);
+        }
+        
+        /* Action Buttons */
+        .action-btn {
+            background: transparent;
+            border: 1px solid;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+            margin: 0.2rem;
+        }
+        
+        .btn-primary {
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+        }
+        
+        .btn-primary:hover {
+            background: rgba(0, 255, 255, 0.1);
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+        
+        .btn-warning {
+            border-color: var(--plasma-orange);
+            color: var(--plasma-orange);
+        }
+        
+        .btn-warning:hover {
+            background: rgba(255, 102, 0, 0.1);
+            box-shadow: 0 0 10px var(--plasma-orange);
+        }
+        
+        .btn-danger {
+            border-color: var(--warning-red);
+            color: var(--warning-red);
+        }
+        
+        .btn-danger:hover {
+            background: rgba(255, 42, 109, 0.1);
+            box-shadow: 0 0 10px var(--warning-red);
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 5, 16, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, rgba(10, 10, 31, 0.95), rgba(5, 5, 16, 0.95));
+            border: 1px solid var(--neon-cyan);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
+            position: relative;
+        }
+        
+        .modal-header {
+            padding: 2rem 2rem 1rem;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--neon-cyan);
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            color: var(--star-white);
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-close:hover {
+            background: rgba(255, 42, 109, 0.2);
+            color: var(--warning-red);
+        }
+        
+        .modal-body {
+            padding: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .form-input {
+            width: 100%;
+            background: rgba(15, 15, 35, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            color: var(--star-white);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+        
+        /* Holographic Elements */
+        .hologram {
+            position: relative;
+            background: linear-gradient(135deg, rgba(0, 255, 204, 0.1), rgba(0, 204, 255, 0.1));
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .hologram::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(0, 255, 204, 0.1) 50%, transparent 70%);
+            animation: hologram-scan 3s linear infinite;
+        }
+        
+        @keyframes hologram-scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        
+        /* Quantum Console */
+        .quantum-console {
+            background: rgba(5, 5, 16, 0.9);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 10px;
+            padding: 1.5rem;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 2rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .console-line {
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+        }
+        
+        .console-prompt {
+            color: var(--alien-green);
+        }
+        
+        .console-command {
+            color: var(--neon-cyan);
+        }
+        
+        .console-output {
+            color: var(--star-white);
+            opacity: 0.7;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+                grid-template-areas: 
+                    "header"
+                    "main";
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .table-row {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+            
+            .header {
+                padding: 0 1rem;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--neon-cyan);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 1024px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="dashboard">
+        <!-- Header -->
+        <header class="header">
+            <div class="user-info">
+                <div class="user-avatar">
+                    {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                </div>
+                <div class="user-details">
+                    <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+                    <div class="role">
+                        {{ user_wallet.recipient_id|default:"Cosmic Citizen" }}
+                        {% if user.is_staff %}<span class="admin-badge">QUANTUM ADMIN</span>{% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="header-controls">
+                <button class="control-btn" onclick="openModal('notificationsModal')">
+                    <i class="fas fa-bell"></i> Alerts
+                </button>
+                <button class="control-btn" onclick="openModal('settingsModal')">
+                    <i class="fas fa-cog"></i> Quantum Settings
+                </button>
+                <a href="{% url 'logout' %}" class="control-btn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+                <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </header>
+        
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo">
+                <div class="logo-icon">✸</div>
+                <div class="logo-text">QUANTUM DASH</div>
+            </div>
+            
+            <nav class="nav-section">
+                <div class="nav-title">Navigation</div>
+                <ul class="nav-items">
+                    <li class="nav-item">
+                        <a href="#overview" class="nav-link active" onclick="showSection('overview')">
+                            <i class="fas fa-globe nav-icon"></i>
+                            <span>Quantum Overview</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#star-keys" class="nav-link" onclick="showSection('star-keys')">
+                            <i class="fas fa-key nav-icon"></i>
+                            <span>Star Keys</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#draws" class="nav-link" onclick="showSection('draws')">
+                            <i class="fas fa-dice nav-icon"></i>
+                            <span>Astral Draws</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#wallet" class="nav-link" onclick="showSection('wallet')">
+                            <i class="fas fa-wallet nav-icon"></i>
+                            <span>Nebula Vault</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            {% if user.is_staff %}
+            <nav class="nav-section">
+                <div class="nav-title">Quantum Administration</div>
+                <ul class="nav-items">
+                    <li class="nav-item">
+                        <a href="#admin-draws" class="nav-link admin-only" onclick="showSection('admin-draws')">
+                            <i class="fas fa-cogs nav-icon"></i>
+                            <span>Draw Management</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#analytics" class="nav-link admin-only" onclick="showSection('analytics')">
+                            <i class="fas fa-chart-network nav-icon"></i>
+                            <span>Cosmic Analytics</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#users" class="nav-link admin-only" onclick="showSection('users')">
+                            <i class="fas fa-users nav-icon"></i>
+                            <span>User Governance</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            {% endif %}
+            
+            <nav class="nav-section">
+                <div class="nav-title">System</div>
+                <ul class="nav-items">
+                    <li class="nav-item">
+                        <a href="#support" class="nav-link" onclick="showSection('support')">
+                            <i class="fas fa-life-ring nav-icon"></i>
+                            <span>Quantum Support</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Overview Section -->
+            <section id="overview" class="content-section active">
+                <div class="section-header">
+                    <h1 class="section-title">Quantum Overview</h1>
+                    <p class="section-subtitle">Welcome back, Cosmic Citizen. Your astral journey awaits.</p>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-key"></i></div>
+                        <div class="stat-value">{{ user_keys.count }}</div>
+                        <div class="stat-label">Active Star Keys</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-trophy"></i></div>
+                        <div class="stat-value">{{ user_wins.count }}</div>
+                        <div class="stat-label">Cosmic Victories</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-coins"></i></div>
+                        <div class="stat-value">{{ user_wallet.balance|default:"0" }} ASTRA</div>
+                        <div class="stat-label">Nebula Balance</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-rocket"></i></div>
+                        <div class="stat-value">{{ active_draws.count }}</div>
+                        <div class="stat-label">Active Convergences</div>
+                    </div>
+                </div>
+                
+                <div class="hologram">
+                    <h3 style="margin-bottom: 1rem; color: var(--hologram-teal);">
+                        <i class="fas fa-project-diagram"></i> Cosmic Convergence Status
+                    </h3>
+                    <p>Next astral alignment: <strong>{{ next_draw.draw_datetime|default:"Calculating..." }}</strong></p>
+                    <p>Current prize pool: <strong style="color: var(--alien-green);">{{ next_draw.prize_pool|default:"0" }} ASTRA</strong></p>
+                    <div style="margin-top: 1rem;">
+                        <button class="action-btn btn-primary" onclick="showSection('draws')">
+                            <i class="fas fa-eye"></i> View Active Draws
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="quantum-console">
+                    <div class="console-line">
+                        <span class="console-prompt">quantum-dash></span>
+                        <span class="console-command">status --user {{ user.username }}</span>
+                    </div>
+                    <div class="console-line console-output">
+                        > User Status: ONLINE | Security: QUANTUM_ENCRYPTED
+                    </div>
+                    <div class="console-line console-output">
+                        > Wallet Sync: COMPLETE | Last Activity: {{ user.last_login|date:"Y-m-d H:i" }}
+                    </div>
+                    <div class="console-line console-output">
+                        > System Integrity: 100% | Threat Level: NOMINAL
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Star Keys Section -->
+            <section id="star-keys" class="content-section">
+                <div class="section-header">
+                    <h1 class="section-title">Star Key Management</h1>
+                    <p class="section-subtitle">Forge and manage your cosmic entry tokens</p>
+                </div>
+                
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3 class="table-title">Your Star Keys</h3>
+                        <p>Active keys for upcoming convergences</p>
+                    </div>
+                    <div class="table-content">
+                        <div class="table-row header">
+                            <div>Serial Number</div>
+                            <div>Convergence</div>
+                            <div>Status</div>
+                            <div>Forged Date</div>
+                            <div>Actions</div>
+                        </div>
+                        {% for key in user_keys %}
+                        <div class="table-row">
+                            <div style="font-family: monospace;">{{ key.serial_number }}</div>
+                            <div>{{ key.draw.title }}</div>
+                            <div>
+                                <span class="status-badge status-{{ key.draw.status|lower }}">
+                                    {{ key.draw.status }}
+                                </span>
+                            </div>
+                            <div>{{ key.created_at|date:"M d, Y" }}</div>
+                            <div>
+                                <button class="action-btn btn-primary" onclick="viewKeyDetails('{{ key.id }}')">
+                                    <i class="fas fa-search"></i> Inspect
+                                </button>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="table-row">
+                            <div colspan="5" style="text-align: center; padding: 2rem;">
+                                No star keys forged yet. <a href="#draws" onclick="showSection('draws')" style="color: var(--neon-cyan);">Join a convergence!</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <button class="action-btn btn-primary" onclick="openModal('forgeKeyModal')">
+                    <i class="fas fa-hammer"></i> Forge New Star Key
+                </button>
+            </section>
+            
+            <!-- Draws Section -->
+            <section id="draws" class="content-section">
+                <div class="section-header">
+                    <h1 class="section-title">Astral Convergences</h1>
+                    <p class="section-subtitle">Participate in cosmic lottery events</p>
+                </div>
+                
+                <div class="dashboard-grid">
+                    {% for draw in active_draws %}
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-dice"></i></div>
+                        <div class="stat-value">{{ draw.prize_pool }} ASTRA</div>
+                        <div class="stat-label">{{ draw.title }}</div>
+                        <div style="margin-top: 1rem;">
+                            <button class="action-btn btn-primary" onclick="viewDraw('{{ draw.id }}')">
+                                <i class="fas fa-eye"></i> View Details
+                            </button>
+                            {% if draw.can_participate %}
+                            <button class="action-btn btn-warning" onclick="participateDraw('{{ draw.id }}')">
+                                <i class="fas fa-key"></i> Forge Key
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+            
+            <!-- Wallet Section -->
+            <section id="wallet" class="content-section">
+                <div class="section-header">
+                    <h1 class="section-title">Nebula Vault</h1>
+                    <p class="section-subtitle">Manage your cosmic assets</p>
+                </div>
+                
+                <div class="hologram">
+                    <h3 style="margin-bottom: 1rem; color: var(--hologram-teal);">
+                        <i class="fas fa-wallet"></i> Wallet Information
+                    </h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <p><strong>Public Key:</strong></p>
+                            <p style="font-family: monospace; font-size: 0.8rem; word-break: break-all;">
+                                {{ user_wallet.public_key }}
+                            </p>
+                        </div>
+                        <div>
+                            <p><strong>Account ID:</strong></p>
+                            <p style="font-family: monospace; font-size: 0.8rem;">
+                                {{ user_wallet.recipient_id }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3 class="table-title">Transaction History</h3>
+                        <p>Recent cosmic transactions</p>
+                    </div>
+                    <div class="table-content">
+                        <!-- Transaction history would go here -->
+                    </div>
+                </div>
+            </section>
+            
+            {% if user.is_staff %}
+            <!-- Admin Draws Section -->
+            <section id="admin-draws" class="content-section">
+                <div class="section-header">
+                    <h1 class="section-title">Quantum Draw Management</h1>
+                    <p class="section-subtitle">Administer cosmic convergence events</p>
+                </div>
+                
+                <button class="action-btn btn-primary" onclick="openModal('createDrawModal')">
+                    <i class="fas fa-plus"></i> Create New Convergence
+                </button>
+                
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3 class="table-title">All Convergences</h3>
+                        <p>Manage draw parameters and outcomes</p>
+                    </div>
+                    <div class="table-content">
+                        <!-- Admin draw management table would go here -->
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Analytics Section -->
+            <section id="analytics" class="content-section">
+                <div class="section-header">
+                    <h1 class="section-title">Cosmic Analytics</h1>
+                    <p class="section-subtitle">Quantum insights into platform performance</p>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-users"></i></div>
+                        <div class="stat-value">{{ total_players }}</div>
+                        <div class="stat-label">Cosmic Citizens</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-key"></i></div>
+                        <div class="stat-value">{{ total_keys }}</div>
+                        <div class="stat-label">Star Keys Forged</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-trophy"></i></div>
+                        <div class="stat-value">{{ total_prizes }} ASTRA</div>
+                        <div class="stat-label">Total Prizes</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                        <div class="stat-value">98.7%</div>
+                        <div class="stat-label">System Uptime</div>
+                    </div>
+                </div>
+            </section>
+            {% endif %}
+        </main>
+    </div>
+    
+    <!-- Modals -->
+    {% include 'dashboard_modals.html' %}
+    
+    <script>
+        // Create background stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const starsCount = 200;
+            
+            for (let i = 0; i < starsCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                const size = Math.random() * 3;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Section navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update active nav link
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Close mobile sidebar
+            if (window.innerWidth <= 1024) {
+                toggleSidebar();
+            }
+        }
+        
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        // Mobile sidebar toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.style.display = sidebar.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        // Admin functions
+        function createNewDraw() {
+            // Implementation for creating new draws
+            alert('Quantum draw creation initiated...');
+            closeModal('createDrawModal');
+        }
+        
+        function forgeStarKey() {
+            // Implementation for forging star keys
+            alert('Star key forging sequence started...');
+            closeModal('forgeKeyModal');
+        }
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    event.target.style.display = 'none';
+                }
+            });
+            
+            // Auto-hide sidebar on mobile
+            if (window.innerWidth <= 1024) {
+                document.getElementById('sidebar').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

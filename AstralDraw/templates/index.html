@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astral Draw - Cosmic Convergence Lottery</title>
+    <style>
+        :root {
+            --cosmic-black: #050510;
+            --deep-space: #0a0a1f;
+            --neon-cyan: #0ff;
+            --neon-magenta: #f0f;
+            --alien-green: #0f6;
+            --star-white: #e6e6ff;
+            --nebula-purple: #6040c0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Exo 2', 'Chakra Petch', sans-serif;
+        }
+        
+        body {
+            background: var(--cosmic-black);
+            color: var(--star-white);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(96, 64, 192, 0.15) 0%, transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(0, 255, 255, 0.1) 0%, transparent 25%),
+                radial-gradient(circle at 50% 80%, rgba(240, 0, 240, 0.1) 0%, transparent 25%);
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 5s infinite ease-in-out;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--nebula-purple));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            animation: pulse 4s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 10px var(--neon-cyan); }
+            100% { transform: scale(1.05); box-shadow: 0 0 20px var(--neon-magenta); }
+        }
+        
+        .logo-text {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--neon-cyan), var(--neon-magenta));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        
+        .wallet-connect {
+            background: rgba(10, 10, 31, 0.8);
+            border: 1px solid var(--neon-cyan);
+            color: var(--star-white);
+            padding: 0.7rem 1.5rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        
+        .wallet-connect:hover {
+            background: rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 15px var(--neon-cyan);
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .current-convergence {
+            background: linear-gradient(to bottom, rgba(10, 10, 31, 0.8), rgba(5, 5, 16, 0.8));
+            border: 1px solid var(--nebula-purple);
+            border-radius: 15px;
+            padding: 2rem;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 30px rgba(96, 64, 192, 0.3);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--neon-cyan);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .convergence-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .info-card {
+            background: rgba(15, 15, 35, 0.6);
+            border-radius: 10px;
+            padding: 1rem;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+        
+        .info-label {
+            font-size: 0.9rem;
+            color: var(--alien-green);
+            margin-bottom: 0.5rem;
+        }
+        
+        .info-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .vault-value {
+            color: var(--alien-green);
+            text-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
+        }
+        
+        .countdown {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .countdown-unit {
+            background: rgba(15, 15, 35, 0.8);
+            border-radius: 8px;
+            padding: 0.8rem;
+            text-align: center;
+            flex: 1;
+            border: 1px solid rgba(240, 0, 240, 0.3);
+        }
+        
+        .countdown-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--neon-magenta);
+        }
+        
+        .countdown-label {
+            font-size: 0.8rem;
+            color: var(--star-white);
+            opacity: 0.7;
+        }
+        
+        .key-visual {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            margin: 1.5rem 0;
+            perspective: 1000px;
+        }
+        
+        .glyph {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            animation: float 6s infinite ease-in-out;
+            text-shadow: 
+                0 0 10px var(--neon-cyan),
+                0 0 20px var(--neon-cyan),
+                0 0 30px var(--neon-cyan);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(-50%, -50%) rotateX(0deg) rotateY(0deg); }
+            25% { transform: translate(-50%, -45%) rotateX(10deg) rotateY(5deg); }
+            50% { transform: translate(-50%, -50%) rotateX(5deg) rotateY(10deg); }
+            75% { transform: translate(-50%, -45%) rotateX(10deg) rotateY(5deg); }
+        }
+        
+        .forge-btn {
+            width: 100%;
+            background: linear-gradient(to right, var(--neon-cyan), var(--neon-magenta));
+            color: var(--cosmic-black);
+            border: none;
+            padding: 1rem;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        .forge-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 255, 255, 0.4);
+        }
+        
+        .my-keys {
+            background: linear-gradient(to bottom, rgba(10, 10, 31, 0.8), rgba(5, 5, 16, 0.8));
+            border: 1px solid var(--neon-cyan);
+            border-radius: 15px;
+            padding: 2rem;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+        }
+        
+        .keys-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .key-card {
+            background: rgba(15, 15, 35, 0.6);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid rgba(240, 0, 240, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .key-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(240, 0, 240, 0.4);
+        }
+        
+        .key-glyph {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .key-serial {
+            font-size: 0.9rem;
+            color: var(--alien-green);
+        }
+        
+        .key-draw {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-top: 0.3rem;
+        }
+        
+        .previous-winners {
+            background: linear-gradient(to bottom, rgba(10, 10, 31, 0.8), rgba(5, 5, 16, 0.8));
+            border: 1px solid var(--alien-green);
+            border-radius: 15px;
+            padding: 2rem;
+            grid-column: 1 / -1;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 30px rgba(0, 255, 102, 0.2);
+        }
+        
+        .winners-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .winner-card {
+            background: rgba(15, 15, 35, 0.6);
+            border-radius: 10px;
+            padding: 1rem;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+        
+        .winner-address {
+            font-family: monospace;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: var(--star-white);
+        }
+        
+        .winner-prize {
+            color: var(--alien-green);
+            font-weight: 700;
+        }
+        
+        .winner-draw {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-top: 0.3rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            border-top: 1px solid rgba(240, 0, 240, 0.3);
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .convergence-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">✸</div>
+                <div class="logo-text">ASTRAL DRAW</div>
+            </div>
+            <button class="wallet-connect">Connect Quantum Wallet</button>
+        </header>
+        
+        <main class="main-content">
+            <section class="current-convergence">
+                <h2 class="section-title">⏣ Current Astral Convergence</h2>
+                
+                <div class="convergence-info">
+                    <div class="info-card">
+                        <div class="info-label">Convergence ID</div>
+                        <div class="info-value">Nebula-7-2265-09-21</div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="info-label">Nebula Vault</div>
+                        <div class="info-value vault-value">42,000 ASTRA</div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="info-label">Star Keys Forged</div>
+                        <div class="info-value">1,427</div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="info-label">Supernova Event Threshold</div>
+                        <div class="info-value">2,000 Keys</div>
+                    </div>
+                </div>
+                
+                <div class="countdown">
+                    <div class="countdown-unit">
+                        <div class="countdown-value">02</div>
+                        <div class="countdown-label">Cycles</div>
+                    </div>
+                    <div class="countdown-unit">
+                        <div class="countdown-value">18</div>
+                        <div class="countdown-label">Units</div>
+                    </div>
+                    <div class="countdown-unit">
+                        <div class="countdown-value">47</div>
+                        <div class="countdown-label">Moments</div>
+                    </div>
+                </div>
+                
+                <div class="key-visual">
+                    <div class="glyph">⟟⍙⟊⊑</div>
+                </div>
+                
+                <button class="forge-btn">Forge Star Key (10 ASTRA)</button>
+            </section>
+            
+            <section class="my-keys">
+                <h2 class="section-title">⚷ My Star Keys</h2>
+                <p>Connected wallet holds 3 forged keys across active convergences</p>
+                
+                <div class="keys-grid">
+                    <div class="key-card">
+                        <div class="key-glyph">⌇⎍⎅⟒</div>
+                        <div class="key-serial">Serial: #0042</div>
+                        <div class="key-draw">Nebula-7 Convergence</div>
+                    </div>
+                    
+                    <div class="key-card">
+                        <div class="key-glyph">⏁⍀⟒⎎</div>
+                        <div class="key-serial">Serial: #0172</div>
+                        <div class="key-draw">Nebula-7 Convergence</div>
+                    </div>
+                    
+                    <div class="key-card">
+                        <div class="key-glyph">⌰⍜⌇⟒</div>
+                        <div class="key-serial">Serial: #1035</div>
+                        <div class="key-draw">Nebula-7 Convergence</div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="previous-winners">
+                <h2 class="section-title">✴ Previous Cosmic Alignments</h2>
+                
+                <div class="winners-list">
+                    <div class="winner-card">
+                        <div class="winner-address">0x8a3d...e7c2</div>
+                        <div class="winner-prize">8,400 ASTRA emitted</div>
+                        <div class="winner-draw">Nebula-6 Convergence</div>
+                    </div>
+                    
+                    <div class="winner-card">
+                        <div class="winner-address">0x5f2a...9d14</div>
+                        <div class="winner-prize">7,200 ASTRA emitted</div>
+                        <div class="winner-draw">Nebula-5 Convergence</div>
+                    </div>
+                    
+                    <div class="winner-card">
+                        <div class="winner-address">0x3c71...b862</div>
+                        <div class="winner-prize">9,100 ASTRA emitted</div>
+                        <div class="winner-draw">Nebula-4 Convergence</div>
+                    </div>
+                    
+                    <div class="winner-card">
+                        <div class="winner-address">0x1e94...f503</div>
+                        <div class="winner-prize">6,500 ASTRA emitted</div>
+                        <div class="winner-draw">Nebula-3 Convergence</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <footer>
+            <p>Astral Draw v1.0 | Entropy anchored to Hedera Consensus Service | ⚷ Each Star Key is a unique NFT</p>
+        </footer>
+    </div>
+
+    <script>
+        // Create starfield background
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const starsCount = 150;
+            
+            for (let i = 0; i < starsCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                const size = Math.random() * 3;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            
+            // Simulate connection to wallet
+            const connectBtn = document.querySelector('.wallet-connect');
+            connectBtn.addEventListener('click', function() {
+                this.textContent = '0x8a3d...e7c2 Connected';
+                this.style.background = 'rgba(0, 255, 102, 0.2)';
+                this.style.borderColor = 'var(--alien-green)';
+            });
+            
+            // Simulate forging a key
+            const forgeBtn = document.querySelector('.forge-btn');
+            forgeBtn.addEventListener('click', function() {
+                this.textContent = 'Entropy Gathering...';
+                this.disabled = true;
+                
+                setTimeout(() => {
+                    this.textContent = 'Star Key Forged!';
+                    this.style.background = 'linear-gradient(to right, var(--alien-green), var(--neon-cyan))';
+                    
+                    // Add a new key to My Star Keys after a delay
+                    setTimeout(() => {
+                        const keysGrid = document.querySelector('.keys-grid');
+                        const newKey = document.createElement('div');
+                        newKey.classList.add('key-card');
+                        newKey.innerHTML = `
+                            <div class="key-glyph">⍀⏃⋏⎅</div>
+                            <div class="key-serial">Serial: #${Math.floor(1000 + Math.random() * 9000)}</div>
+                            <div class="key-draw">Nebula-7 Convergence</div>
+                        `;
+                        keysGrid.appendChild(newKey);
+                        
+                        // Reset button after a moment
+                        setTimeout(() => {
+                            this.textContent = 'Forge Another Star Key (10 ASTRA)';
+                            this.style.background = 'linear-gradient(to right, var(--neon-cyan), var(--neon-magenta))';
+                            this.disabled = false;
+                        }, 2000);
+                    }, 1000);
+                }, 1500);
+            });
+        });
+    </script>
+</body>
+</html>

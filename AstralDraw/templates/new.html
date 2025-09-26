@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astral Draw - Cosmic Evolution Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --cosmic-black: #050510;
+            --deep-space: #0a0a1f;
+            --neon-cyan: #0ff;
+            --neon-magenta: #f0f;
+            --alien-green: #0f6;
+            --star-white: #e6e6ff;
+            --nebula-purple: #6040c0;
+            --warning-red: #ff2a6d;
+            --gold: #ffd700;
+            --cosmic-blue: #0a2a5a;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Exo 2', 'Chakra Petch', sans-serif;
+        }
+        
+        body {
+            background: var(--cosmic-black);
+            color: var(--star-white);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(96, 64, 192, 0.1) 0%, transparent 25%),
+                radial-gradient(circle at 90% 30%, rgba(0, 255, 255, 0.05) 0%, transparent 25%),
+                radial-gradient(circle at 50% 85%, rgba(240, 0, 240, 0.05) 0%, transparent 25%);
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 5s infinite ease-in-out;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(5, 5, 16, 0.95);
+            backdrop-filter: blur(15px);
+            z-index: 100;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.15);
+            transition: all 0.3s ease;
+        }
+        
+        header.scrolled {
+            padding: 0.8rem 0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-left: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--nebula-purple));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            animation: pulse 4s infinite alternate;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 15px var(--neon-cyan); }
+            100% { transform: scale(1.05); box-shadow: 0 0 25px var(--neon-magenta); }
+        }
+        
+        .logo-text {
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--neon-cyan), var(--neon-magenta));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+        
+        .header-controls {
+            display: flex;
+            gap: 0.8rem;
+            margin-right: 1.5rem;
+            align-items: center;
+        }
+        
+        .header-btn {
+            background: rgba(10, 10, 31, 0.7);
+            border: 1px solid var(--neon-cyan);
+            color: var(--star-white);
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .header-btn:hover::before {
+            left: 100%;
+        }
+        
+        .header-btn:hover {
+            background: rgba(0, 255, 255, 0.15);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--warning-red);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--neon-cyan);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Dashboard Layout */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 6.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .dashboard-card {
+            background: linear-gradient(145deg, rgba(10, 10, 31, 0.85), rgba(5, 5, 16, 0.9));
+            border-radius: 16px;
+            padding: 1.8rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            height: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(0, 255, 255, 0.2);
+        }
+        
+        .countdown-card {
+            grid-column: 1 / 3;
+            border-color: rgba(240, 0, 240, 0.3);
+        }
+        
+        .wallet-card {
+            border-color: rgba(0, 255, 255, 0.3);
+        }
+        
+        .vault-card {
+            border-color: rgba(0, 255, 102, 0.3);
+            grid-column: 1 / 4;
+        }
+        
+        .keys-card {
+            border-color: rgba(96, 64, 192, 0.3);
+            grid-column: 1 / 3;
+        }
+        
+        .history-card {
+            border-color: rgba(255, 42, 109, 0.3);
+            grid-column: 3 / 4;
+            grid-row: 2 / 4;
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            color: var(--neon-cyan);
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--neon-cyan), transparent);
+            margin-left: 0.5rem;
+        }
+        
+        /* Countdown */
+        .countdown {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            justify-content: center;
+        }
+        
+        .countdown-unit {
+            background: rgba(15, 15, 35, 0.7);
+            border-radius: 12px;
+            padding: 1.2rem 0.8rem;
+            text-align: center;
+            min-width: 90px;
+            border: 1px solid rgba(240, 0, 240, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .countdown-unit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(240, 0, 240, 0.2);
+        }
+        
+        .countdown-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--neon-magenta);
+            text-shadow: 0 0 10px rgba(240, 0, 240, 0.5);
+        }
+        
+        .countdown-label {
+            font-size: 0.8rem;
+            color: var(--star-white);
+            opacity: 0.9;
+            margin-top: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .countdown-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+            color: var(--alien-green);
+            font-weight: 600;
+        }
+        
+        /* Wallet Info */
+        .wallet-info {
+            margin-top: 1.2rem;
+        }
+        
+        .wallet-address {
+            background: rgba(15, 15, 35, 0.6);
+            border-radius: 10px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(0, 255, 255, 0.15);
+        }
+        
+        .copy-btn {
+            background: transparent;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 0.3rem 0.7rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(0, 255, 255, 0.1);
+        }
+        
+        .wallet-balance {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .balance-label {
+            font-size: 0.9rem;
+            color: var(--star-white);
+            opacity: 0.8;
+        }
+        
+        .balance-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--alien-green);
+        }
+        
+        /* Nebula Vault */
+        .vault-beast {
+            position: relative;
+            height: 180px;
+            margin: 1.5rem 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .beast-core {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--alien-green), transparent 70%);
+            position: relative;
+            animation: beastPulse 3s infinite alternate;
+            box-shadow: 0 0 40px var(--alien-green);
+        }
+        
+        @keyframes beastPulse {
+            0% { transform: scale(1); box-shadow: 0 0 40px var(--alien-green); }
+            100% { transform: scale(1.08); box-shadow: 0 0 60px var(--alien-green); }
+        }
+        
+        .beast-tentacle {
+            position: absolute;
+            width: 8px;
+            height: 70px;
+            background: linear-gradient(to top, var(--neon-cyan), transparent);
+            border-radius: 5px;
+            transform-origin: bottom center;
+            animation: tentacleMove 4s infinite ease-in-out;
+        }
+        
+        @keyframes tentacleMove {
+            0%, 100% { transform: rotate(0deg) scaleY(1); }
+            50% { transform: rotate(10deg) scaleY(1.1); }
+        }
+        
+        .tentacle-1 { bottom: 50px; left: 50%; transform: translateX(-50%) rotate(0deg); animation-delay: 0s; }
+        .tentacle-2 { bottom: 50px; left: 50%; transform: translateX(-50%) rotate(45deg); animation-delay: 0.5s; }
+        .tentacle-3 { bottom: 50px; left: 50%; transform: translateX(-50%) rotate(90deg); animation-delay: 1s; }
+        .tentacle-4 { bottom: 50px; left: 50%; transform: translateX(-50%) rotate(135deg); animation-delay: 1.5s; }
+        .tentacle-5 { bottom: 50px; left: 50%; transform: translateX(-50%) rotate(180deg); animation-delay: 2s; }
+        .tentacle-6 { bottom: 50px; left: 50%; transform: translateX(-50%) rotate(225deg); animation-delay: 2.5s; }
+        .tentacle-7 { bottom: 50px; left: 50%; transform: translateX(-50%) rotate(270deg); animation-delay: 3s; }
+        .tentacle-8 { bottom: 50px; left: 50%; transform: translateX(-50%) rotate(315deg); animation-delay: 3.5s; }
+        
+        .vault-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.2rem;
+            margin-top: 1.5rem;
+        }
+        
+        .vault-stat {
+            background: rgba(15, 15, 35, 0.6);
+            border-radius: 10px;
+            padding: 1.2rem;
+            text-align: center;
+            border: 1px solid rgba(0, 255, 102, 0.2);
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--alien-green);
+            margin-bottom: 0.3rem;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--star-white);
+            opacity: 0.8;
+        }
+        
+        /* Star Keys */
+        .keys-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1.2rem;
+            margin-top: 1.5rem;
+        }
+        
+        .key-card {
+            background: rgba(15, 15, 35, 0.6);
+            border-radius: 12px;
+            padding: 1.2rem 0.8rem;
+            text-align: center;
+            border: 1px solid rgba(240, 0, 240, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .key-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(240, 0, 240, 0.2);
+        }
+        
+        .key-glyph {
+            font-size: 2.2rem;
+            margin-bottom: 0.8rem;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-shadow: 0 0 10px var(--neon-cyan);
+        }
+        
+        .key-serial {
+            font-size: 0.9rem;
+            color: var(--alien-green);
+            margin-bottom: 0.3rem;
+        }
+        
+        .key-draw {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+        
+        /* Convergence History */
+        .history-list {
+            margin-top: 1.5rem;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .history-item {
+            background: rgba(15, 15, 35, 0.6);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            border-left: 3px solid var(--warning-red);
+        }
+        
+        .history-convergence {
+            font-size: 1.1rem;
+            color: var(--neon-cyan);
+            margin-bottom: 0.5rem;
+        }
+        
+        .history-numbers {
+            display: flex;
+            gap: 0.4rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .history-number {
+            background: var(--nebula-purple);
+            color: var(--star-white);
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+        
+        .history-winner {
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .history-prize {
+            color: var(--alien-green);
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+        }
+        
+        .history-date {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 5, 16, 0.95);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+        
+        .modal-content {
+            background: linear-gradient(to bottom, rgba(10, 10, 31, 0.95), rgba(5, 5, 16, 0.95));
+            border: 1px solid var(--neon-cyan);
+            border-radius: 15px;
+            width: 100%;
+            max-width: 500px;
+            padding: 2rem;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            color: var(--star-white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .modal-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--neon-cyan);
+            text-align: center;
+        }
+        
+        .modal-input-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .modal-input {
+            width: 100%;
+            background: rgba(15, 15, 35, 0.8);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 8px;
+            padding: 1rem;
+            color: var(--star-white);
+            font-size: 1rem;
+        }
+        
+        .modal-input:focus {
+            outline: none;
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+        
+        .digit-inputs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            justify-content: center;
+        }
+        
+        .digit-input {
+            width: 50px;
+            height: 60px;
+            background: rgba(15, 15, 35, 0.8);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.5rem;
+            color: var(--star-white);
+            font-weight: 700;
+        }
+        
+        .modal-btn {
+            width: 100%;
+            background: linear-gradient(to right, var(--neon-cyan), var(--neon-magenta));
+            color: var(--cosmic-black);
+            border: none;
+            padding: 1rem;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        .modal-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 255, 255, 0.4);
+        }
+        
+        .modal-text {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .modal-alert {
+            background: rgba(255, 42, 109, 0.2);
+            border: 1px solid var(--warning-red);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: var(--star-white);
+        }
+        
+        .convergence-visual {
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+        
+        .convergence-glyph {
+            font-size: 3rem;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-cyan);
+            margin-bottom: 1rem;
+        }
+        
+        .convergence-result {
+            font-size: 1.2rem;
+            color: var(--alien-green);
+            margin-top: 1rem;
+        }
+        
+        .purchase-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .purchase-option {
+            background: rgba(15, 15, 35, 0.6);
+            border: 1px solid var(--nebula-purple);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .purchase-option:hover {
+            background: rgba(96, 64, 192, 0.3);
+        }
+        
+        .purchase-option.selected {
+            background: rgba(96, 64, 192, 0.5);
+            border-color: var(--neon-cyan);
+        }
+        
+        .purchase-amount {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--alien-green);
+            margin-bottom: 0.5rem;
+        }
+        
+        .purchase-price {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* Mobile Navigation */
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 5, 16, 0.95);
+            z-index: 1500;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .mobile-nav.active {
+            display: flex;
+        }
+        
+        .mobile-nav ul {
+            list-style: none;
+            text-align: center;
+        }
+        
+        .mobile-nav li {
+            margin: 2rem 0;
+        }
+        
+        .mobile-nav a {
+            color: var(--star-white);
+            text-decoration: none;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-nav a:hover {
+            color: var(--neon-cyan);
+        }
+        
+        .mobile-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: transparent;
+            border: none;
+            color: var(--neon-cyan);
+            font-size: 2rem;
+            cursor: pointer;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .countdown-card {
+                grid-column: 1 / 3;
+            }
+            
+            .history-card {
+                grid-column: 1 / 3;
+                grid-row: auto;
+            }
+            
+            .vault-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            nav {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                margin-top: 5.5rem;
+            }
+            
+            .countdown-card, .wallet-card, .vault-card, .keys-card, .history-card {
+                grid-column: 1 / 2;
+            }
+            
+            .vault-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .countdown {
+                flex-wrap: wrap;
+            }
+            
+            .countdown-unit {
+                min-width: 70px;
+                padding: 1rem 0.5rem;
+            }
+            
+            .countdown-value {
+                font-size: 1.8rem;
+            }
+            
+            .header-controls {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .header-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+            
+            .keys-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+            
+            .purchase-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                padding: 1.5rem;
+            }
+            
+            .digit-inputs {
+                gap: 0.3rem;
+            }
+            
+            .digit-input {
+                width: 40px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .logo {
+                margin-left: 1rem;
+            }
+            
+            .header-controls {
+                margin-right: 1rem;
+            }
+            
+            .dashboard-card {
+                padding: 1.2rem;
+            }
+            
+            .countdown-unit {
+                min-width: 60px;
+                padding: 0.8rem 0.3rem;
+            }
+            
+            .countdown-value {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav" id="mobileNav">
+        <button class="mobile-close" id="mobileClose"><i class="fas fa-times"></i></button>
+        <ul>
+            <li><a href="#" class="mobile-nav-link">Dashboard</a></li>
+            <li><a href="#" class="mobile-nav-link">Convergence</a></li>
+            <li><a href="#" class="mobile-nav-link">Wallet</a></li>
+            <li><a href="#" class="mobile-nav-link">History</a></li>
+            <li><button class="header-btn" >Login</button></li>
+            <li><button class="header-btn register" >Register</button></li>
+            <li><a href="{% url 'login' %}" class="header-btn">Login</a></li>
+            <li><a href="{% url 'register' %}" class="header-btn register">Register</a></li>
+        </ul>
+    </div>
+    
+    <div class="container">
+        <header id="mainHeader">
+            <div class="logo" onclick="scrollToTop()">
+                <div class="logo-icon">✸</div>
+                <div class="logo-text">ASTRAL DRAW</div>
+            </div>
+            
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="header-controls">
+                <button class="header-btn" onclick="openModal('drawModal')">
+                    <i class="fas fa-star"></i> Initiate Draw
+                    <span class="notification-badge">3</span>
+                </button>
+                <button class="header-btn" onclick="openModal('walletModal')">
+                    <i class="fas fa-wallet"></i> Wallet
+                </button>
+                <button class="header-btn" onclick="openModal('purchaseModal')">
+                    <i class="fas fa-coins"></i> Buy ASTRA
+                </button>
+            </div>
+        </header>
+        
+        <main class="dashboard">
+            <div class="dashboard-card countdown-card">
+                <h2 class="section-title"><i class="fas fa-hourglass-half"></i> Next Cosmic Alignment</h2>
+                <div class="countdown">
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="days">02</div>
+                        <div class="countdown-label">Stellar Cycles</div>
+                    </div>
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="hours">18</div>
+                        <div class="countdown-label">Quantum Units</div>
+                    </div>
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="minutes">47</div>
+                        <div class="countdown-label">Temporal Moments</div>
+                    </div>
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="seconds">12</div>
+                        <div class="countdown-label">Chrono Particles</div>
+                    </div>
+                </div>
+                <div class="countdown-subtitle">Nebula-7 Convergence in progress • 1,427 Star Keys Forged</div>
+            </div>
+            
+            <div class="dashboard-card wallet-card">
+                <h2 class="section-title"><i class="fas fa-wallet"></i> Quantum Wallet</h2>
+                <div class="wallet-info">
+                    <div class="wallet-address">
+                        <span>0x8a3d...e7c2</span>
+                        <button class="copy-btn" onclick="copyText('0x8a3d...e7c2')">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                    <div class="wallet-balance">
+                        <span class="balance-label">ASTRA Balance</span>
+                        <span class="balance-value">542.75</span>
+                    </div>
+                    <div class="wallet-balance">
+                        <span class="balance-label">HBAR Balance</span>
+                        <span class="balance-value">127.33</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dashboard-card vault-card">
+                <h2 class="section-title"><i class="fas fa-vault"></i> Nebula Vault</h2>
+                
+                <div class="vault-beast">
+                    <div class="beast-core"></div>
+                    <div class="beast-tentacle tentacle-1"></div>
+                    <div class="beast-tentacle tentacle-2"></div>
+                    <div class="beast-tentacle tentacle-3"></div>
+                    <div class="beast-tentacle tentacle-4"></div>
+                    <div class="beast-tentacle tentacle-5"></div>
+                    <div class="beast-tentacle tentacle-6"></div>
+                    <div class="beast-tentacle tentacle-7"></div>
+                    <div class="beast-tentacle tentacle-8"></div>
+                </div>
+                
+                <div class="vault-stats">
+                    <div class="vault-stat">
+                        <div class="stat-value">42,000</div>
+                        <div class="stat-label">ASTRA Credits</div>
+                    </div>
+                    <div class="vault-stat">
+                        <div class="stat-value">1,427</div>
+                        <div class="stat-label">Star Keys Forged</div>
+                    </div>
+                    <div class="vault-stat">
+                        <div class="stat-value">2,000</div>
+                        <div class="stat-label">Supernova Threshold</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dashboard-card keys-card">
+                <h2 class="section-title"><i class="fas fa-key"></i> My Star Keys</h2>
+                <div class="keys-grid">
+                    <div class="key-card">
+                        <div class="key-glyph">⌇⎍⎅⟒</div>
+                        <div class="key-serial">Serial: #0042</div>
+                        <div class="key-draw">Nebula-7 Convergence</div>
+                    </div>
+                    
+                    <div class="key-card">
+                        <div class="key-glyph">⏁⍀⟒⎎</div>
+                        <div class="key-serial">Serial: #0172</div>
+                        <div class="key-draw">Nebula-7 Convergence</div>
+                    </div>
+                    
+                    <div class="key-card">
+                        <div class="key-glyph">⌰⍜⌇⟒</div>
+                        <div class="key-serial">Serial: #1035</div>
+                        <div class="key-draw">Nebula-7 Convergence</div>
+                    </div>
+                    
+                    <div class="key-card">
+                        <div class="key-glyph">⍀⏃⋏⎅</div>
+                        <div class="key-serial">Serial: #2087</div>
+                        <div class="key-draw">Nebula-7 Convergence</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dashboard-card history-card">
+                <h2 class="section-title"><i class="fas fa-history"></i> Convergence History</h2>
+                <div class="history-list">
+                    <div class="history-item">
+                        <div class="history-convergence">Nebula-6 Convergence</div>
+                        <div class="history-numbers">
+                            <div class="history-number">4</div>
+                            <div class="history-number">2</div>
+                            <div class="history-number">7</div>
+                            <div class="history-number">9</div>
+                            <div class="history-number">1</div>
+                            <div class="history-number">5</div>
+                        </div>
+                        <div class="history-winner">0x8a3d...e7c2</div>
+                        <div class="history-prize">8,400 ASTRA emitted</div>
+                        <div class="history-date">Stardate: 2265.09.21</div>
+                    </div>
+                    
+                    <div class="history-item">
+                        <div class="history-convergence">Nebula-5 Convergence</div>
+                        <div class="history-numbers">
+                            <div class="history-number">8</div>
+                            <div class="history-number">3</div>
+                            <div class="history-number">0</div>
+                            <div class="history-number">6</div>
+                            <div class="history-number">4</div>
+                            <div class="history-number">2</div>
+                        </div>
+                        <div class="history-winner">0x5f2a...9d14</div>
+                        <div class="history-prize">7,200 ASTRA emitted</div>
+                        <div class="history-date">Stardate: 2265.09.14</div>
+                    </div>
+                    
+                    <div class="history-item">
+                        <div class="history-convergence">Nebula-4 Convergence</div>
+                        <div class="history-numbers">
+                            <div class="history-number">1</div>
+                            <div class="history-number">5</div>
+                            <div class="history-number">9</div>
+                            <div class="history-number">7</div>
+                            <div class="history-number">2</div>
+                            <div class="history-number">4</div>
+                        </div>
+                        <div class="history-winner">0x3c71...b862</div>
+                        <div class="history-prize">9,100 ASTRA emitted</div>
+                        <div class="history-date">Stardate: 2265.09.07</div>
+                    </div>
+                    
+                    <div class="history-item">
+                        <div class="history-convergence">Nebula-3 Convergence</div>
+                        <div class="history-numbers">
+                            <div class="history-number">6</div>
+                            <div class="history-number">0</div>
+                            <div class="history-number">3</div>
+                            <div class="history-number">8</div>
+                            <div class="history-number">5</div>
+                            <div class="history-number">1</div>
+                        </div>
+                        <div class="history-winner">0x1e94...f503</div>
+                        <div class="history-prize">6,500 ASTRA emitted</div>
+                        <div class="history-date">Stardate: 2265.08.30</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Draw Modal -->
+    <div class="modal" id="drawModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('drawModal')">&times;</button>
+            <h2 class="modal-title"><i class="fas fa-star"></i> Cosmic Convergence</h2>
+            
+            <div class="modal-alert">
+                <i class="fas fa-exclamation-triangle"></i> Enter 6 digits to map the star convergence
+            </div>
+            
+            <div class="digit-inputs">
+                <input type="text" class="digit-input" maxlength="1" oninput="moveToNext(this, 1)">
+                <input type="text" class="digit-input" maxlength="1" oninput="moveToNext(this, 2)">
+                <input type="text" class="digit-input" maxlength="1" oninput="moveToNext(this, 3)">
+                <input type="text" class="digit-input" maxlength="1" oninput="moveToNext(this, 4)">
+                <input type="text" class="digit-input" maxlength="1" oninput="moveToNext(this, 5)">
+                <input type="text" class="digit-input" maxlength="1" oninput="moveToNext(this, 6)">
+            </div>
+            
+            <div class="convergence-visual">
+                <div class="convergence-glyph" id="convergenceGlyph">⟟⍙⟊⊑⌇⎍</div>
+                <div class="convergence-result" id="convergenceResult">Enter digits to generate NFT convergence</div>
+            </div>
+            
+            <button class="modal-btn" onclick="initiateConvergence()">Initiate Cosmic Alignment</button>
+            
+            <p class="modal-text">This will create a unique NFT based on the star convergence pattern</p>
+        </div>
+    </div>
+    
+    <!-- Purchase Modal -->
+    <div class="modal" id="purchaseModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('purchaseModal')">&times;</button>
+            <h2 class="modal-title"><i class="fas fa-coins"></i> Acquire ASTRA Credits</h2>
+            
+            <div class="modal-input-group">
+                <label class="modal-label">Select Fiat Currency</label>
+                <select class="modal-input">
+                    <option>USD - US Dollar</option>
+                    <option>EUR - Euro</option>
+                    <option>GBP - British Pound</option>
+                    <option>JPY - Japanese Yen</option>
+                </select>
+            </div>
+            
+            <div class="modal-input-group">
+                <label class="modal-label">Enter Amount</label>
+                <input type="number" class="modal-input" placeholder="0.00" id="fiatAmount" oninput="calculateAstra()">
+            </div>
+            
+            <div class="purchase-options">
+                <div class="purchase-option" onclick="selectPurchaseOption(50)">
+                    <div class="purchase-amount">50 ASTRA</div>
+                    <div class="purchase-price">$75.00</div>
+                </div>
+                
+                <div class="purchase-option" onclick="selectPurchaseOption(100)">
+                    <div class="purchase-amount">100 ASTRA</div>
+                    <div class="purchase-price">$145.00</div>
+                </div>
+                
+                <div class="purchase-option" onclick="selectPurchaseOption(250)">
+                    <div class="purchase-amount">250 ASTRA</div>
+                    <div class="purchase-price">$350.00</div>
+                </div>
+                
+                <div class="purchase-option" onclick="selectPurchaseOption(500)">
+                    <div class="purchase-amount">500 ASTRA</div>
+                    <div class="purchase-price">$675.00</div>
+                </div>
+            </div>
+            
+            <div class="modal-input-group">
+                <label class="modal-label">Payment Method</label>
+                <select class="modal-input">
+                    <option>Quantum Credit Transfer</option>
+                    <option>Stellar Bank Wire</option>
+                    <option>Crypto Exchange</option>
+                    <option>Nebula Pay</option>
+                </select>
+            </div>
+            
+            <button class="modal-btn" onclick="purchaseAstra()">Complete Transaction</button>
+            
+            <p class="modal-text">ASTRA credits will be deposited to your wallet immediately</p>
+        </div>
+    </div>
+    
+    <!-- Wallet Modal -->
+    <div class="modal" id="walletModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('walletModal')">&times;</button>
+            <h2 class="modal-title"><i class="fas fa-wallet"></i> Quantum Wallet</h2>
+            
+            <div class="wallet-address">
+                <span>0x8a3d...e7c2</span>
+                <button class="copy-btn" onclick="copyText('0x8a3d...e7c2')">
+                    <i class="fas fa-copy"></i>
+                </button>
+            </div>
+            
+            <div class="wallet-balance">
+                <span class="balance-label">ASTRA Balance</span>
+                <span class="balance-value">542.75</span>
+            </div>
+            
+            <div class="wallet-balance">
+                <span class="balance-label">HBAR Balance</span>
+                <span class="balance-value">127.33</span>
+            </div>
+            
+            <button class="modal-btn" onclick="closeModal('walletModal')">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Create background stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const starsCount = 150;
+            
+            for (let i = 0; i < starsCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                const size = Math.random() * 3;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Countdown timer
+        function updateCountdown() {
+            // Set the target date (2 days from now)
+            const targetDate = new Date();
+            targetDate.setDate(targetDate.getDate() + 2);
+            targetDate.setHours(targetDate.getHours() + 18);
+            targetDate.setMinutes(targetDate.getMinutes() + 47);
+            targetDate.setSeconds(targetDate.getSeconds() + 12);
+            
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+            
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+        }
+        
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('mainHeader');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+        
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            
+            if (modalId === 'drawModal') {
+                resetDigitInputs();
+            }
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+        
+        // Copy text to clipboard
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.target;
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                btn.style.background = 'rgba(0, 255, 102, 0.2)';
+                btn.style.borderColor = 'var(--alien-green)';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.style.background = '';
+                    btn.style.borderColor = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+        
+        // Digit input handling for convergence
+        function moveToNext(input, nextIndex) {
+            if (input.value.length === 1) {
+                if (nextIndex <= 6) {
+                    const nextInput = document.querySelector(`.digit-input:nth-child(${nextIndex})`);
+                    if (nextInput) nextInput.focus();
+                }
+            }
+            updateConvergenceGlyph();
+        }
+        
+        function resetDigitInputs() {
+            const inputs = document.querySelectorAll('.digit-input');
+            inputs.forEach(input => {
+                input.value = '';
+            });
+            document.getElementById('convergenceGlyph').textContent = '⟟⍙⟊⊑⌇⎍';
+            document.getElementById('convergenceResult').textContent = 'Enter digits to generate NFT convergence';
+        }
+        
+        function updateConvergenceGlyph() {
+            const inputs = document.querySelectorAll('.digit-input');
+            let digits = '';
+            inputs.forEach(input => {
+                digits += input.value || '0';
+            });
+            
+            // Generate a unique glyph based on the digits
+            const glyphs = ['⟟', '⍙', '⟊', '⊑', '⌇', '⎍', '⏁', '⍀', '⌰', '⋏'];
+            let resultGlyph = '';
+            
+            for (let i = 0; i < digits.length; i++) {
+                const digit = parseInt(digits[i]);
+                resultGlyph += glyphs[digit] || glyphs[0];
+            }
+            
+            document.getElementById('convergenceGlyph').textContent = resultGlyph;
+            
+            // Update result text
+            if (digits.includes('0')) {
+                document.getElementById('convergenceResult').textContent = 'Enter all 6 digits to complete the pattern';
+            } else {
+                document.getElementById('convergenceResult').textContent = 'NFT convergence pattern generated successfully';
+            }
+        }
+        
+        function initiateConvergence() {
+            const inputs = document.querySelectorAll('.digit-input');
+            let allFilled = true;
+            
+            inputs.forEach(input => {
+                if (!input.value) allFilled = false;
+            });
+            
+            if (allFilled) {
+                alert('Cosmic Alignment initiated! NFT convergence pattern has been recorded on the blockchain.');
+                closeModal('drawModal');
+            } else {
+                alert('Please enter all 6 digits to initiate the convergence.');
+            }
+        }
+        
+        // Purchase ASTRA functions
+        function selectPurchaseOption(amount) {
+            // Remove selected class from all options
+            const options = document.querySelectorAll('.purchase-option');
+            options.forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked option
+            event.currentTarget.classList.add('selected');
+            
+            // Update the fiat amount input
+            const rate = 1.5; // 1 ASTRA = $1.50
+            document.getElementById('fiatAmount').value = (amount * rate).toFixed(2);
+        }
+        
+        function calculateAstra() {
+            const fiatAmount = parseFloat(document.getElementById('fiatAmount').value) || 0;
+            const rate = 1.5; // 1 ASTRA = $1.50
+            const astraAmount = fiatAmount / rate;
+            
+            // Find the closest option
+            const options = [50, 100, 250, 500];
+            let closestOption = options[0];
+            let minDiff = Math.abs(astraAmount - closestOption);
+            
+            for (let i = 1; i < options.length; i++) {
+                const diff = Math.abs(astraAmount - options[i]);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    closestOption = options[i];
+                }
+            }
+            
+            // Select the closest option
+            const optionsElements = document.querySelectorAll('.purchase-option');
+            optionsElements.forEach(option => {
+                option.classList.remove('selected');
+                if (parseInt(option.querySelector('.purchase-amount').textContent) === closestOption) {
+                    option.classList.add('selected');
+                }
+            });
+        }
+        
+        function purchaseAstra() {
+            const selectedOption = document.querySelector('.purchase-option.selected');
+            if (selectedOption) {
+                const amount = selectedOption.querySelector('.purchase-amount').textContent;
+                alert(`Transaction complete! ${amount} ASTRA credits have been added to your wallet.`);
+                closeModal('purchaseModal');
+            } else {
+                alert('Please select an ASTRA amount to purchase.');
+            }
+        }
+        
+        // Mobile menu functionality
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            document.getElementById('mobileNav').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        document.getElementById('mobileClose').addEventListener('click', function() {
+            document.getElementById('mobileNav').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+        
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', function() {
+                document.getElementById('mobileNav').classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+        });
+        
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        });
+    </script>
+</body>
+</html>

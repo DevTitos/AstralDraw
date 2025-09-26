@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star Convergence Simulation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --cosmic-black: #050510;
+            --deep-space: #0a0a1f;
+            --neon-cyan: #0ff;
+            --neon-magenta: #f0f;
+            --alien-green: #0f6;
+            --star-white: #e6e6ff;
+            --nebula-purple: #6040c0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Exo 2', 'Chakra Petch', sans-serif;
+        }
+        
+        body {
+            background: var(--cosmic-black);
+            color: var(--star-white);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        .stars-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .star-bg {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 5s infinite ease-in-out;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 90%;
+            padding: 2rem;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--neon-cyan);
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        
+        .convergence-section {
+            background: linear-gradient(to bottom, rgba(10, 10, 31, 0.8), rgba(5, 5, 16, 0.8));
+            border: 1px solid var(--nebula-purple);
+            border-radius: 15px;
+            padding: 2rem;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 30px rgba(96, 64, 192, 0.3);
+            margin-bottom: 2rem;
+        }
+        
+        .simulation-container {
+            position: relative;
+            height: 400px;
+            margin: 2rem 0;
+            overflow: hidden;
+            border-radius: 10px;
+            background: rgba(5, 5, 16, 0.5);
+        }
+        
+        .convergence-canvas {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .convergence-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .convergent-point {
+            background: rgba(15, 15, 35, 0.6);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+        
+        .point-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--neon-magenta);
+            margin: 1rem 0;
+        }
+        
+        .point-label {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        .stars-data {
+            background: rgba(15, 15, 35, 0.6);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 1px solid rgba(0, 255, 102, 0.3);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .stars-list {
+            list-style: none;
+        }
+        
+        .star-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .star-item:last-child {
+            border-bottom: none;
+        }
+        
+        .star-name {
+            font-weight: 600;
+            color: var(--neon-cyan);
+        }
+        
+        .star-direction {
+            font-family: monospace;
+            opacity: 0.8;
+        }
+        
+        .star-number {
+            background: var(--alien-green);
+            color: var(--cosmic-black);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .control-btn {
+            background: linear-gradient(to right, var(--neon-cyan), var(--neon-magenta));
+            color: var(--cosmic-black);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
+        }
+        
+        .control-btn.secondary {
+            background: transparent;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+        }
+        
+        @media (max-width: 768px) {
+            .convergence-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .simulation-container {
+                height: 300px;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars-bg" id="starsBg"></div>
+    
+    <div class="container">
+        <h2 class="section-title">Star Convergence Simulation</h2>
+        <p class="section-subtitle">Witness the cosmic alignment of stars as they converge toward a single point in space. Each star's position maps to a unique number based on its proximity to the convergence point.</p>
+        
+        <div class="convergence-section">
+            <div class="simulation-container">
+                <canvas class="convergence-canvas" id="convergenceCanvas"></canvas>
+            </div>
+            
+            <div class="convergence-info">
+                <div class="convergent-point">
+                    <div class="point-label">Convergent Point</div>
+                    <div class="point-value" id="convergentPoint">0.00°</div>
+                    <div class="point-label">Stars are converging toward this point</div>
+                </div>
+                
+                <div class="stars-data">
+                    <h3 style="margin-bottom: 1rem; color: var(--alien-green);">Star Data</h3>
+                    <ul class="stars-list" id="starsList">
+                        <!-- Star data will be populated by JavaScript -->
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="control-btn" id="simulateBtn">
+                    <i class="fas fa-play"></i> Simulate Convergence
+                </button>
+                <button class="control-btn secondary" id="resetBtn">
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create background stars
+        function createBackgroundStars() {
+            const starsContainer = document.getElementById('starsBg');
+            const starsCount = 100;
+            
+            for (let i = 0; i < starsCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star-bg');
+                
+                const size = Math.random() * 2;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Star convergence simulation
+        class StarConvergence {
+            constructor(canvasId) {
+                this.canvas = document.getElementById(canvasId);
+                this.ctx = this.canvas.getContext('2d');
+                this.starNames = [
+                    "Aldebaran", "Theta² Tauri", "Gamma Tauri",
+                    "Delta¹ Tauri", "Epsilon Tauri", "Hyadum I"
+                ];
+                this.stars = [];
+                this.convergentPoint = 0;
+                this.animationId = null;
+                this.isAnimating = false;
+                
+                this.resizeCanvas();
+                window.addEventListener('resize', () => this.resizeCanvas());
+            }
+            
+            resizeCanvas() {
+                this.canvas.width = this.canvas.offsetWidth;
+                this.canvas.height = this.canvas.offsetHeight;
+                this.centerX = this.canvas.width / 2;
+                this.centerY = this.canvas.height / 2;
+                this.radius = Math.min(this.centerX, this.centerY) * 0.8;
+                
+                if (this.stars.length > 0) {
+                    this.draw();
+                }
+            }
+            
+            generateConvergence() {
+                // Generate convergent point (0-360 degrees)
+                this.convergentPoint = Math.random() * 360;
+                
+                this.stars = [];
+                
+                for (let i = 0; i < this.starNames.length; i++) {
+                    // Random direction around convergent point
+                    let direction = (this.convergentPoint + (Math.random() * 20 - 10)) % 360;
+                    if (direction < 0) direction += 360;
+                    
+                    // Distance from convergent point (0-10 roughly)
+                    let distance = Math.abs(direction - this.convergentPoint);
+                    if (distance > 180) distance = 360 - distance;
+                    
+                    // Map to 0-9 range (0 = exactly at convergent point, 9 = farthest)
+                    let mappedNumber = Math.round((distance / 10) * 9);
+                    mappedNumber = Math.max(0, Math.min(9, mappedNumber));
+                    
+                    this.stars.push({
+                        name: this.starNames[i],
+                        direction: direction,
+                        mappedNumber: mappedNumber,
+                        currentAngle: direction, // For animation
+                        currentRadius: this.radius * 0.9, // Start at outer edge
+                        color: this.getStarColor(i)
+                    });
+                }
+                
+                // Update UI
+                document.getElementById('convergentPoint').textContent = this.convergentPoint.toFixed(2) + '°';
+                this.updateStarsList();
+            }
+            
+            getStarColor(index) {
+                const colors = [
+                    '#FF2A6D', '#05D9E8', '#D1F7FF', 
+                    '#FFEE88', '#00FF9F', '#BF5AF2'
+                ];
+                return colors[index % colors.length];
+            }
+            
+            updateStarsList() {
+                const starsList = document.getElementById('starsList');
+                starsList.innerHTML = '';
+                
+                this.stars.forEach(star => {
+                    const li = document.createElement('li');
+                    li.className = 'star-item';
+                    li.innerHTML = `
+                        <span class="star-name">${star.name}</span>
+                        <span class="star-direction">${star.direction.toFixed(2)}°</span>
+                        <span class="star-number">${star.mappedNumber}</span>
+                    `;
+                    starsList.appendChild(li);
+                });
+            }
+            
+            draw() {
+                // Clear canvas
+                this.ctx.fillStyle = 'rgba(5, 5, 16, 0.3)';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Draw convergent point
+                this.ctx.beginPath();
+                this.ctx.arc(this.centerX, this.centerY, 8, 0, Math.PI * 2);
+                this.ctx.fillStyle = 'rgba(240, 0, 240, 0.8)';
+                this.ctx.fill();
+                this.ctx.strokeStyle = '#FFFFFF';
+                this.ctx.lineWidth = 2;
+                this.ctx.stroke();
+                
+                // Draw convergence circle
+                this.ctx.beginPath();
+                this.ctx.arc(this.centerX, this.centerY, this.radius * 0.2, 0, Math.PI * 2);
+                this.ctx.strokeStyle = 'rgba(0, 255, 255, 0.3)';
+                this.ctx.setLineDash([5, 5]);
+                this.ctx.lineWidth = 1;
+                this.ctx.stroke();
+                this.ctx.setLineDash([]);
+                
+                // Draw stars
+                this.stars.forEach(star => {
+                    const angle = star.currentAngle * Math.PI / 180;
+                    const x = this.centerX + Math.cos(angle) * star.currentRadius;
+                    const y = this.centerY + Math.sin(angle) * star.currentRadius;
+                    
+                    // Draw star
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, 6, 0, Math.PI * 2);
+                    this.ctx.fillStyle = star.color;
+                    this.ctx.fill();
+                    
+                    // Draw star glow
+                    const gradient = this.ctx.createRadialGradient(x, y, 0, x, y, 15);
+                    gradient.addColorStop(0, star.color);
+                    gradient.addColorStop(1, 'transparent');
+                    
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, 15, 0, Math.PI * 2);
+                    this.ctx.fillStyle = gradient;
+                    this.ctx.fill();
+                    
+                    // Draw star name
+                    this.ctx.fillStyle = '#FFFFFF';
+                    this.ctx.font = '12px Exo 2';
+                    this.ctx.textAlign = 'center';
+                    this.ctx.fillText(star.name, x, y - 15);
+                    
+                    // Draw direction line
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(this.centerX, this.centerY);
+                    this.ctx.lineTo(x, y);
+                    this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+                    this.ctx.lineWidth = 1;
+                    this.ctx.stroke();
+                });
+                
+                // Draw convergent point label
+                this.ctx.fillStyle = 'rgba(240, 0, 240, 0.9)';
+                this.ctx.font = '14px Exo 2';
+                this.ctx.textAlign = 'center';
+                this.ctx.fillText('Convergent Point', this.centerX, this.centerY - 25);
+            }
+            
+            animate() {
+                if (!this.isAnimating) return;
+                
+                let allConverged = true;
+                
+                this.stars.forEach(star => {
+                    // Calculate target angle (convergent point)
+                    let targetAngle = this.convergentPoint;
+                    
+                    // Calculate shortest path to target angle
+                    let diff = targetAngle - star.currentAngle;
+                    if (diff > 180) diff -= 360;
+                    if (diff < -180) diff += 360;
+                    
+                    // Move star toward convergent point
+                    star.currentAngle += diff * 0.02;
+                    
+                    // Normalize angle
+                    if (star.currentAngle >= 360) star.currentAngle -= 360;
+                    if (star.currentAngle < 0) star.currentAngle += 360;
+                    
+                    // Move star inward
+                    if (star.currentRadius > this.radius * 0.2) {
+                        star.currentRadius -= 0.5;
+                        allConverged = false;
+                    }
+                    
+                    // Check if star has converged
+                    if (Math.abs(diff) > 1 || star.currentRadius > this.radius * 0.2) {
+                        allConverged = false;
+                    }
+                });
+                
+                this.draw();
+                
+                if (!allConverged) {
+                    this.animationId = requestAnimationFrame(() => this.animate());
+                } else {
+                    this.isAnimating = false;
+                    document.getElementById('simulateBtn').innerHTML = '<i class="fas fa-play"></i> Simulate Convergence';
+                }
+            }
+            
+            startAnimation() {
+                if (this.isAnimating) {
+                    this.stopAnimation();
+                    return;
+                }
+                
+                this.isAnimating = true;
+                document.getElementById('simulateBtn').innerHTML = '<i class="fas fa-pause"></i> Pause';
+                this.animate();
+            }
+            
+            stopAnimation() {
+                this.isAnimating = false;
+                if (this.animationId) {
+                    cancelAnimationFrame(this.animationId);
+                }
+                document.getElementById('simulateBtn').innerHTML = '<i class="fas fa-play"></i> Simulate Convergence';
+            }
+            
+            reset() {
+                this.stopAnimation();
+                this.generateConvergence();
+                this.draw();
+            }
+        }
+        
+        // Initialize the simulation
+        document.addEventListener('DOMContentLoaded', function() {
+            createBackgroundStars();
+            
+            const simulation = new StarConvergence('convergenceCanvas');
+            simulation.generateConvergence();
+            simulation.draw();
+            
+            // Event listeners for buttons
+            document.getElementById('simulateBtn').addEventListener('click', function() {
+                simulation.startAnimation();
+            });
+            
+            document.getElementById('resetBtn').addEventListener('click', function() {
+                simulation.reset();
+            });
+        });
+    </script>
+</body>
+</html>
