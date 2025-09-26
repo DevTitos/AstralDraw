@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Dashboard - Astral Draw</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --cosmic-black: #050510;
+            --deep-space: #0a0a1f;
+            --neon-cyan: #0ff;
+            --neon-magenta: #f0f;
+            --alien-green: #0f6;
+            --star-white: #e6e6ff;
+            --nebula-purple: #6040c0;
+            --warning-red: #ff2a6d;
+            --quantum-blue: #00ccff;
+            --hologram-teal: #00ffcc;
+            --plasma-orange: #ff6600;
+            --cosmic-gold: #ffd700;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Orbitron', 'Exo 2', 'Chakra Petch', monospace;
+        }
+        
+        body {
+            background: var(--cosmic-black);
+            color: var(--star-white);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(96, 64, 192, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(240, 0, 240, 0.08) 0%, transparent 50%);
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -2;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 5s infinite ease-in-out;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+        
+        .nebula {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(96, 64, 192, 0.1) 0%, transparent 30%),
+                radial-gradient(circle at 90% 40%, rgba(0, 255, 255, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 40% 80%, rgba(240, 0, 240, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .grid-lines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        /* Dashboard Layout */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            grid-template-rows: 100px 1fr;
+            grid-template-areas: 
+                "sidebar header"
+                "sidebar main";
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        .header {
+            grid-area: header;
+            background: rgba(5, 5, 16, 0.7);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 100;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+            animation: scanline 3s linear infinite;
+        }
+        
+        @keyframes scanline {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .countdown-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            border: 1px solid var(--neon-cyan);
+        }
+        
+        .countdown-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .countdown-timer {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--alien-green);
+            text-shadow: 0 0 10px var(--alien-green);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            position: relative;
+            animation: avatar-pulse 3s infinite alternate;
+        }
+        
+        @keyframes avatar-pulse {
+            0% { box-shadow: 0 0 10px var(--neon-cyan); }
+            100% { box-shadow: 0 0 20px var(--neon-magenta); }
+        }
+        
+        .user-details h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.2rem;
+        }
+        
+        .user-details .role {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .admin-badge {
+            background: linear-gradient(45deg, var(--plasma-orange), var(--warning-red));
+            color: black;
+            padding: 0.2rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-left: 1rem;
+        }
+        
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .control-btn {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .control-btn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 15px var(--neon-cyan);
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            grid-area: sidebar;
+            background: rgba(5, 5, 16, 0.8);
+            border-right: 1px solid rgba(0, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 2rem 0;
+            position: relative;
+            overflow-y: auto;
+            box-shadow: 5px 0 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, var(--neon-cyan), transparent);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.7; }
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0 2rem 2rem;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--nebula-purple));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            animation: pulse 4s infinite alternate;
+        }
+        
+        .logo-text {
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--neon-cyan), var(--neon-magenta));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        
+        .nav-section {
+            margin: 2rem 0;
+        }
+        
+        .nav-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.5;
+            padding: 0 2rem 0.5rem;
+        }
+        
+        .nav-items {
+            list-style: none;
+        }
+        
+        .nav-item {
+            margin: 0.5rem 0;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            color: var(--star-white);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background: rgba(0, 255, 255, 0.1);
+            border-left-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::before {
+            width: 100%;
+        }
+        
+        .nav-icon {
+            font-size: 1.2rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .admin-only {
+            border-left: 3px solid var(--plasma-orange);
+        }
+        
+        .admin-only .nav-icon {
+            color: var(--plasma-orange);
+        }
+        
+        /* Main Content */
+        .main-content {
+            grid-area: main;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-header {
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, var(--neon-cyan), var(--hologram-teal));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+        
+        .section-subtitle {
+            opacity: 0.7;
+            font-size: 1.1rem;
+        }
+        
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, rgba(10, 10, 31, 0.8), rgba(5, 5, 16, 0.8));
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 255, 255, 0.2);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, var(--neon-cyan), var(--hologram-teal));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .stat-label {
+            opacity: 0.7;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Key Forging Section */
+        .key-forging-container {
+            background: linear-gradient(135deg, rgba(10, 10, 31, 0.9), rgba(5, 5, 16, 0.9));
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .key-forging-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(0, 255, 255, 0.05) 50%, transparent 70%);
+            animation: hologram-scan 3s linear infinite;
+        }
+        
+        @keyframes hologram-scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        
+        .forging-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--neon-cyan);
+        }
+        
+        .key-inputs {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        
+        .key-digit {
+            width: 60px;
+            height: 80px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--neon-cyan);
+            border-radius: 10px;
+            font-size: 2.5rem;
+            text-align: center;
+            color: var(--star-white);
+            text-shadow: 0 0 10px var(--neon-cyan);
+            transition: all 0.3s ease;
+        }
+        
+        .key-digit:focus {
+            outline: none;
+            border-color: var(--alien-green);
+            box-shadow: 0 0 15px var(--alien-green);
+            transform: scale(1.05);
+        }
+        
+        .forging-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        /* Action Buttons */
+        .action-btn {
+            background: transparent;
+            border: 1px solid;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+        }
+        
+        .btn-primary:hover {
+            background: rgba(0, 255, 255, 0.1);
+            box-shadow: 0 0 15px var(--neon-cyan);
+            transform: translateY(-2px);
+        }
+        
+        .btn-warning {
+            border-color: var(--plasma-orange);
+            color: var(--plasma-orange);
+        }
+        
+        .btn-warning:hover {
+            background: rgba(255, 102, 0, 0.1);
+            box-shadow: 0 0 15px var(--plasma-orange);
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            border-color: var(--alien-green);
+            color: var(--alien-green);
+        }
+        
+        .btn-success:hover {
+            background: rgba(0, 255, 102, 0.1);
+            box-shadow: 0 0 15px var(--alien-green);
+            transform: translateY(-2px);
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 5, 16, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, rgba(10, 10, 31, 0.95), rgba(5, 5, 16, 0.95));
+            border: 1px solid var(--neon-cyan);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
+            position: relative;
+            animation: modalAppear 0.5s ease;
+        }
+        
+        @keyframes modalAppear {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .modal-header {
+            padding: 2rem 2rem 1rem;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--neon-cyan);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            color: var(--star-white);
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-close:hover {
+            background: rgba(255, 42, 109, 0.2);
+            color: var(--warning-red);
+        }
+        
+        .modal-body {
+            padding: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .form-input {
+            width: 100%;
+            background: rgba(15, 15, 35, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            color: var(--star-white);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+        
+        /* Astra Purchase Modal Specific Styles */
+        .astra-purchase-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .astra-option {
+            background: rgba(15, 15, 35, 0.6);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .astra-option:hover, .astra-option.selected {
+            border-color: var(--alien-green);
+            background: rgba(0, 255, 102, 0.1);
+            transform: translateY(-5px);
+        }
+        
+        .astra-amount {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--cosmic-gold);
+            margin-bottom: 0.5rem;
+        }
+        
+        .astra-price {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        .payment-methods {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 1.5rem 0;
+        }
+        
+        .payment-method {
+            padding: 0.8rem 1.5rem;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .payment-method:hover, .payment-method.selected {
+            border-color: var(--neon-cyan);
+            background: rgba(0, 255, 255, 0.1);
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--neon-cyan);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Enhanced Responsive Design */
+        @media (max-width: 1200px) {
+            .dashboard {
+                grid-template-columns: 250px 1fr;
+            }
+            
+            .sidebar {
+                width: 250px;
+            }
+            
+            .logo-text {
+                font-size: 1.4rem;
+            }
+            
+            .nav-link {
+                padding: 0.8rem 1.5rem;
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+                grid-template-areas: 
+                    "header"
+                    "main";
+                grid-template-rows: auto 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 280px;
+                z-index: 1000;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            
+            .sidebar.active {
+                display: block;
+                transform: translateX(0);
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .key-inputs {
+                flex-wrap: wrap;
+            }
+            
+            .key-digit {
+                width: 50px;
+                height: 70px;
+                font-size: 2rem;
+            }
+            
+            .header {
+                padding: 1rem;
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+            
+            .countdown-container {
+                order: 3;
+                width: 100%;
+                justify-content: center;
+                margin-top: 1rem;
+            }
+            
+            .user-info {
+                order: 1;
+            }
+            
+            .header-controls {
+                order: 2;
+                margin-left: auto;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .stat-card {
+                padding: 1rem;
+            }
+            
+            .stat-value {
+                font-size: 2rem;
+            }
+            
+            .key-forging-container {
+                padding: 1.5rem;
+            }
+            
+            .key-inputs {
+                gap: 0.5rem;
+            }
+            
+            .key-digit {
+                width: 45px;
+                height: 60px;
+                font-size: 1.8rem;
+            }
+            
+            .forging-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .astra-purchase-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .payment-methods {
+                flex-direction: column;
+            }
+            
+            .user-details h3 {
+                font-size: 1rem;
+            }
+            
+            .countdown-timer {
+                font-size: 1.2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .header-controls {
+                margin-left: 0;
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .countdown-container {
+                order: 2;
+                margin-top: 0.5rem;
+            }
+            
+            .user-info {
+                order: 1;
+            }
+            
+            .control-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+            
+            .key-digit {
+                width: 40px;
+                height: 55px;
+                font-size: 1.5rem;
+            }
+            
+            .stat-icon {
+                font-size: 2rem;
+            }
+            
+            .stat-value {
+                font-size: 1.8rem;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 1rem;
+            }
+            
+            .modal-body {
+                padding: 1.5rem;
+            }
+        }
+        
+        /* Mobile overlay for sidebar */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+        }
+        
+        .sidebar-overlay.active {
+            display: block;
+        }
+        
+        /* Countdown responsive adjustments */
+        @media (max-width: 1024px) {
+            .countdown-container {
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .countdown-timer {
+                font-size: 1.1rem;
+            }
+            
+            .countdown-label {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    <div class="nebula"></div>
+    <div class="grid-lines"></div>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    
+    <div class="dashboard">
+        <!-- Header -->
+        <header class="header">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user-astronaut"></i>
+                </div>
+                <div class="user-details">
+                    <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+                    <div class="role">{{ user_wallet.recipient_id|default:"Cosmic Citizen" }} • {{ user_wallet.balance|default:"0" }} ASTRA</div>
+                </div>
+            </div>
+            
+            <div class="header-controls">
+                <button class="control-btn" onclick="openModal('purchaseAstraModal')">
+                    <i class="fas fa-coins"></i> Buy ASTRA
+                </button>
+                <button class="control-btn" onclick="openModal('notificationsModal')">
+                    <i class="fas fa-bell"></i> Alerts
+                </button>
+                <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <div class="countdown-container">
+                <div class="countdown-label">NEXT CONVERGENCE</div>
+                <div class="countdown-timer" id="countdownTimer">00:00:00</div>
+            </div>
+        </header>
+        
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo">
+                <div class="logo-icon">✸</div>
+                <div class="logo-text">QUANTUM DASH</div>
+            </div>
+            
+            <nav class="nav-section">
+                <div class="nav-title">Navigation</div>
+                <ul class="nav-items">
+                    <li class="nav-item">
+                        <a href="#overview" class="nav-link active" onclick="showSection('overview')">
+                            <i class="fas fa-globe nav-icon"></i>
+                            <span>Quantum Overview</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#star-keys" class="nav-link" onclick="showSection('star-keys')">
+                            <i class="fas fa-key nav-icon"></i>
+                            <span>Star Keys</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#draws" class="nav-link" onclick="showSection('draws')">
+                            <i class="fas fa-dice nav-icon"></i>
+                            <span>Astral Draws</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#wallet" class="nav-link" onclick="showSection('wallet')">
+                            <i class="fas fa-wallet nav-icon"></i>
+                            <span>Nebula Vault</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <nav class="nav-section">
+                <div class="nav-title">Quantum Tools</div>
+                <ul class="nav-items">
+                    <li class="nav-item">
+                        <a href="#analytics" class="nav-link" onclick="showSection('analytics')">
+                            <i class="fas fa-chart-network nav-icon"></i>
+                            <span>Cosmic Analytics</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#support" class="nav-link" onclick="showSection('support')">
+                            <i class="fas fa-life-ring nav-icon"></i>
+                            <span>Quantum Support</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            {% if user.is_staff %}
+            <nav class="nav-section">
+                <div class="nav-title">Admin</div>
+                <ul class="nav-items">
+                    <li class="nav-item">
+                        <a href="#admin" class="nav-link admin-only" onclick="showSection('admin')">
+                            <i class="fas fa-cogs nav-icon"></i>
+                            <span>Admin Panel</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            {% endif %}
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Overview Section -->
+            <section id="overview" class="content-section active">
+                <div class="section-header">
+                    <h1 class="section-title">Quantum Overview</h1>
+                    <p class="section-subtitle">Welcome back, {{ user.first_name }}. Your astral journey awaits.</p>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-key"></i></div>
+                        <div class="stat-value">{{ user_keys.count|default:"0" }}</div>
+                        <div class="stat-label">Active Star Keys</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-trophy"></i></div>
+                        <div class="stat-value">{{ user_wins.count|default:"0" }}</div>
+                        <div class="stat-label">Cosmic Victories</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-coins"></i></div>
+                        <div class="stat-value">{{ user_wallet.balance|default:"0" }}</div>
+                        <div class="stat-label">ASTRA Balance</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-rocket"></i></div>
+                        <div class="stat-value">{{ active_draws.count|default:"0" }}</div>
+                        <div class="stat-label">Active Convergences</div>
+                    </div>
+                </div>
+                
+                <!-- Key Forging Section -->
+                <div class="key-forging-container">
+                    <h2 class="forging-title"><i class="fas fa-hammer"></i> Forge Star Key</h2>
+                    <p>Enter 6 cosmic digits to forge your unique Star Key for the next convergence</p>
+                    
+                    <div class="key-inputs">
+                        <input type="text" class="key-digit" maxlength="1" oninput="moveToNext(this, 1)" onkeypress="return isNumberKey(event)">
+                        <input type="text" class="key-digit" maxlength="1" oninput="moveToNext(this, 2)" onkeypress="return isNumberKey(event)">
+                        <input type="text" class="key-digit" maxlength="1" oninput="moveToNext(this, 3)" onkeypress="return isNumberKey(event)">
+                        <input type="text" class="key-digit" maxlength="1" oninput="moveToNext(this, 4)" onkeypress="return isNumberKey(event)">
+                        <input type="text" class="key-digit" maxlength="1" oninput="moveToNext(this, 5)" onkeypress="return isNumberKey(event)">
+                        <input type="text" class="key-digit" maxlength="1" oninput="moveToNext(this, 6)" onkeypress="return isNumberKey(event)">
+                    </div>
+                    
+                    <div class="forging-controls">
+                        <button class="action-btn btn-primary" onclick="forgeStarKey()">
+                            <i class="fas fa-bolt"></i> Forge Key
+                        </button>
+                        <button class="action-btn" onclick="clearKeyInputs()">
+                            <i class="fas fa-eraser"></i> Clear
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
+                        <div class="stat-value" id="nextDrawDate">--</div>
+                        <div class="stat-label">Next Convergence</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-gem"></i></div>
+                        <div class="stat-value" id="nextDrawPrize">--</div>
+                        <div class="stat-label">Prize Pool</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-users"></i></div>
+                        <div class="stat-value" id="nextDrawParticipants">--</div>
+                        <div class="stat-label">Participants</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                        <div class="stat-value" id="timeRemaining">--</div>
+                        <div class="stat-label">Time Remaining</div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Other sections would go here -->
+        </main>
+    </div>
+    
+    <!-- Purchase Astra Modal -->
+    <div class="modal" id="purchaseAstraModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-coins"></i> Purchase ASTRA</h2>
+                <button class="modal-close" onclick="closeModal('purchaseAstraModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Select Amount</label>
+                    <div class="astra-purchase-options">
+                        <div class="astra-option" onclick="selectAstraOption(this, 1000)">
+                            <div class="astra-amount">1,000 ASTRA</div>
+                            <div class="astra-price">$10.00</div>
+                        </div>
+                        <div class="astra-option" onclick="selectAstraOption(this, 5000)">
+                            <div class="astra-amount">5,000 ASTRA</div>
+                            <div class="astra-price">$45.00</div>
+                        </div>
+                        <div class="astra-option" onclick="selectAstraOption(this, 10000)">
+                            <div class="astra-amount">10,000 ASTRA</div>
+                            <div class="astra-price">$85.00</div>
+                        </div>
+                        <div class="astra-option" onclick="selectAstraOption(this, 25000)">
+                            <div class="astra-amount">25,000 ASTRA</div>
+                            <div class="astra-price">$200.00</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Payment Method</label>
+                    <div class="payment-methods">
+                        <div class="payment-method selected" onclick="selectPaymentMethod(this, 'hbar')">
+                            <i class="fab fa-ethereum"></i> HBAR
+                        </div>
+                        <div class="payment-method" onclick="selectPaymentMethod(this, 'credit')">
+                            <i class="fas fa-credit-card"></i> Credit Card
+                        </div>
+                        <div class="payment-method" onclick="selectPaymentMethod(this, 'crypto')">
+                            <i class="fas fa-coins"></i> Crypto
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Wallet Address</label>
+                    <input type="text" class="form-input" placeholder="Enter your Hedera wallet address">
+                </div>
+                
+                <div class="form-actions">
+                    <button class="action-btn btn-success" onclick="purchaseAstra()">
+                        <i class="fas fa-bolt"></i> Confirm Purchase
+                    </button>
+                    <button class="action-btn" onclick="closeModal('purchaseAstraModal')">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Forge Key Modal -->
+    <div class="modal" id="forgeKeyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-key"></i> Forge Star Key</h2>
+                <button class="modal-close" onclick="closeModal('forgeKeyModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Select Convergence</label>
+                    <select class="form-input" id="drawSelection">
+                        {% for draw in active_draws %}
+                        <option value="{{ draw.id }}" data-prize="{{ draw.prize_pool }}">{{ draw.title }} ({{ draw.prize_pool }} ASTRA)</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Enter 6-Digit Star Key</label>
+                    <div class="key-inputs">
+                        <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 1)" onkeypress="return isNumberKey(event)">
+                        <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 2)" onkeypress="return isNumberKey(event)">
+                        <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 3)" onkeypress="return isNumberKey(event)">
+                        <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 4)" onkeypress="return isNumberKey(event)">
+                        <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 5)" onkeypress="return isNumberKey(event)">
+                        <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 6)" onkeypress="return isNumberKey(event)">
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="action-btn btn-primary" onclick="submitStarKey()">
+                        <i class="fas fa-bolt"></i> Forge Key
+                    </button>
+                    <button class="action-btn" onclick="closeModal('forgeKeyModal')">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create background stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const starsCount = 300;
+            
+            for (let i = 0; i < starsCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                const size = Math.random() * 3;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Countdown timer based on Django draw_datetime
+        function updateCountdown() {
+            // Get the next draw datetime from Django context
+            // This would be replaced with actual data from your backend
+            const nextDrawDatetime = "{{ next_draw.draw_datetime|date:'Y-m-d H:i:s' }}";
+            
+            if (!nextDrawDatetime || nextDrawDatetime === "None") {
+                document.getElementById('countdownTimer').textContent = "NO DRAW";
+                document.getElementById('timeRemaining').textContent = "N/A";
+                document.getElementById('nextDrawDate').textContent = "--";
+                document.getElementById('nextDrawPrize').textContent = "--";
+                document.getElementById('nextDrawParticipants').textContent = "--";
+                return;
+            }
+            
+            // Parse the datetime from Django format
+            const drawDate = new Date(nextDrawDatetime);
+            const now = new Date();
+            
+            const diff = drawDate - now;
+            
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                // Update header countdown
+                if (days > 0) {
+                    document.getElementById('countdownTimer').textContent = 
+                        `${days}d ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                } else {
+                    document.getElementById('countdownTimer').textContent = 
+                        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+                
+                // Update dashboard stats
+                document.getElementById('timeRemaining').textContent = 
+                    days > 0 ? `${days}d ${hours}h` : `${hours}h ${minutes}m`;
+                
+                document.getElementById('nextDrawDate').textContent = 
+                    drawDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                
+                document.getElementById('nextDrawPrize').textContent = 
+                    "{{ next_draw.prize_pool|default:'0' }}";
+                
+                document.getElementById('nextDrawParticipants').textContent = 
+                    "{{ next_draw.total_tickets_sold|default:'0' }}";
+            } else {
+                document.getElementById('countdownTimer').textContent = "LIVE";
+                document.getElementById('timeRemaining').textContent = "NOW";
+                document.getElementById('nextDrawDate').textContent = "LIVE";
+                document.getElementById('nextDrawPrize').textContent = "{{ next_draw.prize_pool|default:'0' }}";
+                document.getElementById('nextDrawParticipants').textContent = "{{ next_draw.total_tickets_sold|default:'0' }}";
+            }
+        }
+        
+        // Key forging functionality
+        function isNumberKey(evt) {
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            return true;
+        }
+        
+        function moveToNext(input, nextIndex) {
+            if (input.value.length === 1) {
+                const nextInput = input.parentElement.children[nextIndex];
+                if (nextInput) nextInput.focus();
+            }
+        }
+        
+        function moveToNextModal(input, nextIndex) {
+            if (input.value.length === 1) {
+                const inputs = document.querySelectorAll('#forgeKeyModal .key-digit');
+                if (nextIndex < inputs.length) {
+                    inputs[nextIndex].focus();
+                }
+            }
+        }
+        
+        function clearKeyInputs() {
+            const inputs = document.querySelectorAll('.key-digit');
+            inputs.forEach(input => {
+                input.value = '';
+            });
+            if (inputs[0]) inputs[0].focus();
+        }
+        
+        function forgeStarKey() {
+            const inputs = document.querySelectorAll('.key-digit');
+            let key = '';
+            let valid = true;
+            
+            inputs.forEach(input => {
+                if (input.value === '' || isNaN(input.value)) {
+                    valid = false;
+                    input.style.borderColor = 'var(--warning-red)';
+                } else {
+                    key += input.value;
+                    input.style.borderColor = 'var(--alien-green)';
+                }
+            });
+            
+            if (valid && key.length === 6) {
+                // Submit to your Django view
+                alert(`Star Key ${key} forged successfully!`);
+                // Here you would send the key to your Django backend
+                // fetch('/submit-keys/', { method: 'POST', body: JSON.stringify({star_keys: key.split('')}) })
+            } else {
+                alert('Please enter 6 valid digits (0-9)');
+            }
+        }
+        
+        function submitStarKey() {
+            const inputs = document.querySelectorAll('#forgeKeyModal .key-digit');
+            let key = '';
+            let valid = true;
+            
+            inputs.forEach(input => {
+                if (input.value === '' || isNaN(input.value)) {
+                    valid = false;
+                    input.style.borderColor = 'var(--warning-red)';
+                } else {
+                    key += input.value;
+                    input.style.borderColor = 'var(--alien-green)';
+                }
+            });
+            
+            if (valid && key.length === 6) {
+                const drawId = document.getElementById('drawSelection').value;
+                // Submit to your Django view
+                alert(`Star Key ${key} forged for draw ${drawId}!`);
+                closeModal('forgeKeyModal');
+                // Here you would send the key to your Django backend
+                // fetch('/submit-keys/' + drawId + '/', { method: 'POST', body: JSON.stringify({star_keys: key.split('')}) })
+            } else {
+                alert('Please enter 6 valid digits (0-9)');
+            }
+        }
+        
+        // Astra purchase functionality
+        let selectedAstraAmount = 0;
+        let selectedPaymentMethod = 'hbar';
+        
+        function selectAstraOption(element, amount) {
+            document.querySelectorAll('.astra-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            selectedAstraAmount = amount;
+        }
+        
+        function selectPaymentMethod(element, method) {
+            document.querySelectorAll('.payment-method').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            selectedPaymentMethod = method;
+        }
+        
+        function purchaseAstra() {
+            if (selectedAstraAmount > 0) {
+                alert(`Purchasing ${selectedAstraAmount} ASTRA via ${selectedPaymentMethod.toUpperCase()}`);
+                closeModal('purchaseAstraModal');
+            } else {
+                alert('Please select an ASTRA amount');
+            }
+        }
+        
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        // Section navigation
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            if (window.innerWidth <= 1024) {
+                toggleSidebar();
+            }
+        }
+        
+        // Mobile sidebar toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            if (window.innerWidth <= 1024) {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+                
+                // Prevent body scroll when sidebar is open
+                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+            }
+        }
+        
+        // Close sidebar when clicking on a link (mobile)
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 1024) {
+                        toggleSidebar();
+                    }
+                });
+            });
+        });
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    event.target.style.display = 'none';
+                }
+            });
+            
+            // Auto-hide sidebar on mobile initially
+            if (window.innerWidth <= 1024) {
+                document.getElementById('sidebar').classList.remove('active');
+                document.getElementById('sidebarOverlay').classList.remove('active');
+            }
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 1024) {
+                    document.getElementById('sidebar').classList.remove('active');
+                    document.getElementById('sidebarOverlay').classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
