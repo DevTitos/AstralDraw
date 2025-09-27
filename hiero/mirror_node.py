@@ -124,6 +124,3 @@ def display_balance_report():
         print("\nTop Holders:")
         for holder in sorted(holders, key=lambda x: -x['balance'])[:5]:  # Show top 5
             print(f"   {holder['account']}: {holder['balance']:>12,} tokens")
-
-if __name__ == "__main__":
-    display_balance_report()

@@ -18,7 +18,6 @@
             --quantum-blue: #00ccff;
             --hologram-teal: #00ffcc;
             --plasma-orange: #ff6600;
-            --cosmic-gold: #ffd700;
         }
         
         * {
@@ -34,9 +33,9 @@
             min-height: 100vh;
             overflow-x: hidden;
             background-image: 
-                radial-gradient(circle at 20% 80%, rgba(96, 64, 192, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(240, 0, 240, 0.08) 0%, transparent 50%);
+                radial-gradient(circle at 20% 80%, rgba(96, 64, 192, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 255, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(240, 0, 240, 0.05) 0%, transparent 50%);
         }
         
         .stars {
@@ -46,7 +45,7 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: -2;
+            z-index: -1;
         }
         
         .star {
@@ -59,20 +58,6 @@
         @keyframes twinkle {
             0%, 100% { opacity: 0.2; }
             50% { opacity: 1; }
-        }
-        
-        .nebula {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 10% 20%, rgba(96, 64, 192, 0.1) 0%, transparent 30%),
-                radial-gradient(circle at 90% 40%, rgba(0, 255, 255, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 40% 80%, rgba(240, 0, 240, 0.03) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: -1;
         }
         
         .grid-lines {
@@ -93,7 +78,7 @@
         .dashboard {
             display: grid;
             grid-template-columns: 280px 1fr;
-            grid-template-rows: 100px 1fr;
+            grid-template-rows: 80px 1fr;
             grid-template-areas: 
                 "sidebar header"
                 "sidebar main";
@@ -103,7 +88,7 @@
         /* Header */
         .header {
             grid-area: header;
-            background: rgba(5, 5, 16, 0.7);
+            background: rgba(5, 5, 16, 0.8);
             border-bottom: 1px solid rgba(0, 255, 255, 0.2);
             backdrop-filter: blur(10px);
             display: flex;
@@ -112,7 +97,6 @@
             padding: 0 2rem;
             position: relative;
             z-index: 100;
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
         }
         
         .header::before {
@@ -131,28 +115,6 @@
             100% { transform: translateX(100%); }
         }
         
-        .countdown-container {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 0.5rem 1rem;
-            border-radius: 10px;
-            border: 1px solid var(--neon-cyan);
-        }
-        
-        .countdown-label {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-        
-        .countdown-timer {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--alien-green);
-            text-shadow: 0 0 10px var(--alien-green);
-        }
-        
         .user-info {
             display: flex;
             align-items: center;
@@ -160,25 +122,32 @@
         }
         
         .user-avatar {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             position: relative;
-            animation: avatar-pulse 3s infinite alternate;
         }
         
-        @keyframes avatar-pulse {
-            0% { box-shadow: 0 0 10px var(--neon-cyan); }
-            100% { box-shadow: 0 0 20px var(--neon-magenta); }
+        .user-avatar::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
+            z-index: -1;
+            animation: pulse 2s infinite;
         }
         
         .user-details h3 {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             margin-bottom: 0.2rem;
         }
         
@@ -224,13 +193,12 @@
         /* Sidebar */
         .sidebar {
             grid-area: sidebar;
-            background: rgba(5, 5, 16, 0.8);
+            background: rgba(5, 5, 16, 0.9);
             border-right: 1px solid rgba(0, 255, 255, 0.2);
             backdrop-filter: blur(10px);
             padding: 2rem 0;
             position: relative;
             overflow-y: auto;
-            box-shadow: 5px 0 20px rgba(0, 0, 0, 0.3);
         }
         
         .sidebar::before {
@@ -258,25 +226,24 @@
         }
         
         .logo-icon {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             background: linear-gradient(135deg, var(--neon-cyan), var(--nebula-purple));
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.1rem;
             animation: pulse 4s infinite alternate;
         }
         
         .logo-text {
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             font-weight: 700;
             background: linear-gradient(to right, var(--neon-cyan), var(--neon-magenta));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
         }
         
         .nav-section {
@@ -372,25 +339,24 @@
         }
         
         .section-title {
-            font-size: 2.2rem;
+            font-size: clamp(1.5rem, 3vw, 2rem);
             margin-bottom: 0.5rem;
             background: linear-gradient(to right, var(--neon-cyan), var(--hologram-teal));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
         }
         
         .section-subtitle {
             opacity: 0.7;
-            font-size: 1.1rem;
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
         }
         
         /* Dashboard Grid */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
             margin-bottom: 2rem;
         }
         
@@ -402,12 +368,6 @@
             backdrop-filter: blur(10px);
             position: relative;
             overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 255, 255, 0.2);
         }
         
         .stat-card::before {
@@ -427,7 +387,7 @@
         }
         
         .stat-value {
-            font-size: 2.5rem;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
             font-weight: 700;
             margin-bottom: 0.5rem;
             background: linear-gradient(to right, var(--neon-cyan), var(--hologram-teal));
@@ -443,86 +403,116 @@
             letter-spacing: 1px;
         }
         
-        /* Key Forging Section */
-        .key-forging-container {
-            background: linear-gradient(135deg, rgba(10, 10, 31, 0.9), rgba(5, 5, 16, 0.9));
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            border-radius: 15px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .key-forging-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, transparent 30%, rgba(0, 255, 255, 0.05) 50%, transparent 70%);
-            animation: hologram-scan 3s linear infinite;
-        }
-        
-        @keyframes hologram-scan {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100%); }
-        }
-        
-        .forging-title {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--neon-cyan);
-        }
-        
-        .key-inputs {
+        /* Countdown Timer */
+        .countdown-timer {
             display: flex;
-            gap: 1rem;
             justify-content: center;
-            margin: 2rem 0;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
         }
         
-        .key-digit {
-            width: 60px;
-            height: 80px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 2px solid var(--neon-cyan);
-            border-radius: 10px;
-            font-size: 2.5rem;
+        .timer-unit {
             text-align: center;
-            color: var(--star-white);
-            text-shadow: 0 0 10px var(--neon-cyan);
-            transition: all 0.3s ease;
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            min-width: 80px;
         }
         
-        .key-digit:focus {
-            outline: none;
-            border-color: var(--alien-green);
-            box-shadow: 0 0 15px var(--alien-green);
-            transform: scale(1.05);
+        .timer-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--neon-cyan);
+            display: block;
         }
         
-        .forging-controls {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
+        .timer-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            opacity: 0.7;
+            margin-top: 0.5rem;
+        }
+        
+        /* Data Tables */
+        .data-table {
+            background: rgba(10, 10, 31, 0.6);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .table-header {
+            background: rgba(0, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+        
+        .table-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .table-content {
+            padding: 0;
+        }
+        
+        .table-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            align-items: center;
+        }
+        
+        .table-row:last-child {
+            border-bottom: none;
+        }
+        
+        .table-row.header {
+            background: rgba(0, 255, 255, 0.05);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+        
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-active {
+            background: rgba(0, 255, 102, 0.2);
+            color: var(--alien-green);
+            border: 1px solid var(--alien-green);
+        }
+        
+        .status-pending {
+            background: rgba(255, 204, 0, 0.2);
+            color: #ffcc00;
+            border: 1px solid #ffcc00;
+        }
+        
+        .status-completed {
+            background: rgba(0, 204, 255, 0.2);
+            color: var(--quantum-blue);
+            border: 1px solid var(--quantum-blue);
         }
         
         /* Action Buttons */
         .action-btn {
             background: transparent;
             border: 1px solid;
-            padding: 0.8rem 1.5rem;
-            border-radius: 25px;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 1rem;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
+            font-size: 0.8rem;
+            margin: 0.2rem;
         }
         
         .btn-primary {
@@ -532,8 +522,7 @@
         
         .btn-primary:hover {
             background: rgba(0, 255, 255, 0.1);
-            box-shadow: 0 0 15px var(--neon-cyan);
-            transform: translateY(-2px);
+            box-shadow: 0 0 10px var(--neon-cyan);
         }
         
         .btn-warning {
@@ -543,19 +532,17 @@
         
         .btn-warning:hover {
             background: rgba(255, 102, 0, 0.1);
-            box-shadow: 0 0 15px var(--plasma-orange);
-            transform: translateY(-2px);
+            box-shadow: 0 0 10px var(--plasma-orange);
         }
         
-        .btn-success {
-            border-color: var(--alien-green);
-            color: var(--alien-green);
+        .btn-danger {
+            border-color: var(--warning-red);
+            color: var(--warning-red);
         }
         
-        .btn-success:hover {
-            background: rgba(0, 255, 102, 0.1);
-            box-shadow: 0 0 15px var(--alien-green);
-            transform: translateY(-2px);
+        .btn-danger:hover {
+            background: rgba(255, 42, 109, 0.1);
+            box-shadow: 0 0 10px var(--warning-red);
         }
         
         /* Modal Styles */
@@ -578,17 +565,11 @@
             border: 1px solid var(--neon-cyan);
             border-radius: 20px;
             width: 90%;
-            max-width: 500px;
+            max-width: 600px;
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
             position: relative;
-            animation: modalAppear 0.5s ease;
-        }
-        
-        @keyframes modalAppear {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
         }
         
         .modal-header {
@@ -599,9 +580,6 @@
         .modal-title {
             font-size: 1.5rem;
             color: var(--neon-cyan);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
         
         .modal-close {
@@ -668,60 +646,60 @@
             margin-top: 2rem;
         }
         
-        /* Astra Purchase Modal Specific Styles */
-        .astra-purchase-options {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-        
-        .astra-option {
-            background: rgba(15, 15, 35, 0.6);
-            border: 1px solid rgba(0, 255, 255, 0.3);
+        /* Holographic Elements */
+        .hologram {
+            position: relative;
+            background: linear-gradient(135deg, rgba(0, 255, 204, 0.1), rgba(0, 204, 255, 0.1));
+            border: 1px solid rgba(0, 255, 204, 0.3);
             border-radius: 10px;
             padding: 1.5rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            margin-bottom: 2rem;
         }
         
-        .astra-option:hover, .astra-option.selected {
-            border-color: var(--alien-green);
-            background: rgba(0, 255, 102, 0.1);
-            transform: translateY(-5px);
+        .hologram::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(0, 255, 204, 0.1) 50%, transparent 70%);
+            animation: hologram-scan 3s linear infinite;
         }
         
-        .astra-amount {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--cosmic-gold);
-            margin-bottom: 0.5rem;
+        @keyframes hologram-scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
         }
         
-        .astra-price {
-            font-size: 1rem;
-            opacity: 0.8;
-        }
-        
-        .payment-methods {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin: 1.5rem 0;
-        }
-        
-        .payment-method {
-            padding: 0.8rem 1.5rem;
-            border: 1px solid rgba(0, 255, 255, 0.3);
+        /* Quantum Console */
+        .quantum-console {
+            background: rgba(5, 5, 16, 0.9);
+            border: 1px solid var(--neon-cyan);
             border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            padding: 1.5rem;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 2rem;
+            max-height: 300px;
+            overflow-y: auto;
         }
         
-        .payment-method:hover, .payment-method.selected {
-            border-color: var(--neon-cyan);
-            background: rgba(0, 255, 255, 0.1);
+        .console-line {
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+        }
+        
+        .console-prompt {
+            color: var(--alien-green);
+        }
+        
+        .console-command {
+            color: var(--neon-cyan);
+        }
+        
+        .console-output {
+            color: var(--star-white);
+            opacity: 0.7;
         }
         
         /* Mobile Menu */
@@ -734,32 +712,13 @@
             cursor: pointer;
         }
         
-        /* Enhanced Responsive Design */
-        @media (max-width: 1200px) {
-            .dashboard {
-                grid-template-columns: 250px 1fr;
-            }
-            
-            .sidebar {
-                width: 250px;
-            }
-            
-            .logo-text {
-                font-size: 1.4rem;
-            }
-            
-            .nav-link {
-                padding: 0.8rem 1.5rem;
-            }
-        }
-        
+        /* Responsive Design */
         @media (max-width: 1024px) {
             .dashboard {
                 grid-template-columns: 1fr;
                 grid-template-areas: 
                     "header"
                     "main";
-                grid-template-rows: auto 1fr;
             }
             
             .sidebar {
@@ -767,58 +726,44 @@
                 position: fixed;
                 top: 0;
                 left: 0;
-                height: 100%;
                 width: 280px;
+                height: 100%;
                 z-index: 1000;
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
+                overflow-y: auto;
             }
             
             .sidebar.active {
                 display: block;
-                transform: translateX(0);
             }
             
             .mobile-menu-btn {
                 display: block;
             }
             
-            .key-inputs {
-                flex-wrap: wrap;
-            }
-            
-            .key-digit {
-                width: 50px;
-                height: 70px;
-                font-size: 2rem;
-            }
-            
-            .header {
-                padding: 1rem;
-                flex-wrap: wrap;
-                gap: 1rem;
-            }
-            
-            .countdown-container {
-                order: 3;
-                width: 100%;
-                justify-content: center;
-                margin-top: 1rem;
-            }
-            
-            .user-info {
-                order: 1;
-            }
-            
             .header-controls {
-                order: 2;
-                margin-left: auto;
+                gap: 0.5rem;
+            }
+            
+            .control-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
             }
         }
         
         @media (max-width: 768px) {
             .dashboard-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .table-row {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+                text-align: center;
+            }
+            
+            .header {
+                padding: 0 1rem;
+                flex-wrap: wrap;
                 gap: 1rem;
             }
             
@@ -826,56 +771,29 @@
                 padding: 1rem;
             }
             
-            .section-title {
-                font-size: 1.8rem;
-            }
-            
-            .stat-card {
-                padding: 1rem;
-            }
-            
-            .stat-value {
-                font-size: 2rem;
-            }
-            
-            .key-forging-container {
-                padding: 1.5rem;
-            }
-            
-            .key-inputs {
+            .countdown-timer {
                 gap: 0.5rem;
             }
             
-            .key-digit {
-                width: 45px;
-                height: 60px;
-                font-size: 1.8rem;
+            .timer-unit {
+                min-width: 70px;
+                padding: 0.8rem;
             }
             
-            .forging-controls {
-                flex-direction: column;
-                align-items: center;
+            .timer-value {
+                font-size: 1.5rem;
             }
             
-            .action-btn {
-                width: 100%;
-                justify-content: center;
+            .hologram {
+                padding: 1rem;
             }
             
-            .astra-purchase-options {
-                grid-template-columns: 1fr;
+            .control-btn span {
+                display: none;
             }
             
-            .payment-methods {
-                flex-direction: column;
-            }
-            
-            .user-details h3 {
-                font-size: 1rem;
-            }
-            
-            .countdown-timer {
-                font-size: 1.2rem;
+            .control-btn i {
+                margin-right: 0;
             }
         }
         
@@ -883,123 +801,77 @@
             .header {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 0.5rem;
+                padding: 1rem;
+                height: auto;
             }
             
             .header-controls {
-                margin-left: 0;
+                width: 100%;
+                justify-content: space-between;
+                margin-top: 1rem;
+            }
+            
+            .user-info {
                 width: 100%;
                 justify-content: space-between;
             }
             
-            .countdown-container {
-                order: 2;
-                margin-top: 0.5rem;
+            .main-content {
+                padding: 0.5rem;
             }
             
-            .user-info {
-                order: 1;
+            .stat-card {
+                padding: 1rem;
             }
             
-            .control-btn {
-                padding: 0.4rem 0.8rem;
-                font-size: 0.8rem;
+            .section-header {
+                margin-bottom: 1rem;
             }
             
-            .key-digit {
-                width: 40px;
-                height: 55px;
-                font-size: 1.5rem;
+            .timer-unit {
+                min-width: 60px;
+                padding: 0.5rem;
             }
             
-            .stat-icon {
-                font-size: 2rem;
-            }
-            
-            .stat-value {
-                font-size: 1.8rem;
-            }
-            
-            .modal-content {
-                width: 95%;
-                margin: 1rem;
-            }
-            
-            .modal-body {
-                padding: 1.5rem;
-            }
-        }
-        
-        /* Mobile overlay for sidebar */
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 999;
-        }
-        
-        .sidebar-overlay.active {
-            display: block;
-        }
-        
-        /* Countdown responsive adjustments */
-        @media (max-width: 1024px) {
-            .countdown-container {
-                flex-direction: column;
-                gap: 0.5rem;
-                text-align: center;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .countdown-timer {
-                font-size: 1.1rem;
-            }
-            
-            .countdown-label {
-                font-size: 0.8rem;
+            .timer-value {
+                font-size: 1.2rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="stars" id="stars"></div>
-    <div class="nebula"></div>
     <div class="grid-lines"></div>
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
     
     <div class="dashboard">
         <!-- Header -->
         <header class="header">
             <div class="user-info">
                 <div class="user-avatar">
-                    <i class="fas fa-user-astronaut"></i>
+                    {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
                 </div>
                 <div class="user-details">
                     <h3>{{ user.first_name }} {{ user.last_name }}</h3>
-                    <div class="role">{{ user_wallet.recipient_id|default:"Cosmic Citizen" }} • {{ user_wallet.balance|default:"0" }} ASTRA</div>
+                    <div class="role">
+                        {{ user_wallet.recipient_id|default:"Cosmic Citizen" }}
+                        {% if user.is_staff %}<span class="admin-badge">QUANTUM ADMIN</span>{% endif %}
+                    </div>
                 </div>
             </div>
             
             <div class="header-controls">
-                <button class="control-btn" onclick="openModal('purchaseAstraModal')">
-                    <i class="fas fa-coins"></i> Buy ASTRA
-                </button>
                 <button class="control-btn" onclick="openModal('notificationsModal')">
-                    <i class="fas fa-bell"></i> Alerts
+                    <i class="fas fa-bell"></i> <span>Alerts</span>
                 </button>
+                <button class="control-btn" onclick="openModal('settingsModal')">
+                    <i class="fas fa-cog"></i> <span>Settings</span>
+                </button>
+                <a href="{% url 'logout' %}" class="control-btn">
+                    <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+                </a>
                 <button class="mobile-menu-btn" onclick="toggleSidebar()">
                     <i class="fas fa-bars"></i>
                 </button>
-            </div>
-            
-            <div class="countdown-container">
-                <div class="countdown-label">NEXT CONVERGENCE</div>
-                <div class="countdown-timer" id="countdownTimer">00:00:00</div>
             </div>
         </header>
         
@@ -1014,7 +886,8 @@
                 <div class="nav-title">Navigation</div>
                 <ul class="nav-items">
                     <li class="nav-item">
-                        <a href="#overview" class="nav-link active" onclick="showSection('overview')">
+                        <!-- Change this in your sidebar navigation -->
+                        <a href="#overview" class="nav-link active" onclick="showSection('overview'); return false;">
                             <i class="fas fa-globe nav-icon"></i>
                             <span>Quantum Overview</span>
                         </a>
@@ -1040,15 +913,35 @@
                 </ul>
             </nav>
             
+            {% if user.is_staff %}
             <nav class="nav-section">
-                <div class="nav-title">Quantum Tools</div>
+                <div class="nav-title">Quantum Administration</div>
                 <ul class="nav-items">
                     <li class="nav-item">
-                        <a href="#analytics" class="nav-link" onclick="showSection('analytics')">
+                        <a href="#admin-draws" class="nav-link admin-only" onclick="showSection('admin-draws')">
+                            <i class="fas fa-cogs nav-icon"></i>
+                            <span>Draw Management</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#analytics" class="nav-link admin-only" onclick="showSection('analytics')">
                             <i class="fas fa-chart-network nav-icon"></i>
                             <span>Cosmic Analytics</span>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="#users" class="nav-link admin-only" onclick="showSection('users')">
+                            <i class="fas fa-users nav-icon"></i>
+                            <span>User Governance</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            {% endif %}
+            
+            <nav class="nav-section">
+                <div class="nav-title">System</div>
+                <ul class="nav-items">
                     <li class="nav-item">
                         <a href="#support" class="nav-link" onclick="showSection('support')">
                             <i class="fas fa-life-ring nav-icon"></i>
@@ -1057,215 +950,477 @@
                     </li>
                 </ul>
             </nav>
-            
-            {% if user.is_staff %}
-            <nav class="nav-section">
-                <div class="nav-title">Admin</div>
-                <ul class="nav-items">
-                    <li class="nav-item">
-                        <a href="#admin" class="nav-link admin-only" onclick="showSection('admin')">
-                            <i class="fas fa-cogs nav-icon"></i>
-                            <span>Admin Panel</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-            {% endif %}
         </aside>
         
         <!-- Main Content -->
         <main class="main-content">
+            {% include 'partials/_messages.html' %}
             <!-- Overview Section -->
             <section id="overview" class="content-section active">
                 <div class="section-header">
                     <h1 class="section-title">Quantum Overview</h1>
-                    <p class="section-subtitle">Welcome back, {{ user.first_name }}. Your astral journey awaits.</p>
+                    <p class="section-subtitle">Welcome back, Cosmic Citizen. Your astral journey awaits.</p>
                 </div>
                 
                 <div class="dashboard-grid">
                     <div class="stat-card">
                         <div class="stat-icon"><i class="fas fa-key"></i></div>
-                        <div class="stat-value">{{ user_keys.count|default:"0" }}</div>
+                        <div class="stat-value">{{ user_keys.count }}</div>
                         <div class="stat-label">Active Star Keys</div>
                     </div>
                     
                     <div class="stat-card">
                         <div class="stat-icon"><i class="fas fa-trophy"></i></div>
-                        <div class="stat-value">{{ user_wins.count|default:"0" }}</div>
+                        <div class="stat-value">{{ user_wins.count }}</div>
                         <div class="stat-label">Cosmic Victories</div>
                     </div>
                     
                     <div class="stat-card">
                         <div class="stat-icon"><i class="fas fa-coins"></i></div>
-                        <div class="stat-value">{{ user_wallet.balance|default:"0" }}</div>
-                        <div class="stat-label">ASTRA Balance</div>
+                        <div class="stat-value">{{ user_wallet.balance|default:"0" }} ASTRA</div>
+                        <div class="stat-label">Nebula Balance</div>
                     </div>
                     
                     <div class="stat-card">
                         <div class="stat-icon"><i class="fas fa-rocket"></i></div>
-                        <div class="stat-value">{{ active_draws.count|default:"0" }}</div>
+                        <div class="stat-value">{{ active_draws.count }}</div>
                         <div class="stat-label">Active Convergences</div>
                     </div>
                 </div>
                 
-                <!-- Key Forging Section -->
-                <div class="key-forging-container">
-                    <h2 class="forging-title"><i class="fas fa-hammer"></i> Forge Star Key</h2>
-                    <p>Enter 6 cosmic digits to forge your unique Star Key for the next convergence</p>
-                    
-                    <div class="key-inputs">
-                        <input type="text" class="key-digit" maxlength="1" oninput="moveToNext(this, 1)" onkeypress="return isNumberKey(event)">
-                        <input type="text" class="key-digit" maxlength="1" oninput="moveToNext(this, 2)" onkeypress="return isNumberKey(event)">
-                        <input type="text" class="key-digit" maxlength="1" oninput="moveToNext(this, 3)" onkeypress="return isNumberKey(event)">
-                        <input type="text" class="key-digit" maxlength="1" oninput="moveToNext(this, 4)" onkeypress="return isNumberKey(event)">
-                        <input type="text" class="key-digit" maxlength="1" oninput="moveToNext(this, 5)" onkeypress="return isNumberKey(event)">
-                        <input type="text" class="key-digit" maxlength="1" oninput="moveToNext(this, 6)" onkeypress="return isNumberKey(event)">
+                <div class="hologram">
+                    <h3 style="margin-bottom: 1rem; color: var(--hologram-teal);">
+                        <i class="fas fa-project-diagram"></i> Cosmic Convergence Status
+                    </h3>
+                    <p>Next astral alignment: 
+                        <strong id="nextDrawDate">
+                            {% if next_draw and next_draw.draw_datetime %}
+                                {{ next_draw.draw_datetime|date:"Y-m-d\TH:i:s" }}
+                            {% else %}
+                                Calculating...
+                            {% endif %}
+                        </strong>
+                    </p>
+                    <p>Current prize pool: <strong style="color: var(--alien-green);">{{ next_draw.prize_pool|default:"0" }} ASTRA</strong></p>
+
+                    <!-- Countdown Timer -->
+                    <div id="countdownTimer" style="display: none;">
+                        <h4 style="margin: 1rem 0 0.5rem; color: var(--neon-cyan);">Time until next convergence:</h4>
+                        <div class="countdown-timer">
+                            <div class="timer-unit">
+                                <span class="timer-value" id="days">00</span>
+                                <span class="timer-label">Days</span>
+                            </div>
+                            <div class="timer-unit">
+                                <span class="timer-value" id="hours">00</span>
+                                <span class="timer-label">Hours</span>
+                            </div>
+                            <div class="timer-unit">
+                                <span class="timer-value" id="minutes">00</span>
+                                <span class="timer-label">Minutes</span>
+                            </div>
+                            <div class="timer-unit">
+                                <span class="timer-value" id="seconds">00</span>
+                                <span class="timer-label">Seconds</span>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div class="forging-controls">
-                        <button class="action-btn btn-primary" onclick="forgeStarKey()">
-                            <i class="fas fa-bolt"></i> Forge Key
+
+                    <div style="margin-top: 1rem;">
+                        <button class="action-btn btn-primary" onclick="showSection('draws')">
+                            <i class="fas fa-eye"></i> View Active Draws
                         </button>
-                        <button class="action-btn" onclick="clearKeyInputs()">
-                            <i class="fas fa-eraser"></i> Clear
+                        <button class="action-btn btn-warning" onclick="debugDate()" style="margin-left: 0.5rem;">
+                            <i class="fas fa-bug"></i> Debug Date
                         </button>
                     </div>
                 </div>
                 
-                <div class="dashboard-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
-                        <div class="stat-value" id="nextDrawDate">--</div>
-                        <div class="stat-label">Next Convergence</div>
+                <div class="quantum-console">
+                    <div class="console-line">
+                        <span class="console-prompt">quantum-dash></span>
+                        <span class="console-command">status --user {{ user.username }}</span>
                     </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-gem"></i></div>
-                        <div class="stat-value" id="nextDrawPrize">--</div>
-                        <div class="stat-label">Prize Pool</div>
+                    <div class="console-line console-output">
+                        > User Status: ONLINE | Security: QUANTUM_ENCRYPTED
                     </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-users"></i></div>
-                        <div class="stat-value" id="nextDrawParticipants">--</div>
-                        <div class="stat-label">Participants</div>
+                    <div class="console-line console-output">
+                        > Wallet Sync: COMPLETE | Last Activity: {{ user.last_login|date:"Y-m-d H:i" }}
                     </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-clock"></i></div>
-                        <div class="stat-value" id="timeRemaining">--</div>
-                        <div class="stat-label">Time Remaining</div>
+                    <div class="console-line console-output">
+                        > System Integrity: 100% | Threat Level: NOMINAL
                     </div>
                 </div>
             </section>
             
-            <!-- Other sections would go here -->
+            <!-- Star Keys Section -->
+            <section id="star-keys" class="content-section">
+                <div class="section-header">
+                    <h1 class="section-title">Star Key Management</h1>
+                    <p class="section-subtitle">Forge and manage your cosmic entry tokens</p>
+                </div>
+                
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3 class="table-title">Your Star Keys</h3>
+                        <p>Active keys for upcoming convergences</p>
+                    </div>
+                    <div class="table-content">
+                        <div class="table-row header">
+                            <div>Serial Number</div>
+                            <div>Convergence</div>
+                            <div>Status</div>
+                            <div>Forged Date</div>
+                            <div>Actions</div>
+                        </div>
+                        {% for key in user_keys %}
+                        <div class="table-row">
+                            <div style="font-family: monospace;">{{ key.serial_number }}</div>
+                            <div>{{ key.draw.title }}</div>
+                            <div>
+                                <span class="status-badge status-{{ key.draw.status|lower }}">
+                                    {{ key.draw.status }}
+                                </span>
+                            </div>
+                            <div>{{ key.created_at|date:"M d, Y" }}</div>
+                            <div>
+                                <button class="action-btn btn-primary" onclick="viewKeyDetails('{{ key.id }}')">
+                                    <i class="fas fa-search"></i> Inspect
+                                </button>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="table-row">
+                            <div colspan="5" style="text-align: center; padding: 2rem;">
+                                No star keys forged yet. <a href="#draws" onclick="showSection('draws')" style="color: var(--neon-cyan);">Join a convergence!</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <button class="action-btn btn-primary" onclick="openModal('forgeKeyModal')">
+                    <i class="fas fa-hammer"></i> Forge New Star Key
+                </button>
+            </section>
+            
+            <!-- Draws Section -->
+            <section id="draws" class="content-section">
+                <div class="section-header">
+                    <h1 class="section-title">Astral Convergences</h1>
+                    <p class="section-subtitle">Participate in cosmic lottery events</p>
+                </div>
+                
+                <div class="dashboard-grid">
+                    {% for draw in active_draws %}
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-dice"></i></div>
+                        <div class="stat-value">{{ draw.prize_pool }} ASTRA</div>
+                        <div class="stat-label">{{ draw.title }}</div>
+                        <div style="margin-top: 1rem;">
+                            <button class="action-btn btn-primary" onclick="viewDraw('{{ draw.id }}')">
+                                <i class="fas fa-eye"></i> View Details
+                            </button>
+                            {% if draw.can_participate %}
+                            <button class="action-btn btn-warning" onclick="participateDraw('{{ draw.id }}')">
+                                <i class="fas fa-key"></i> Forge Key
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+            
+            <!-- Wallet Section -->
+            <section id="wallet" class="content-section">
+                <div class="section-header">
+                    <h1 class="section-title">Nebula Vault</h1>
+                    <p class="section-subtitle">Manage your cosmic assets</p>
+                </div>
+                
+                <div class="hologram">
+                    <h3 style="margin-bottom: 1rem; color: var(--hologram-teal);">
+                        <i class="fas fa-wallet"></i> Wallet Information
+                    </h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <p><strong>Public Key:</strong></p>
+                            <p style="font-family: monospace; font-size: 0.8rem; word-break: break-all;">
+                                {{ user_wallet.public_key }}
+                            </p>
+                        </div>
+                        <div>
+                            <p><strong>Account ID:</strong></p>
+                            <p style="font-family: monospace; font-size: 0.8rem;">
+                                {{ user_wallet.recipient_id }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3 class="table-title">Transaction History</h3>
+                        <p>Recent cosmic transactions</p>
+                    </div>
+                    <div class="table-content">
+                        <!-- Transaction history would go here -->
+                    </div>
+                </div>
+            </section>
+            
+            {% if user.is_staff %}
+            <!-- Admin Draws Section -->
+            <section id="admin-draws" class="content-section">
+                <div class="section-header">
+                    <h1 class="section-title">Quantum Draw Management</h1>
+                    <p class="section-subtitle">Administer cosmic convergence events</p>
+                </div>
+                
+                <button class="action-btn btn-primary" onclick="openModal('createDrawModal')">
+                    <i class="fas fa-plus"></i> Create New Convergence
+                </button>
+                
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3 class="table-title">All Convergences</h3>
+                        <p>Manage draw parameters and outcomes</p>
+                    </div>
+                    <div class="table-content">
+                        <div class="table-row header">
+                            <div>Convergence</div>
+                            <div>Prize Pool</div>
+                            <div>Status</div>
+                            <div>Draw Date</div>
+                            <div>Participants</div>
+                            <div>Actions</div>
+                        </div>
+                        {% for draw in all_draws %}
+                        <!-- Example Draw 2 -->
+                        <div class="table-row">
+                            <div>
+                                <strong>{{drwa.title}} Alignment</strong>
+                                <div style="font-size: 0.8rem; opacity: 0.7; margin-top: 0.2rem;">
+                                    Symbol: {{draw.symbol}} NBL-
+                                </div>
+                            </div>
+                            <div>
+                                <span style="color: var(--alien-green); font-weight: 600;">{{draw.prize_pool}} ASTRA</span>
+                            </div>
+                            <div>
+                                {% if draw.status == "upcoming" %}
+                                <span class="status-badge status-upcoming">Upcoming</span>
+                                {% elif draw.status == "active" %}
+                                <span class="status-badge status-active">Active</span>
+                                {% elif draw.status == "completed" %}
+                                <span class="status-badge status-completed">Completed</span>
+                                {% else %}
+                                <div style="font-size: 0.8rem; opacity: 0.7;">Cancelled</div>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <div>{{draw.draw_datetime.date}}</div>
+                                <div style="font-size: 0.8rem; opacity: 0.7;">{{draw.draw_datetime.time}}</div>
+                            </div>
+                            <div>
+                                <span style="color: var(--neon-cyan);">{{draw.total_tickets_sold}}</span>
+                            </div>
+                            <div>
+                                <button class="action-btn btn-primary" onclick="viewDrawDetails('quantum-3')">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                                {% if draw.status == "upcoming" or "active" %}
+                                <button class="action-btn btn-warning" onclick="editDraw('quantum-3')">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="action-btn btn-danger" onclick="cancelDraw('quantum-3')">
+                                    <i class="fas fa-times"></i> Cancel
+                                </button>
+                                {% endif %}
+                                {% if draw.status == "completed" %}
+                                <button class="action-btn btn-warning" onclick="exportDrawData('stellar-5')">
+                                    <i class="fas fa-download"></i> Export
+                                </button>
+                                {% endif %}
+                                {% if draw.status == "cancelled" %}
+                                <button class="action-btn btn-danger" onclick="deleteDraw('cosmic-2')">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Analytics Section -->
+            <section id="analytics" class="content-section">
+                <div class="section-header">
+                    <h1 class="section-title">Cosmic Analytics</h1>
+                    <p class="section-subtitle">Quantum insights into platform performance</p>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-users"></i></div>
+                        <div class="stat-value">{{ cosmic_users }}</div>
+                        <div class="stat-label">Cosmic Citizens</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-key"></i></div>
+                        <div class="stat-value">{{ keys_forged }}</div>
+                        <div class="stat-label">Star Keys Forged</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-trophy"></i></div>
+                        <div class="stat-value">{{ total_prizes }} ASTRA</div>
+                        <div class="stat-label">Total Prizes</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                        <div class="stat-value">98.7%</div>
+                        <div class="stat-label">System Uptime</div>
+                    </div>
+                </div>
+            </section>
+            {% endif %}
         </main>
     </div>
     
-    <!-- Purchase Astra Modal -->
-    <div class="modal" id="purchaseAstraModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title"><i class="fas fa-coins"></i> Purchase ASTRA</h2>
-                <button class="modal-close" onclick="closeModal('purchaseAstraModal')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label">Select Amount</label>
-                    <div class="astra-purchase-options">
-                        <div class="astra-option" onclick="selectAstraOption(this, 1000)">
-                            <div class="astra-amount">1,000 ASTRA</div>
-                            <div class="astra-price">$10.00</div>
-                        </div>
-                        <div class="astra-option" onclick="selectAstraOption(this, 5000)">
-                            <div class="astra-amount">5,000 ASTRA</div>
-                            <div class="astra-price">$45.00</div>
-                        </div>
-                        <div class="astra-option" onclick="selectAstraOption(this, 10000)">
-                            <div class="astra-amount">10,000 ASTRA</div>
-                            <div class="astra-price">$85.00</div>
-                        </div>
-                        <div class="astra-option" onclick="selectAstraOption(this, 25000)">
-                            <div class="astra-amount">25,000 ASTRA</div>
-                            <div class="astra-price">$200.00</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Payment Method</label>
-                    <div class="payment-methods">
-                        <div class="payment-method selected" onclick="selectPaymentMethod(this, 'hbar')">
-                            <i class="fab fa-ethereum"></i> HBAR
-                        </div>
-                        <div class="payment-method" onclick="selectPaymentMethod(this, 'credit')">
-                            <i class="fas fa-credit-card"></i> Credit Card
-                        </div>
-                        <div class="payment-method" onclick="selectPaymentMethod(this, 'crypto')">
-                            <i class="fas fa-coins"></i> Crypto
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Wallet Address</label>
-                    <input type="text" class="form-input" placeholder="Enter your Hedera wallet address">
-                </div>
-                
-                <div class="form-actions">
-                    <button class="action-btn btn-success" onclick="purchaseAstra()">
-                        <i class="fas fa-bolt"></i> Confirm Purchase
-                    </button>
-                    <button class="action-btn" onclick="closeModal('purchaseAstraModal')">
-                        Cancel
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Forge Key Modal -->
-    <div class="modal" id="forgeKeyModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title"><i class="fas fa-key"></i> Forge Star Key</h2>
-                <button class="modal-close" onclick="closeModal('forgeKeyModal')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label">Select Convergence</label>
-                    <select class="form-input" id="drawSelection">
-                        {% for draw in active_draws %}
-                        <option value="{{ draw.id }}" data-prize="{{ draw.prize_pool }}">{{ draw.title }} ({{ draw.prize_pool }} ASTRA)</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Enter 6-Digit Star Key</label>
-                    <div class="key-inputs">
-                        <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 1)" onkeypress="return isNumberKey(event)">
-                        <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 2)" onkeypress="return isNumberKey(event)">
-                        <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 3)" onkeypress="return isNumberKey(event)">
-                        <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 4)" onkeypress="return isNumberKey(event)">
-                        <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 5)" onkeypress="return isNumberKey(event)">
-                        <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 6)" onkeypress="return isNumberKey(event)">
-                    </div>
-                </div>
-                
-                <div class="form-actions">
-                    <button class="action-btn btn-primary" onclick="submitStarKey()">
-                        <i class="fas fa-bolt"></i> Forge Key
-                    </button>
-                    <button class="action-btn" onclick="closeModal('forgeKeyModal')">
-                        Cancel
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Modals -->
+    {% include 'dashboard_modals.html' %}
 
+
+    <style>
+            /* Add these status badge styles */
+        .status-upcoming {
+            background: rgba(0, 204, 255, 0.2);
+            color: var(--quantum-blue);
+            border: 1px solid var(--quantum-blue);
+        }
+
+        .status-completed {
+            background: rgba(0, 255, 102, 0.2);
+            color: var(--alien-green);
+            border: 1px solid var(--alien-green);
+        }
+
+        .status-cancelled {
+            background: rgba(255, 42, 109, 0.2);
+            color: var(--warning-red);
+            border: 1px solid var(--warning-red);
+        }
+
+        /* Responsive table improvements */
+        @media (max-width: 768px) {
+            .table-row {
+                grid-template-columns: 1fr;
+                text-align: left;
+                gap: 0.5rem;
+                padding: 1rem;
+            }
+
+            .table-row.header {
+                display: none;
+            }
+
+            .table-row > div::before {
+                content: attr(data-label);
+                font-weight: 600;
+                opacity: 0.7;
+                margin-right: 0.5rem;
+                text-transform: uppercase;
+                font-size: 0.8rem;
+            }
+
+            .table-row > div {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .table-row > div:last-child {
+                justify-content: flex-start;
+                gap: 0.5rem;
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+    <script>
+        // Admin draw management functions
+        function viewDrawDetails(drawId) {
+            // Implementation to view draw details
+            console.log('Viewing draw:', drawId);
+            // Could open a modal or navigate to detail page
+            openModal('drawDetailsModal');
+            // Load draw details via AJAX
+        }
+
+        function editDraw(drawId) {
+            // Implementation to edit draw
+            console.log('Editing draw:', drawId);
+            // Pre-fill the create draw modal with existing data
+            openModal('createDrawModal');
+            // Load draw data and populate form
+        }
+
+        function cancelDraw(drawId) {
+            if (confirm(`Are you sure you want to cancel the ${drawId} convergence?`)) {
+                // API call to cancel draw
+                fetch(`/api/draws/${drawId}/cancel/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCSRFToken(),
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification('Convergence cancelled successfully', 'success');
+                        // Refresh the table
+                        loadAdminDraws();
+                    } else {
+                        showNotification('Failed to cancel convergence: ' + data.error, 'error');
+                    }
+                });
+            }
+        }
+
+        function deleteDraw(drawId) {
+            if (confirm(`Permanently delete ${drawId}? This action cannot be undone.`)) {
+                // API call to delete draw
+                fetch(`/api/draws/${drawId}/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': getCSRFToken()
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification('Convergence deleted successfully', 'success');
+                        // Refresh the table
+                        loadAdminDraws();
+                    } else {
+                        showNotification('Failed to delete convergence: ' + data.error, 'error');
+                    }
+                });
+            }
+        }
+
+        function exportDrawData(drawId) {
+            // Implementation to export draw data
+            console.log('Exporting data for:', drawId);
+            // Trigger download of CSV or PDF report
+            showNotification('Exporting draw data...', 'info');
+        }
+    </script>
     <script>
         // Create background stars
         function createStars() {
@@ -1514,8 +1669,8 @@
         // Initialize dashboard
         document.addEventListener('DOMContentLoaded', function() {
             createStars();
-            updateCountdown();
-            setInterval(updateCountdown, 1000);
+            //updateCountdown();
+            //setInterval(updateCountdown, 1000);
             
             // Close modals when clicking outside
             window.addEventListener('click', function(event) {

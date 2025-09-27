@@ -15,10 +15,11 @@ import string
 import random
 import logging
 
-from core.models import UserWallet, Draw, ForgedKey  # Fixed import
+from core.models import UserWallet, Draw, ForgedKey, Alert
 from hiero.utils import create_new_account
 from hiero.ft import associate_token
 from hiero.nft import create_nft, mint_nft, associate_nft, transfer_nft
+from hiero.hcs import submit_message
 
 logger = logging.getLogger(__name__)
 
@@ -214,24 +215,23 @@ def dashboard(request):
         return render(request, 'dash.html', cached_data)
     
     # Get or create wallet efficiently
-    user_wallet, created = UserWallet.objects.get_or_create(
+    user_wallet = UserWallet.objects.get(
         user_id=user_id,
-        defaults={'user_id': user_id}  # Minimal defaults
     )
-    
+    cosmic_users = UserWallet.objects.all().count()
+    keys_forged = ForgedKey.objects.all().count()
     # User's active keys with efficient query
     user_keys = ForgedKey.objects.filter(
         user_wallet=user_wallet
     ).select_related('draw').only(
         'id', 'serial_number', 'created_at', 'draw__title', 'draw__status'
     ).order_by('-created_at')[:10]
-    
     # Active draws user can participate in
     active_draws = Draw.objects.filter(
-        status__in=[Draw.DrawStatus.UPCOMING, Draw.DrawStatus.ACTIVE],
-        draw_datetime__gt=timezone.now()
-    ).only('id', 'title', 'prize_pool', 'draw_datetime').order_by('draw_datetime')[:10]
-    
+        status__in=["upcoming", "active"],
+    )[:10]
+    total_prizes = Draw.objects.get(status='active').prize_pool
+    all_draws = Draw.objects.all()
     # User's winning history
     user_wins = Draw.objects.filter(
         winner_wallet=user_wallet
@@ -243,6 +243,10 @@ def dashboard(request):
         'active_draws': active_draws,
         'user_wins': user_wins,
         'next_draw': active_draws.first() if active_draws else None,
+        'all_draws':all_draws,
+        'cosmic_users':cosmic_users,
+        'keys_forged':keys_forged,
+        'total_prizes':total_prizes
     }
     
     cache.set(cache_key, context, 120)  # 2 minute cache
@@ -250,129 +254,120 @@ def dashboard(request):
 
 @login_required
 @require_http_methods(["POST"])
-def submit_keys(request, draw_id):
+def submit_keys(request):
     """Optimized key submission with transaction"""
     try:
+        draw_id = request.POST['draw_id']
+        key_1 = request.POST['key-1']
+        key_2 = request.POST['key-2']
+        key_3 = request.POST['key-3']
+        key_4 = request.POST['key-4']
+        key_5 = request.POST['key-5']
+        key_6 = request.POST['key-6']
+        if not draw_id and key_1 and key_2 and key_3 and key_4 and key_5 and key_6:
+            messages.warning(request, "All Fields are required to initiate Draw Key Forging!")
+            return redirect(request.META.get('HTTP_REFERER', '/'))
         draw = get_object_or_404(Draw, id=draw_id)
         
-        if not draw.can_participate():
-            return JsonResponse({'success': False, 'error': 'Draw not accepting submissions'})
-        
-        data = json.loads(request.body)
-        star_keys = data.get('star_keys', [])
-        
-        # Fast validation
-        if len(star_keys) != 6 or not all(isinstance(k, int) and 0 <= k <= 9 for k in star_keys):
-            return JsonResponse({'success': False, 'error': 'Invalid keys format'})
+        if not draw.is_active():
+            messages.warning(request, "Draw Not Active for Key Forging, try again later!")
+            return redirect(request.META.get('HTTP_REFERER', '/'))
         
         user_wallet_id = cache.get(f"user_{request.user.id}_wallet")
+        user_wallet = get_object_or_404(UserWallet, user=request.user)
         if not user_wallet_id:
-            user_wallet = get_object_or_404(UserWallet, user=request.user)
             user_wallet_id = user_wallet.id
             cache.set(f"user_{request.user.id}_wallet", user_wallet_id, 3600)
         
         # Check existing submission using exists() for speed
         if ForgedKey.objects.filter(user_wallet=user_wallet, draw=draw).exists():
-            return JsonResponse({'success': False, 'error': 'Already submitted'})
+            messages.warning(request, "Keys already submitted for this draw!")
+            return redirect(request.META.get('HTTP_REFERER', '/'))
+        # Payment Comes here
+        # Check user Astra balance using Mirror Node
+        star_keys = [key_1, key_2, key_3, key_4, key_5, key_6]
         
         with transaction.atomic():
             user_wallet = get_object_or_404(UserWallet, user=request.user)
             # FOrge NFT TIcket
-            ticket_metadata = f"title:{draw.title} - Keys: {star_keys} - User :{user_wallet_id}"
+            ticket_metadata = f"title:{draw.title} Convergence - Keys: {star_keys} - User :{user_wallet_id}"
+            print(draw.nft_id)
             nft_ = mint_nft(nft_token_id=draw.nft_id, metadata=ticket_metadata)
             if nft_['status'] == 'success':
-                assc=associate_nft(account_id=user_wallet_id, token_id=draw.nft_id, account_private_key=user_wallet.decrypt_key(), nft_id=nft_['message'])
+                assc=associate_nft(account_id=user_wallet.recipient_id, token_id=draw.nft_id, account_private_key=user_wallet.decrypt_key(), nft_id=nft_['message'])
                 if assc['status'] == 'success':
                     # Create forged key
+                    serial_number = f"AK{draw_id:04d}{user_wallet_id:04d}{nft_['serial']}"
                     forged_key = ForgedKey.objects.create(
-                        user_wallet_id=user_wallet_id,
-                        draw_id=draw_id,
-                        serial_number=serial_number
+                        user_wallet=user_wallet,
+                        draw=draw,
+                        serial_number=serial_number,
+                        star_keys=str(star_keys),
                     )
-                    forged_key.set_star_keys(star_keys)
-                    # Update collection supply
                     draw.total_tickets_sold += 1
                     draw.save()
-            # Generate serial number efficiently
-            next_serial = ForgedKey.objects.filter(draw_id=draw_id).count() + 1
-            serial_number = f"AK{draw_id:04d}{user_wallet_id:04d}{next_serial:04d}"
-            
-            # Create forged key
-            forged_key = ForgedKey.objects.create(
-                user_wallet_id=user_wallet_id,
-                draw_id=draw_id,
-                serial_number=serial_number
-            )
-            forged_key.set_star_keys(star_keys)
-            
-            # Update draw count using F() expression
-            from django.db.models import F
-            Draw.objects.filter(id=draw_id).update(
-                total_tickets_sold=F('total_tickets_sold') + 1
-            )
+                    # CReate HCS Message for immutability
+                    submit_message(message=ticket_metadata)
+            else:
+                messages.warning(request, f"Forging Failed: {nft_['message']}")
+                return redirect(request.META.get('HTTP_REFERER', '/'))
         
         # Invalidate relevant caches
         cache.delete_many([f"dashboard_{request.user.id}", f"user_{request.user.id}_keys"])
         
-        return JsonResponse({
-            'success': True,
-            'serial_number': serial_number,
-            'message': 'Keys submitted successfully!'
-        })
+        messages.success(request, "Keys submitted successfully!")
+        return redirect(request.META.get('HTTP_REFERER', '/'))
         
     except Exception as e:
-        logger.error(f"Key submission error: {e}")
-        return JsonResponse({'success': False, 'error': 'Submission failed'})
+        messages.warning(request, f"An Error Occured while Forging your star keys, please try again later: {e}")
+        return redirect(request.META.get('HTTP_REFERER', '/'))
 
 @login_required
 @require_http_methods(["POST"])
 def create_draw(request):
     """Admin view to create new draws"""
     if not request.user.is_staff:
-        return JsonResponse({
-            'success': False,
-            'error': 'Admin access required'
-        })
+        messages.warning(request, "admin access required!")
+        return redirect(request.META.get('HTTP_REFERER', '/'))
     
     try:
-        data = json.loads(request.body)
+        
+        title = request.POST['title']
+        symbol = request.POST['symbol']
+        status = request.POST['status']
+        prize_pool = request.POST['prize_pool']
+        draw_datetime = request.POST['draw_datetime']
         
         # Validate required fields
-        required_fields = ['title', 'prize_pool', 'draw_datetime']
-        if not all(field in data for field in required_fields):
-            return JsonResponse({
-                'success': False,
-                'error': 'Missing required fields'
-            })
+        if not title and  symbol and status and prize_pool and draw_datetime:
+            messages.warning(request, "All Field are required!")
+            return redirect(request.META.get('HTTP_REFERER', '/'))
         
         # Generate winning star keys (6 random numbers 0-9)
-        winning_keys = [random.randint(0, 9) for _ in range(6)]
-        
-        # Create draw
-        draw = Draw.objects.create(
-            title=data['title'],
-            prize_pool=data['prize_pool'],
-            draw_datetime=data['draw_datetime'],
-            status=Draw.DrawStatus.UPCOMING
-        )
-        draw.set_star_keys(winning_keys)
-        draw.save()
+        #winning_keys = [random.randint(0, 9) for _ in range(6)]
+        # CREATE ASTRAL NFT DRAW
+        draw_nft = create_nft(title=title, symbol=symbol)
+        if draw_nft['status'] == 'failed':
+            messages.warning(request, "Draw creation failed, NFT creation was not successful")
+            return redirect(request.META.get('HTTP_REFERER', '/'))
+        else:
+            draw = Draw.objects.create(
+                title=title,
+                prize_pool=prize_pool,
+                draw_datetime=draw_datetime,
+                status=status,
+                nft_id=draw_nft['token_id']
+            )
+            Alert.objects.create(title="New Convergence Launched", content=f"{title} Convergence is now active with {prize_pool} ASTRA prize pool", icon='rocket')
         
         # Clear relevant caches
         cache.delete_many(["platform_stats", "landing_page_data"])
-        
-        return JsonResponse({
-            'success': True,
-            'draw_id': draw.id,
-            'draw_title': draw.title,
-            'message': 'Draw created successfully'
-        })
+        messages.success(request, f"{draw.title} Convergence Draw created successfully")
+        return redirect(request.META.get('HTTP_REFERER', '/'))
         
     except Exception as e:
-        return JsonResponse({
-            'success': False,
-            'error': str(e)
-        })
+        messages.warning(request, f"An error occured: {e}")
+        return redirect(request.META.get('HTTP_REFERER', '/'))
 
 # Optimized API views with selective field loading
 @login_required
@@ -381,6 +376,7 @@ def draw_detail(request, draw_id):
     draw = get_object_or_404(Draw.objects.only(
         'id', 'title', 'status', 'prize_pool', 'draw_datetime', 'total_tickets_sold', 'winner_wallet_id', 'winning_ticket_serial'
     ), id=draw_id)
+    
     
     draw_data = {
         'id': draw.id,

@@ -6,46 +6,49 @@
             <button class="modal-close" onclick="closeModal('forgeKeyModal')">&times;</button>
         </div>
         <div class="modal-body">
-            <div class="form-group">
-                <label class="form-label">Select Convergence</label>
-                <select class="form-input" id="drawSelection">
-                    <option>Nebula-7 Convergence (42,000 ASTRA)</option>
-                    <option>Stellar-5 Alignment (28,500 ASTRA)</option>
-                    <option>Quantum-3 Event (15,000 ASTRA)</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Enter 6-Digit Cosmic Code</label>
-                <div class="key-inputs">
-                    <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 1)" onkeypress="return isNumberKey(event)">
-                    <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 2)" onkeypress="return isNumberKey(event)">
-                    <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 3)" onkeypress="return isNumberKey(event)">
-                    <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 4)" onkeypress="return isNumberKey(event)">
-                    <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 5)" onkeypress="return isNumberKey(event)">
-                    <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 6)" onkeypress="return isNumberKey(event)">
+            <form action="{% url 'submit_keys' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="form-label">Select Convergence</label>
+                    <select class="form-input" name="draw_id" id="drawSelection">
+                        {% for draw in active_draws %}
+                        <option value="{{draw.id}}">{{draw.title}} Convergence ({{draw.prize_pool}} ASTRA)</option>
+                        {% endfor %}
+                    </select>
                 </div>
-                <div class="form-hint">Enter numbers 0-9 for each digit</div>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Star Key Parameters</label>
-                <div class="hologram" style="padding: 1rem; margin: 0;">
-                    <p style="margin-bottom: 0.5rem;"><strong>Quantum Entropy Source:</strong> Hedera Consensus</p>
-                    <p style="margin-bottom: 0.5rem;"><strong>Key Strength:</strong> Quantum-Encrypted</p>
-                    <p style="margin-bottom: 0.5rem;"><strong>NFT Minting:</strong> HBAR-Enabled</p>
-                    <p><strong>Security Level:</strong> <span id="securityLevel">CALCULATING...</span></p>
+
+                <div class="form-group">
+                    <label class="form-label">Enter 6-Digit Cosmic Code</label>
+                    <div class="key-inputs">
+                        <input  name="key-1" type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 1)" onkeypress="return isNumberKey(event)">
+                        <input  name="key-2" type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 2)" onkeypress="return isNumberKey(event)">
+                        <input  name="key-3" type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 3)" onkeypress="return isNumberKey(event)">
+                        <input  name="key-4" type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 4)" onkeypress="return isNumberKey(event)">
+                        <input  name="key-5" type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 5)" onkeypress="return isNumberKey(event)">
+                        <input  name="key-6" type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 6)" onkeypress="return isNumberKey(event)">
+                    </div>
+                    <div class="form-hint">Enter numbers 0-9 for each digit</div>
                 </div>
-            </div>
-            
-            <div class="form-actions">
-                <button class="action-btn btn-primary" onclick="submitStarKey()">
-                    <i class="fas fa-bolt"></i> Initiate Forging
-                </button>
-                <button class="action-btn" onclick="closeModal('forgeKeyModal')">
-                    Cancel
-                </button>
-            </div>
+
+                <div class="form-group">
+                    <label class="form-label">Star Key Parameters</label>
+                    <div class="hologram" style="padding: 1rem; margin: 0;">
+                        <p style="margin-bottom: 0.5rem;"><strong>Quantum Entropy Source:</strong> Hedera Consensus</p>
+                        <p style="margin-bottom: 0.5rem;"><strong>Key Strength:</strong> Quantum-Encrypted</p>
+                        <p style="margin-bottom: 0.5rem;"><strong>NFT Minting:</strong> HBAR-Enabled</p>
+                        <p><strong>Security Level:</strong> <span id="securityLevel">CALCULATING...</span></p>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button class="action-btn btn-primary" type="submit">
+                        <i class="fas fa-bolt"></i> Initiate Forging
+                    </button>
+                    <button class="action-btn" onclick="closeModal('forgeKeyModal')">
+                        Cancel
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -58,52 +61,55 @@
             <button class="modal-close" onclick="closeModal('createDrawModal')">&times;</button>
         </div>
         <div class="modal-body">
-            <div class="form-group">
-                <label class="form-label">Convergence Title</label>
-                <input type="text" class="form-input" placeholder="Enter convergence name" id="drawTitle">
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Prize Pool (ASTRA)</label>
-                <input type="number" class="form-input" placeholder="Enter prize amount" id="prizePool" min="1000" step="1000">
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Convergence Date</label>
-                <input type="datetime-local" class="form-input" id="drawDateTime">
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Winning Key Pattern</label>
-                <div class="key-inputs">
-                    <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 1)" onkeypress="return isNumberKey(event)">
-                    <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 2)" onkeypress="return isNumberKey(event)">
-                    <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 3)" onkeypress="return isNumberKey(event)">
-                    <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 4)" onkeypress="return isNumberKey(event)">
-                    <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 5)" onkeypress="return isNumberKey(event)">
-                    <input type="text" class="key-digit" maxlength="1" oninput="moveToNextModal(this, 6)" onkeypress="return isNumberKey(event)">
+            <form action="{% url 'create_draw' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="form-label">Convergence Title</label>
+                    <input type="text" class="form-input" name="title" required placeholder="Enter convergence name" id="drawTitle">
                 </div>
-                <div class="form-hint">Set the winning 6-digit pattern or leave blank for auto-generation</div>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Quantum Parameters</label>
-                <div class="hologram" style="padding: 1rem; margin: 0;">
-                    <p style="margin-bottom: 0.5rem;"><strong>Entropy Source:</strong> Multi-dimensional</p>
-                    <p style="margin-bottom: 0.5rem;"><strong>Security Level:</strong> Quantum-Resistant</p>
-                    <p style="margin-bottom: 0.5rem;"><strong>Transparency:</strong> Hedera-Anchored</p>
-                    <p><strong>Consensus:</strong> Hashgraph-Validated</p>
+
+                <div class="form-group">
+                    <label class="form-label">Convergence Symbol</label>
+                    <input type="text" name="symbol" class="form-input" required placeholder="Enter convergence symbol eg. NBL-1" id="drawTitle">
                 </div>
-            </div>
-            
-            <div class="form-actions">
-                <button class="action-btn btn-primary" onclick="createNewDraw()">
-                    <i class="fas fa-rocket"></i> Launch Convergence
-                </button>
-                <button class="action-btn" onclick="closeModal('createDrawModal')">
-                    Cancel
-                </button>
-            </div>
+
+                <div class="form-group">
+                    <label class="form-label">Convergence Status</label>
+                    <select name="status" required id="status" class="form-input">
+                        <option value="upcoming">Upcoming</option>
+                        <option value="active">Active</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Prize Pool (ASTRA)</label>
+                    <input type="number" name="prize_pool" required class="form-input" placeholder="Enter prize amount" id="prizePool" min="1000" step="1000">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Convergence Date</label>
+                    <input name="draw_datetime" type="datetime-local" required class="form-input" id="drawDateTime">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Quantum Parameters</label>
+                    <div class="hologram" style="padding: 1rem; margin: 0;">
+                        <p style="margin-bottom: 0.5rem;"><strong>Entropy Source:</strong> Multi-dimensional</p>
+                        <p style="margin-bottom: 0.5rem;"><strong>Security Level:</strong> Quantum-Resistant</p>
+                        <p style="margin-bottom: 0.5rem;"><strong>Transparency:</strong> Hedera-Anchored</p>
+                        <p><strong>Consensus:</strong> Hashgraph-Validated</p>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button class="action-btn btn-primary" type="submit">
+                        <i class="fas fa-rocket"></i> Launch Convergence
+                    </button>
+                    <button class="action-btn" onclick="closeModal('createDrawModal')">
+                        Cancel
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -203,49 +209,20 @@
         </div>
         <div class="modal-body">
             <div class="notifications-list">
-                <div class="notification-item new">
-                    <div class="notification-icon">
-                        <i class="fas fa-trophy" style="color: var(--cosmic-gold);"></i>
-                    </div>
-                    <div class="notification-content">
-                        <div class="notification-title">Cosmic Victory!</div>
-                        <div class="notification-message">Your Star Key matched 5/6 digits in Nebula-6 Convergence</div>
-                        <div class="notification-time">2 minutes ago</div>
-                    </div>
-                </div>
                 
-                <div class="notification-item new">
-                    <div class="notification-icon">
-                        <i class="fas fa-rocket" style="color: var(--neon-cyan);"></i>
-                    </div>
-                    <div class="notification-content">
-                        <div class="notification-title">New Convergence Launched</div>
-                        <div class="notification-message">Nebula-7 Convergence is now active with 150,000 ASTRA prize pool</div>
-                        <div class="notification-time">1 hour ago</div>
-                    </div>
-                </div>
-                
+                {% for alert in alerts %}
                 <div class="notification-item">
                     <div class="notification-icon">
-                        <i class="fas fa-key" style="color: var(--alien-green);"></i>
+                        <i class="fas fa-{{alert.icon}}" style="color: var(--neon-magenta);"></i>
                     </div>
                     <div class="notification-content">
-                        <div class="notification-title">Star Key Forged</div>
-                        <div class="notification-message">Your Star Key for Stellar-5 Alignment has been successfully minted</div>
-                        <div class="notification-time">3 hours ago</div>
+                        <div class="notification-title">{{alert.title}}</div>
+                        <div class="notification-message">{{alert.content}}</div>
+                        <div class="notification-time">{{alert.created_at}}</div>
                     </div>
                 </div>
-                
-                <div class="notification-item">
-                    <div class="notification-icon">
-                        <i class="fas fa-user-plus" style="color: var(--neon-magenta);"></i>
-                    </div>
-                    <div class="notification-content">
-                        <div class="notification-title">New Cosmic Citizen</div>
-                        <div class="notification-message">You've been promoted to Stardust Level with new privileges</div>
-                        <div class="notification-time">1 day ago</div>
-                    </div>
-                </div>
+                {% endfor %}
+
             </div>
             
             <div class="form-actions">
@@ -406,7 +383,7 @@
 </div>
 
 <!-- Draw Details Modal -->
-<div class="modal" id="drawDetailsModal">
+<!--div class="modal" id="drawDetailsModal">
     <div class="modal-content">
         <div class="modal-header">
             <h2 class="modal-title"><i class="fas fa-dice"></i> Convergence Details</h2>
@@ -467,7 +444,135 @@
             </div>
         </div>
     </div>
+</div-->
+
+<!-- Draw Details Modal -->
+<div class="modal" id="drawDetailsModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('drawDetailsModal')">&times;</button>
+        <div class="modal-header">
+            <h2 class="modal-title"><i class="fas fa-dice"></i> Convergence Details</h2>
+        </div>
+        <div class="modal-body">
+            <div class="draw-details-container">
+                <!-- Draw Header -->
+                <div class="draw-header" style="text-align: center; margin-bottom: 2rem;">
+                    <h3 id="drawDetailTitle" style="color: var(--neon-cyan); margin-bottom: 0.5rem;">Nebula-7 Convergence</h3>
+                    <div id="drawDetailSymbol" style="font-family: monospace; opacity: 0.7; margin-bottom: 1rem;">Symbol: NEB7</div>
+                    <div id="drawDetailPrize" style="font-size: 2rem; color: var(--alien-green); font-weight: 700;">42,000 ASTRA</div>
+                </div>
+
+                <!-- Draw Information Grid -->
+                <div class="info-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+                    <div class="info-item">
+                        <div class="info-label">Status</div>
+                        <div id="drawDetailStatus" class="status-badge status-active">Active</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Draw Date</div>
+                        <div id="drawDetailDate" style="font-weight: 600;">2024-01-15 20:00 UTC</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Participants</div>
+                        <div id="drawDetailParticipants" style="color: var(--neon-cyan); font-weight: 600;">1,247</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Your Keys</div>
+                        <div id="drawDetailUserKeys" style="color: var(--alien-green); font-weight: 600;">2</div>
+                    </div>
+                </div>
+
+                <!-- NFT Information -->
+                <div class="nft-info" style="background: rgba(0, 255, 255, 0.1); padding: 1rem; border-radius: 10px; margin-bottom: 2rem;">
+                    <h4 style="color: var(--hologram-teal); margin-bottom: 0.5rem;">
+                        <i class="fas fa-cube"></i> NFT Information
+                    </h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <div class="info-label">Token ID</div>
+                            <div id="drawDetailTokenId" style="font-family: monospace; font-size: 0.9rem;">0.0.1234567</div>
+                        </div>
+                        <div>
+                            <div class="info-label">Contract</div>
+                            <div id="drawDetailContract" style="font-family: monospace; font-size: 0.9rem;">0.0.9876543</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Star Keys Section -->
+                <div class="star-keys-section">
+                    <h4 style="color: var(--hologram-teal); margin-bottom: 1rem;">
+                        <i class="fas fa-key"></i> Your Star Keys for this Draw
+                    </h4>
+                    <div id="drawStarKeysList" class="star-keys-list">
+                        <!-- Star keys will be populated here -->
+                        <div class="star-key-item" style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; background: rgba(255, 255, 255, 0.05); border-radius: 8px; margin-bottom: 0.5rem;">
+                            <div>
+                                <span style="font-family: monospace; font-weight: 600;">SK-7B2X9F</span>
+                                <span style="margin-left: 1rem; font-size: 0.8rem; opacity: 0.7;">Forged: Jan 10, 2024</span>
+                            </div>
+                            <span class="status-badge status-active">Active</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="modal-actions" style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; flex-wrap: wrap;">
+                    <button class="action-btn btn-primary" onclick="participateInDraw()">
+                        <i class="fas fa-key"></i> Forge New Key
+                    </button>
+                    <button class="action-btn btn-warning" onclick="shareDraw()">
+                        <i class="fas fa-share"></i> Share Draw
+                    </button>
+                    <button class="action-btn" style="border-color: var(--quantum-blue); color: var(--quantum-blue);" onclick="viewOnExplorer()">
+                        <i class="fas fa-external-link-alt"></i> View on Explorer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<style>
+    .info-label {
+        font-size: 0.8rem;
+        opacity: 0.7;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 0.3rem;
+    }
+
+    .star-keys-list {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .star-key-item {
+        transition: all 0.3s ease;
+    }
+
+    .star-key-item:hover {
+        background: rgba(0, 255, 255, 0.1) !important;
+        transform: translateX(5px);
+    }
+
+    /* Responsive design for modal */
+    @media (max-width: 768px) {
+        .info-grid {
+            grid-template-columns: 1fr !important;
+            gap: 1rem !important;
+        }
+
+        .modal-actions {
+            flex-direction: column;
+        }
+
+        .modal-actions .action-btn {
+            width: 100%;
+        }
+    }
+</style>
+
 
 <style>
     /* Additional styles for the modals */
@@ -894,16 +999,169 @@
     
     function createNewDraw() {
         const title = document.getElementById('drawTitle').value;
+        const symbol = document.getElementById('symbol').value;
         const prize = document.getElementById('prizePool').value;
         const date = document.getElementById('drawDateTime').value;
+        const status = document.getElementById('status').value;
         
-        if (title && prize && date) {
-            alert(`Convergence "${title}" created with ${prize} ASTRA prize pool!`);
-            closeModal('createDrawModal');
+        if (title && prize && date && symbol && status) {
+            // Show loading state
+            const submitBtn = document.querySelector('#createDrawModal .modal-btn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Convergence...';
+            submitBtn.disabled = true;
+
+            // Prepare data for API
+            const drawData = {
+                title: title,
+                symbol: symbol,
+                prize_pool: prize,
+                draw_datetime: date,
+                status: status
+            };
+
+            // Send POST request to Django view
+            fetch('{% url "create_draw" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken() // You'll need to implement this function
+                },
+                body: JSON.stringify(drawData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Success handling
+                    showNotification(`Convergence "${title}" created successfully with ${prize} ASTRA prize pool!`, 'success');
+                    closeModal('createDrawModal');
+
+                    // Reset form
+                    document.getElementById('drawTitle').value = '';
+                    document.getElementById('symbol').value = '';
+                    document.getElementById('prizePool').value = '';
+                    document.getElementById('drawDateTime').value = '';
+                    document.getElementById('status').value = 'upcoming';
+
+                    // Refresh the draws section if needed
+                    if (document.getElementById('admin-draws').classList.contains('active')) {
+                        // You might want to refresh the draws list here
+                        loadAdminDraws();
+                    }
+                } else {
+                    // Error handling
+                    showNotification(`Failed to create convergence: ${data.error}`, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error creating draw:', error);
+                showNotification('Network error occurred while creating convergence', 'error');
+            })
+            .finally(() => {
+                // Restore button state
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+
         } else {
-            alert('Please fill in all required fields');
+            showNotification('Please fill in all required fields', 'warning');
         }
     }
+
+    // Helper function to get CSRF token (add this to your script)
+    function getCSRFToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue;
+    }
+
+    // Notification function (add this to show user feedback)
+    function showNotification(message, type = 'info') {
+        // Remove existing notification if any
+        const existingNotification = document.getElementById('custom-notification');
+        if (existingNotification) {
+            existingNotification.remove();
+        }
+
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.id = 'custom-notification';
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 10000;
+            max-width: 400px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+        `;
+
+        // Set background color based on type
+        const colors = {
+            success: 'var(--alien-green)',
+            error: 'var(--warning-red)',
+            warning: 'var(--plasma-orange)',
+            info: 'var(--neon-cyan)'
+        };
+
+        notification.style.background = colors[type] || colors.info;
+        notification.textContent = message;
+
+        // Add close button
+        const closeBtn = document.createElement('button');
+        closeBtn.innerHTML = '&times;';
+        closeBtn.style.cssText = `
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            cursor: pointer;
+        `;
+        closeBtn.onclick = () => notification.remove();
+        notification.appendChild(closeBtn);
+
+        document.body.appendChild(notification);
+
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 5000);
+    }
+
+    // Add this CSS for the notification animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Optional: Function to refresh admin draws list
+    function loadAdminDraws() {
+        // This would fetch and update the draws list in the admin section
+        // You can implement this based on your needs
+        console.log('Refreshing admin draws list...');
+        // Example implementation:
+        // fetch('')
+        // .then(response => response.json())
+        // .then(data => {
+        //     updateDrawsTable(data.draws);
+        // });
+    }
+
     
     let selectedAstraAmount = 0;
     let selectedPaymentMethod = 'hbar';
@@ -984,4 +1242,143 @@
             console.log('Switching to theme:', theme);
         });
     });
+</script>
+
+<script>
+    // Function to open draw details modal
+    function viewDraw(drawId) {
+        // Fetch draw details from your backend
+        fetchDrawDetails(drawId).then(drawData => {
+            // Populate modal with draw data
+            populateDrawModal(drawData);
+            // Open the modal
+            openModal('drawDetailsModal');
+        }).catch(error => {
+            console.error('Error fetching draw details:', error);
+            // Show error state
+            showDrawError();
+        });
+    }
+
+    // Mock function to fetch draw details - replace with your actual API call
+    function fetchDrawDetails(drawId) {
+        return new Promise((resolve) => {
+            // Simulate API delay
+            setTimeout(() => {
+                // Mock data - replace with actual data from your backend
+                const mockData = {
+                    id: drawId.id,
+                    title: 'Nebula-2 Convergence',
+                    symbol: 'NEB7',
+                    prize_pool: '42,000',
+                    status: 'active',
+                    draw_datetime: '2024-01-15 20:00:00',
+                    participants: 1247,
+                    user_keys: 2,
+                    nft_token_id: '0.0.1234567',
+                    nft_contract: '0.0.9876543',
+                    star_keys: [
+                        { serial: 'SK-7B2X9F', forged_date: '2024-01-10', status: 'active' },
+                        { serial: 'SK-8C3Y0G', forged_date: '2024-01-12', status: 'active' }
+                    ]
+                };
+                resolve(mockData);
+            }, 500);
+        });
+    }
+
+    // Function to populate modal with draw data
+    function populateDrawModal(drawData) {
+        document.getElementById('drawDetailTitle').textContent = drawData.title;
+        document.getElementById('drawDetailSymbol').textContent = `Symbol: ${drawData.symbol}`;
+        document.getElementById('drawDetailPrize').textContent = `${drawData.prize_pool} ASTRA`;
+        
+        // Update status badge
+        const statusElement = document.getElementById('drawDetailStatus');
+        statusElement.textContent = drawData.status.charAt(0).toUpperCase() + drawData.status.slice(1);
+        statusElement.className = `status-badge status-${drawData.status}`;
+        
+        document.getElementById('drawDetailDate').textContent = formatDateTime(drawData.draw_datetime);
+        document.getElementById('drawDetailParticipants').textContent = drawData.participants.toLocaleString();
+        document.getElementById('drawDetailUserKeys').textContent = drawData.user_keys;
+        document.getElementById('drawDetailTokenId').textContent = drawData.nft_token_id;
+        document.getElementById('drawDetailContract').textContent = drawData.nft_contract;
+
+        // Populate star keys list
+        const starKeysList = document.getElementById('drawStarKeysList');
+        starKeysList.innerHTML = '';
+        
+        drawData.star_keys.forEach(key => {
+            const keyElement = document.createElement('div');
+            keyElement.className = 'star-key-item';
+            keyElement.innerHTML = `
+                <div>
+                    <span style="font-family: monospace; font-weight: 600;">${key.serial}</span>
+                    <span style="margin-left: 1rem; font-size: 0.8rem; opacity: 0.7;">Forged: ${formatDate(key.forged_date)}</span>
+                </div>
+                <span class="status-badge status-${key.status}">${key.status.charAt(0).toUpperCase() + key.status.slice(1)}</span>
+            `;
+            starKeysList.appendChild(keyElement);
+        });
+    }
+
+    // Helper function to format date
+    function formatDateTime(dateTimeString) {
+        const date = new Date(dateTimeString);
+        return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    }
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString();
+    }
+
+    // Function to show error state
+    function showDrawError() {
+        const modalBody = document.querySelector('#drawDetailsModal .modal-body');
+        modalBody.innerHTML = `
+            <div style="text-align: center; padding: 2rem; color: var(--warning-red);">
+                <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                <h3>Unable to Load Draw Details</h3>
+                <p>There was an error loading the convergence details. Please try again later.</p>
+                <button class="action-btn btn-primary" onclick="closeModal('drawDetailsModal')" style="margin-top: 1rem;">
+                    <i class="fas fa-times"></i> Close
+                </button>
+            </div>
+        `;
+    }
+
+    // Action functions for modal buttons
+    function participateInDraw() {
+        const drawId = document.getElementById('drawDetailTitle').textContent;
+        alert(`Initiating key forging for: ${drawId}`);
+        // Add your participation logic here
+        closeModal('drawDetailsModal');
+    }
+
+    function shareDraw() {
+        const drawTitle = document.getElementById('drawDetailTitle').textContent;
+        const drawPrize = document.getElementById('drawDetailPrize').textContent;
+        
+        // Simple share implementation - you can enhance this
+        if (navigator.share) {
+            navigator.share({
+                title: drawTitle,
+                text: `Check out ${drawTitle} with a prize pool of ${drawPrize}!`,
+                url: window.location.href
+            });
+        } else {
+            // Fallback: copy to clipboard
+            const shareText = `${drawTitle} - Prize: ${drawPrize}\n${window.location.href}`;
+            navigator.clipboard.writeText(shareText).then(() => {
+                alert('Draw link copied to clipboard!');
+            });
+        }
+    }
+
+    function viewOnExplorer() {
+        const tokenId = document.getElementById('drawDetailTokenId').textContent;
+        // Open in Hedera Explorer or your preferred blockchain explorer
+        window.open(`https://hashscan.io/testnet/token/${tokenId}`, '_blank');
+    }
 </script>

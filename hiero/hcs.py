@@ -69,5 +69,3 @@ def submit_message(message):
             'status':'failed',
             'message':f"Vote submission failed: {str(e)}"
         }
-    
-create_topic()

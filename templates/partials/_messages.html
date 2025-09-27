@@ -1,86 +1,94 @@
+<!-- partials/_messages.html -->
+ <style>
+    /* Messages styling for the cosmic theme */
+.messages-container {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    z-index: 10000;
+    max-width: 400px;
+}
+
+.alert {
+    border-radius: 10px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid;
+    backdrop-filter: blur(10px);
+    animation: slideInRight 0.3s ease;
+}
+
+.alert-success {
+    background: rgba(0, 255, 102, 0.2);
+    border-color: var(--alien-green);
+    color: var(--alien-green);
+}
+
+.alert-error {
+    background: rgba(255, 42, 109, 0.2);
+    border-color: var(--warning-red);
+    color: var(--warning-red);
+}
+
+.alert-warning {
+    background: rgba(255, 102, 0, 0.2);
+    border-color: var(--plasma-orange);
+    color: var(--plasma-orange);
+}
+
+.alert-info {
+    background: rgba(0, 204, 255, 0.2);
+    border-color: var(--quantum-blue);
+    color: var(--quantum-blue);
+}
+
+.alert-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.alert .close {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin-left: 1rem;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+ </style>
 {% if messages %}
+<div class="messages-container">
     {% for message in messages %}
-        <div class="message-container fixed top-20 right-4 z-50 max-w-sm fade-in">
-            <div class="card-glass p-4 mb-3 rounded-xl border-l-4 
-                {% if message.tags == 'success' %}border-green-400{% endif %}
-                {% if message.tags == 'error' or message.tags == 'danger' %}border-red-400{% endif %}
-                {% if message.tags == 'warning' %}border-yellow-400{% endif %}
-                {% if message.tags == 'info' or not message.tags %}border-[#00f0d6]{% endif %}
-                tech-border">
-                
-                <div class="flex items-start justify-between">
-                    <div class="flex items-start">
-                        <!-- Icons based on message type -->
-                        {% if message.tags == 'success' %}
-                            <i class="fas fa-check-circle text-green-400 text-lg mt-0.5 mr-3"></i>
-                        {% elif message.tags == 'error' or message.tags == 'danger' %}
-                            <i class="fas fa-exclamation-circle text-red-400 text-lg mt-0.5 mr-3"></i>
-                        {% elif message.tags == 'warning' %}
-                            <i class="fas fa-exclamation-triangle text-yellow-400 text-lg mt-0.5 mr-3"></i>
-                        {% else %}
-                            <i class="fas fa-info-circle text-[#00f0d6] text-lg mt-0.5 mr-3"></i>
-                        {% endif %}
-                        
-                        <div class="flex-1">
-                            <p class="text-sm font-semibold 
-                                {% if message.tags == 'success' %}text-green-400{% endif %}
-                                {% if message.tags == 'error' or message.tags == 'danger' %}text-red-400{% endif %}
-                                {% if message.tags == 'warning' %}text-yellow-400{% endif %}
-                                {% if message.tags == 'info' or not message.tags %}text-[#00f0d6]{% endif %}">
-                                {% if message.tags == 'success' %}SUCCESS{% endif %}
-                                {% if message.tags == 'error' or message.tags == 'danger' %}ERROR{% endif %}
-                                {% if message.tags == 'warning' %}WARNING{% endif %}
-                                {% if message.tags == 'info' or not message.tags %}INFO{% endif %}
-                            </p>
-                            <p class="text-[#e6eef8] text-sm mt-1">{{ message }}</p>
-                        </div>
-                    </div>
-                    
-                    <button type="button" class="ml-4 text-[#9fb4c9] hover:text-[#00f0d6] transition-colors" 
-                            onclick="this.parentElement.parentElement.style.display='none'">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            </div>
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        <div class="alert-content">
+            {% if message.tags == 'success' %}
+            <i class="fas fa-check-circle"></i>
+            {% elif message.tags == 'error' %}
+            <i class="fas fa-exclamation-circle"></i>
+            {% elif message.tags == 'warning' %}
+            <i class="fas fa-exclamation-triangle"></i>
+            {% else %}
+            <i class="fas fa-info-circle"></i>
+            {% endif %}
+            
+            <span>{{ message }}</span>
         </div>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
     {% endfor %}
+</div>
 {% endif %}
-
-<style>
-    .message-container {
-        animation: slideInRight 0.3s ease-out;
-    }
-    
-    @keyframes slideInRight {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-    
-    .fade-in {
-        animation: fadeIn 0.5s ease-in-out;
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-</style>
-
-<script>
-    // Auto-dismiss messages after 5 seconds
-    document.addEventListener('DOMContentLoaded', function() {
-        const messages = document.querySelectorAll('.message-container');
-        messages.forEach(message => {
-            setTimeout(() => {
-                message.style.animation = 'slideOutRight 0.3s ease-in forwards';
-                setTimeout(() => message.remove(), 300);
-            }, 5000);
-        });
-    });
-</script>

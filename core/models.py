@@ -241,7 +241,7 @@ class Draw(models.Model):
 
     def is_active(self):
         """Check if draw is currently active."""
-        return self.status == self.DrawStatus.ACTIVE
+        return self.status
 
     def can_participate(self):
         """Check if users can still participate in this draw."""
@@ -415,3 +415,17 @@ class Alert(models.Model):
 
     def __str__(self):
         return self.title
+
+"""
+Star Key Forged (key)
+Your Star Key for Stellar-5 Alignment has been successfully minted
+
+New Cosmic Citizen (user-plus)
+You've been promoted to Stardust Level with new privileges
+
+New Convergence Launched ( rocket )
+Nebula-7 Convergence is now active with 150,000 ASTRA prize pool
+
+Cosmic Victory! (trophy)
+Your Star Key matched 5/6 digits in Nebula-6 Convergence
+"""

@@ -63,7 +63,7 @@ def create_test_account(client):
     
     return account_id, new_account_private_key
 
-def create_nft(client, operator_id, operator_key):
+def create_nft(title, symbol):
     """Create a non-fungible token EG"""
     # NEBULA-1
     # NEBULA-2
@@ -71,10 +71,11 @@ def create_nft(client, operator_id, operator_key):
     # NEBULA-4
     # NEBULA-5
     # NEBULA-6
+    client, operator_id, operator_key = setup_client()
     transaction = (
         TokenCreateTransaction()
-        .set_token_name("NEBULA-1")
-        .set_token_symbol("NBL-1")
+        .set_token_name(title)
+        .set_token_symbol(symbol)
         .set_decimals(0)
         .set_initial_supply(0)
         .set_treasury_account_id(operator_id)
@@ -92,13 +93,18 @@ def create_nft(client, operator_id, operator_key):
     # Check if nft creation was successful
     if receipt.status != ResponseCode.SUCCESS:
         print(f"NFT creation failed with status: {ResponseCode(receipt.status).name}")
-        sys.exit(1)
+        return {
+            'status':'failed'
+        }
     
     # Get token ID from receipt
     nft_token_id = receipt.token_id
     print(f"NFT created with ID: {nft_token_id}")
     
-    return nft_token_id
+    return {
+        'token_id':nft_token_id,
+        'status':'success',
+    }
 
 def mint_nft(nft_token_id, metadata):
     """Mint a non-fungible token"""
@@ -146,8 +152,6 @@ def associate_nft(account_id, token_id, account_private_key, nft_id):
         private_key_only = None
         print("No private key found")
 
-
-
     associate_transaction = (
         TokenAssociateTransaction()
         .set_account_id(AccountId.from_string(account_id))
@@ -155,7 +159,6 @@ def associate_nft(account_id, token_id, account_private_key, nft_id):
         .freeze_with(client)
         .sign(PrivateKey.from_string(private_key_only)) # Has to be signed by new account's key
     )
-    
     receipt = associate_transaction.execute(client)
     
     if receipt.status != ResponseCode.SUCCESS:
