@@ -447,6 +447,7 @@
 </div-->
 
 <!-- Draw Details Modal -->
+<!-- Draw Details Modal -->
 <div class="modal" id="drawDetailsModal">
     <div class="modal-content">
         <button class="modal-close" onclick="closeModal('drawDetailsModal')">&times;</button>
@@ -518,11 +519,8 @@
 
                 <!-- Action Buttons -->
                 <div class="modal-actions" style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; flex-wrap: wrap;">
-                    <button class="action-btn btn-primary" onclick="participateInDraw()">
+                    <button class="action-btn btn-primary" onclick="forgeNewKey()">
                         <i class="fas fa-key"></i> Forge New Key
-                    </button>
-                    <button class="action-btn btn-warning" onclick="shareDraw()">
-                        <i class="fas fa-share"></i> Share Draw
                     </button>
                     <button class="action-btn" style="border-color: var(--quantum-blue); color: var(--quantum-blue);" onclick="viewOnExplorer()">
                         <i class="fas fa-external-link-alt"></i> View on Explorer
@@ -1260,32 +1258,216 @@
         });
     }
 
-    // Mock function to fetch draw details - replace with your actual API call
     function fetchDrawDetails(drawId) {
-        return new Promise((resolve) => {
-            // Simulate API delay
-            setTimeout(() => {
-                // Mock data - replace with actual data from your backend
-                const mockData = {
-                    id: drawId.id,
-                    title: 'Nebula-2 Convergence',
-                    symbol: 'NEB7',
-                    prize_pool: '42,000',
-                    status: 'active',
-                    draw_datetime: '2024-01-15 20:00:00',
-                    participants: 1247,
-                    user_keys: 2,
-                    nft_token_id: '0.0.1234567',
-                    nft_contract: '0.0.9876543',
-                    star_keys: [
-                        { serial: 'SK-7B2X9F', forged_date: '2024-01-10', status: 'active' },
-                        { serial: 'SK-8C3Y0G', forged_date: '2024-01-12', status: 'active' }
-                    ]
+    return new Promise((resolve, reject) => {
+        // Show loading state in the modal
+        const modalBody = document.querySelector('#drawDetailsModal .modal-body');
+        if (modalBody) {
+            modalBody.innerHTML = `
+                <div style="text-align: center; padding: 3rem;">
+                    <div style="font-size: 3rem; color: var(--neon-cyan); margin-bottom: 1rem;">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                    <h3 style="color: var(--neon-cyan);">Loading Cosmic Data...</h3>
+                    <p>Retrieving convergence details from the quantum network</p>
+                </div>
+            `;
+        }
+
+        const csrfToken = getCSRFToken();
+        
+        fetch(`/api/draws/${drawId}/`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => {
+            if (!response.ok) {
+                if (response.status === 404) {
+                    throw new Error('Convergence not found in the cosmic records');
+                } else if (response.status === 403) {
+                    throw new Error('Quantum access denied');
+                } else {
+                    throw new Error(`Network error: ${response.status}`);
+                }
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // Transform API response to match your modal structure
+                const drawData = {
+                    id: data.draw.id,
+                    title: data.draw.title,
+                    symbol: data.draw.symbol || 'NEB7', // Fallback to NEB7 if not provided
+                    prize_pool: typeof data.draw.prize_pool === 'number' 
+                        ? data.draw.prize_pool.toLocaleString() 
+                        : String(data.draw.prize_pool),
+                    status: data.draw.status,
+                    draw_datetime: data.draw.draw_datetime,
+                    participants: data.participants_count || 1247, // Fallback to your mock value
+                    user_keys: data.user_keys_count || 2, // Fallback to your mock value
+                    nft_token_id: data.draw.nft_token_id || data.draw.nft_id || 'Not assigned',
+                    nft_contract: data.draw.nft_contract || data.draw.nft_id || 'Not available',
+                    star_keys: data.user_star_keys || [
+                        { serial: "SK-7B2X9F", forged_date: "2024-01-10", status: "active" }
+                    ], // Fallback to your mock data
+                    // Additional fields from your view
+                    total_tickets_sold: data.draw.total_tickets_sold,
+                    winner_wallet_id: data.draw.winner_wallet_id,
+                    winning_ticket_serial: data.draw.winning_ticket_serial,
+                    // ENDED draw specific data
+                    winning_keys: data.winning_keys || [],
+                    winner: data.winner || null
                 };
-                resolve(mockData);
-            }, 500);
+                resolve(drawData);
+            } else {
+                throw new Error(data.error || 'Failed to retrieve convergence data');
+            }
+        })
+        .catch(error => {
+            console.error('Quantum retrieval error:', error);
+            reject(error);
         });
+    });
+}
+
+// Updated populateDrawModal function to handle the new data
+function populateDrawModal(drawData) {
+    document.getElementById('drawDetailTitle').textContent = drawData.title;
+    document.getElementById('drawDetailSymbol').textContent = `Symbol: ${drawData.symbol}`;
+    document.getElementById('drawDetailPrize').textContent = `${drawData.prize_pool} ASTRA`;
+    
+    // Update status badge
+    const statusElement = document.getElementById('drawDetailStatus');
+    statusElement.textContent = drawData.status.charAt(0).toUpperCase() + drawData.status.slice(1);
+    statusElement.className = `status-badge status-${drawData.status.toLowerCase()}`;
+    
+    // Format and display draw datetime
+    const drawDate = new Date(drawData.draw_datetime);
+    document.getElementById('drawDetailDate').textContent = 
+        drawDate.toLocaleDateString() + ' ' + drawDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    
+    document.getElementById('drawDetailParticipants').textContent = drawData.participants.toLocaleString();
+    document.getElementById('drawDetailUserKeys').textContent = drawData.user_keys;
+    document.getElementById('drawDetailTokenId').textContent = drawData.nft_token_id;
+    document.getElementById('drawDetailContract').textContent = drawData.nft_contract;
+
+    // Populate star keys list
+    const starKeysList = document.getElementById('drawStarKeysList');
+    starKeysList.innerHTML = '';
+    
+    drawData.star_keys.forEach(key => {
+        const keyElement = document.createElement('div');
+        keyElement.className = 'star-key-item';
+        keyElement.innerHTML = `
+            <div>
+                <span style="font-family: monospace; font-weight: 600;">${key.serial}</span>
+                <span style="margin-left: 1rem; font-size: 0.8rem; opacity: 0.7;">Forged: ${formatDate(key.forged_date)}</span>
+            </div>
+            <span class="status-badge status-${key.status}">${key.status.charAt(0).toUpperCase() + key.status.slice(1)}</span>
+        `;
+        starKeysList.appendChild(keyElement);
+    });
+
+    // Add winner information if draw has ended
+    if (drawData.status === "ENDED" && drawData.winner) {
+        addWinnerSection(drawData);
     }
+}
+
+// Function to add winner section for ended draws
+function addWinnerSection(drawData) {
+    const modalBody = document.querySelector('#drawDetailsModal .modal-body');
+    
+    // Create winner section
+    const winnerSection = document.createElement('div');
+    winnerSection.className = 'winner-section';
+    winnerSection.style.cssText = `
+        background: linear-gradient(135deg, rgba(0, 255, 102, 0.1), rgba(0, 204, 255, 0.1));
+        border: 1px solid var(--alien-green);
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin: 2rem 0;
+        text-align: center;
+    `;
+    
+    winnerSection.innerHTML = `
+        <h4 style="color: var(--alien-green); margin-bottom: 1rem;">
+            <i class="fas fa-trophy"></i> Cosmic Champion
+        </h4>
+        <div style="font-size: 1.2rem; margin-bottom: 0.5rem;">
+            🏆 ${drawData.winner.username || 'Anonymous'}
+        </div>
+        <div style="font-family: monospace; opacity: 0.8;">
+            Winning Key: ${drawData.winner.ticket_serial || drawData.winning_ticket_serial}
+        </div>
+        ${drawData.winning_keys && drawData.winning_keys.length > 0 ? `
+            <div style="margin-top: 1rem;">
+                <strong>Winning Combination:</strong>
+                <div style="font-family: monospace; letter-spacing: 2px; margin-top: 0.5rem;">
+                    ${drawData.winning_keys.join(' - ')}
+                </div>
+            </div>
+        ` : ''}
+    `;
+    
+    // Insert winner section after the info grid
+    const infoGrid = modalBody.querySelector('.info-grid');
+    infoGrid.parentNode.insertBefore(winnerSection, infoGrid.nextSibling);
+}
+
+// Helper function to format date
+function formatDate(dateString) {
+    try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString();
+    } catch (e) {
+        return dateString; // Return original string if parsing fails
+    }
+}
+
+// Updated viewDraw function
+function viewDraw(drawId) {
+    // Show loading state immediately
+    openModal('drawDetailsModal');
+    
+    fetchDrawDetails(drawId)
+        .then(drawData => {
+            populateDrawModal(drawData);
+        })
+        .catch(error => {
+            console.error('Error loading draw details:', error);
+            showDrawError(error.message);
+        });
+}
+
+// CSRF token function (make sure this exists)
+function getCSRFToken() {
+    const cookieValue = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrftoken='))
+        ?.split('=')[1];
+    return cookieValue || '';
+}
+
+// Updated viewDraw function with better error handling
+function viewDraw(drawId) {
+    // Show loading state immediately
+    openModal('drawDetailsModal');
+    
+    fetchDrawDetails(drawId)
+        .then(drawData => {
+            populateDrawModal(drawData);
+        })
+        .catch(error => {
+            console.error('Error loading draw details:', error);
+            showDrawError(error.message);
+        });
+}
 
     // Function to populate modal with draw data
     function populateDrawModal(drawData) {
@@ -1381,4 +1563,31 @@
         // Open in Hedera Explorer or your preferred blockchain explorer
         window.open(`https://hashscan.io/testnet/token/${tokenId}`, '_blank');
     }
+</script>
+
+
+
+<script>
+// Debug function to check modal state
+function debugModal() {
+    console.log('=== MODAL DEBUG INFO ===');
+    console.log('Modal element:', document.getElementById('drawDetailsModal'));
+    console.log('Modal display style:', document.getElementById('drawDetailsModal')?.style.display);
+    console.log('Modal innerHTML length:', document.getElementById('drawDetailsModal')?.innerHTML.length);
+    
+    // Check all required elements
+    const elements = [
+        'drawDetailTitle', 'drawDetailSymbol', 'drawDetailPrize', 
+        'drawDetailDate', 'drawDetailParticipants', 'drawDetailTokenId',
+        'drawDetailContract', 'drawDetailUserKeys', 'drawDetailStatus', 'drawStarKeysList'
+    ];
+    
+    elements.forEach(id => {
+        const el = document.getElementById(id);
+        console.log(`Element ${id}:`, el ? 'FOUND' : 'NOT FOUND', el);
+    });
+}
+
+// Run debug when page loads
+document.addEventListener('DOMContentLoaded', debugModal);
 </script>

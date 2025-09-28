@@ -1,5 +1,4 @@
 import random
-from hiero.hcs import submit_message
 
 def generate_star_convergence_with_mapping(num_stars=6):
     """
@@ -44,12 +43,13 @@ def generate_star_convergence_with_mapping(num_stars=6):
             "mapped_number": mapped_number
         })
     
-    return round(convergent_point, 2), star_data
+    #return round(convergent_point, 2), star_data
+    return draws
 
 
 # Example usage:
-if __name__ == "__main__":
-    cp, stars = generate_star_convergence_with_mapping()
-    print(f"Convergent Point: {cp}°")
-    for s in stars:
-        print(f"{s['name']}: {s['direction']}° -> {s['mapped_number']}")
+#if __name__ == "__main__":
+#    cp, stars = generate_star_convergence_with_mapping()
+#    print(f"Convergent Point: {cp}°")
+#    for s in stars:
+#        print(f"{s['name']}: {s['direction']}° -> {s['mapped_number']}")

@@ -856,6 +856,7 @@
     <div class="stars" id="stars"></div>
     <div class="grid-lines"></div>
     {% include 'dashboard_modals.html' %}
+    {% include 'draw_modals.html' %}
     {% include 'partials/_messages.html' %}
     <div class="dashboard">
         <header class="header">
@@ -1138,10 +1139,10 @@
                                     {{ draw.status }}
                                 </span>
                         <div style="margin-top: 1rem;">
-                            <button class="action-btn btn-primary" onclick="viewDraw('{{ draw }}')">
+                            <button class="action-btn btn-primary" onclick="viewDrawDetailss({{ draw.id }})">
                                 <i class="fas fa-eye"></i> View Details
                             </button>
-                            {% if draw.is_active %}
+                            {% if draw.status == "ACTIVE" %}
                             <button class="action-btn btn-warning" onclick="openModal('forgeKeyModal')">
                                 <i class="fas fa-key"></i> Forge Key
                             </button>
@@ -1220,7 +1221,7 @@
                         <!-- Example Draw 2 -->
                         <div class="table-row">
                             <div>
-                                <strong>{{drwa.title}} Alignment</strong>
+                                <strong>{{draw.title}} Alignment</strong>
                                 <div style="font-size: 0.8rem; opacity: 0.7; margin-top: 0.2rem;">
                                     Symbol: {{draw.symbol}} NBL-
                                 </div>
@@ -1229,14 +1230,20 @@
                                 <span style="color: var(--alien-green); font-weight: 600;">{{draw.prize_pool}} ASTRA</span>
                             </div>
                             <div>
-                                {% if draw.status == "upcoming" %}
+                                {% if draw.status == "UPCOMING" %}
                                 <span class="status-badge status-upcoming">Upcoming</span>
+                                {% elif draw.status == "upcoming" %}
+                                <span class="status-badge status-upcoming">Upcoming</span>
+                                {% elif draw.status == "ACTIVE" %}
+                                <span class="status-badge status-active">Active</span>
                                 {% elif draw.status == "active" %}
                                 <span class="status-badge status-active">Active</span>
-                                {% elif draw.status == "completed" %}
+                                {% elif draw.status == "COMPLETED" %}
+                                <span class="status-badge btn-success">Completed</span>
+                                {% elif draw.status == "ENDED" %}
                                 <span class="status-badge status-completed">Completed</span>
                                 {% else %}
-                                <div style="font-size: 0.8rem; opacity: 0.7;">Cancelled</div>
+                                <span class="status-badge status-cancelled">Cancelled</span>
                                 {% endif %}
                             </div>
                             <div>
@@ -1247,23 +1254,28 @@
                                 <span style="color: var(--neon-cyan);">{{draw.total_tickets_sold}}</span>
                             </div>
                             <div>
-                                <button class="action-btn btn-primary" onclick="viewDraw('{{ draw }}')">
+                                <button class="action-btn btn-primary" onclick="viewDraw('{{ draw.id }}')">
                                     <i class="fas fa-eye"></i> View
                                 </button>
-                                {% if draw.status == "upcoming" or "active" %}
-                                <button class="action-btn btn-warning" onclick="editDraw('quantum-3')">
-                                    <i class="fas fa-edit"></i> Edit
+                                {% if draw.status == "UPCOMING" or "ACTIVE" %}
+                                    <i class="fas fa-edit"></i>                                <button class="action-btn btn-warning" onclick="editDraw('quantum-3')">
+ Edit
                                 </button>
                                 <button class="action-btn btn-danger" onclick="cancelDraw('quantum-3')">
                                     <i class="fas fa-times"></i> Cancel
                                 </button>
                                 {% endif %}
-                                {% if draw.status == "completed" %}
+                                
+                                <button class="action-btn btn-warning" onclick="processDraw({{ draw.id }})">
+                                    <i class="fas fa-rocket"></i> Process
+                                </button>
+                                
+                                {% if draw.status == "COMPLETED" %}
                                 <button class="action-btn btn-warning" onclick="exportDrawData('stellar-5')">
                                     <i class="fas fa-download"></i> Export
                                 </button>
                                 {% endif %}
-                                {% if draw.status == "cancelled" %}
+                                {% if draw.status == "CANCELLED" %}
                                 <button class="action-btn btn-danger" onclick="deleteDraw('cosmic-2')">
                                     <i class="fas fa-trash"></i> Delete
                                 </button>
@@ -1564,6 +1576,70 @@
         }
     </script>
 
+    <script>
+        function processDraw(drawId) {
+    if (!confirm('Are you sure you want to process this draw? This action cannot be undone.')) {
+        return;
+    }
     
+    // Show loading state
+    const button = event.target;
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    button.disabled = true;
+    
+    // Get CSRF token for Django
+    const csrftoken = getCookie('csrftoken');
+    
+    fetch(`/api/draws/${drawId}/process/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (data.winner) {
+                alert(`Draw processed successfully! Winner: ${data.winner.username} (Ticket: ${data.winner.serial_number}) - Prize: $${data.winner.prize_amount}`);
+            } else {
+                alert('Draw processed successfully! No winner found.');
+            }
+            // Reload the page to reflect changes
+            location.reload();
+        } else {
+            alert('Error: ' + data.error);
+            // Reset button
+            button.innerHTML = originalText;
+            button.disabled = false;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while processing the draw.');
+        // Reset button
+        button.innerHTML = originalText;
+        button.disabled = false;
+    });
+}
+
+// Helper function to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+    </script>
 </body>
 </html>

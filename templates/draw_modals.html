@@ -1,0 +1,689 @@
+<script>
+    // Sci-Fi Modal Manager
+class SciFiModal {
+    constructor() {
+        this.modal = null;
+        this.isOpen = false;
+        this.currentDrawId = null;
+        this.isInitialized = false;
+        this.init();
+    }
+
+    init() {
+        this.createModal();
+        this.addStyles();
+        this.bindEvents();
+        this.isInitialized = true;
+    }
+
+    createModal() {
+        // Check if modal already exists
+        if (document.getElementById('sciFiModal')) {
+            this.modal = document.getElementById('sciFiModal');
+            return;
+        }
+
+        const modalHTML = `
+        <div id="sciFiModal" class="sci-fi-modal">
+            <div class="portal-overlay">
+                <div class="portal-glow"></div>
+                <div class="portal-ring"></div>
+            </div>
+            
+            <div class="hologram-container">
+                <div class="hologram-grid"></div>
+                <div class="scan-line"></div>
+                
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="title-section">
+                            <div class="pulse-dots">
+                                <span class="dot dot-1">●</span>
+                                <span class="dot dot-2">●</span>
+                                <span class="dot dot-3">●</span>
+                            </div>
+                            <h2 class="modal-title">
+                                <i class="fas fa-satellite"></i>
+                                <span class="title-text">CONVERGENCE PROTOCOL</span>
+                            </h2>
+                        </div>
+                        <button class="alien-close" id="modalCloseBtn">
+                            <span class="close-icon">⊘</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="data-stream">
+                            <div class="binary-flow">LOADING QUANTUM DATA STREAM...</div>
+                        </div>
+
+                        <div class="draw-hologram" id="drawHologram">
+                            <div class="loading-pulse">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                INITIALIZING QUANTUM CONNECTION...
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <div class="action-panel">
+                            <button class="alien-btn primary" id="forgeKeyBtn">
+                                <i class="fas fa-key"></i>
+                                FORGE KEY
+                            </button>
+                            <button class="alien-btn secondary" id="viewExplorerBtn">
+                                <i class="fas fa-eye"></i>
+                                SCAN MATRIX
+                            </button>
+                            <button class="alien-btn warning" id="processDrawBtn">
+                                <i class="fas fa-bolt"></i>
+                                ACTIVATE CONVERGENCE
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        this.modal = document.getElementById('sciFiModal');
+    }
+
+    addStyles() {
+        if (document.getElementById('sci-fi-modal-styles')) return;
+
+        const styles = `
+        <style id="sci-fi-modal-styles">
+        .sci-fi-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 10000;
+            font-family: 'Courier New', monospace;
+            background: rgba(0, 5, 15, 0.98);
+        }
+
+        .portal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .portal-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, #00ffff 0%, transparent 70%);
+            animation: portalPulse 3s infinite alternate;
+            filter: blur(40px);
+            opacity: 0.3;
+        }
+
+        .portal-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            border: 2px solid #00ffff;
+            border-radius: 50%;
+            animation: portalSpin 4s linear infinite;
+            box-shadow: 0 0 40px #00ffff;
+            opacity: 0.5;
+        }
+
+        .hologram-container {
+            position: relative;
+            width: 90%;
+            max-width: 1200px;
+            height: 85%;
+            margin: 5% auto;
+            background: rgba(0, 15, 30, 0.95);
+            border: 2px solid #00ffff;
+            border-radius: 20px;
+            box-shadow: 
+                0 0 80px rgba(0, 255, 255, 0.4),
+                inset 0 0 100px rgba(0, 255, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .hologram-grid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 30s linear infinite;
+        }
+
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #00ffff, transparent);
+            animation: scan 4s linear infinite;
+            box-shadow: 0 0 20px #00ffff;
+        }
+
+        .modal-content {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            color: #00ffff;
+            padding: 30px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid rgba(0, 255, 255, 0.4);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .title-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .pulse-dots .dot {
+            display: inline-block;
+            margin: 0 5px;
+            animation: pulse 2s infinite;
+            color: #00ffff;
+            font-size: 1.2em;
+        }
+
+        .dot-1 { animation-delay: 0s; }
+        .dot-2 { animation-delay: 0.7s; }
+        .dot-3 { animation-delay: 1.4s; }
+
+        .modal-title {
+            font-size: 2em;
+            text-shadow: 0 0 15px #00ffff;
+            margin: 0;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .alien-close {
+            background: rgba(255, 50, 50, 0.3);
+            border: 2px solid #ff3232;
+            color: #ff3232;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .alien-close:hover {
+            background: rgba(255, 50, 50, 0.6);
+            box-shadow: 0 0 30px #ff3232;
+            transform: scale(1.1);
+        }
+
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+
+        .data-stream {
+            background: rgba(0, 255, 255, 0.15);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 255, 255, 0.4);
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .binary-flow {
+            animation: textScroll 15s linear infinite;
+            white-space: nowrap;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        .draw-hologram {
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-pulse {
+            font-size: 1.5em;
+            text-align: center;
+            animation: pulse 2s infinite;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        .modal-footer {
+            border-top: 2px solid rgba(0, 255, 255, 0.4);
+            padding-top: 20px;
+        }
+
+        .action-panel {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .alien-btn {
+            position: relative;
+            background: rgba(0, 255, 255, 0.2);
+            border: 2px solid #00ffff;
+            color: #00ffff;
+            padding: 15px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 1.1em;
+            letter-spacing: 1px;
+            overflow: hidden;
+            min-width: 200px;
+        }
+
+        .alien-btn:hover {
+            background: rgba(0, 255, 255, 0.4);
+            box-shadow: 0 0 30px #00ffff;
+            transform: translateY(-2px);
+        }
+
+        .alien-btn i {
+            margin-right: 10px;
+        }
+
+        .alien-btn.warning {
+            background: rgba(255, 165, 0, 0.2);
+            border-color: #ffa500;
+            color: #ffa500;
+        }
+
+        .alien-btn.warning:hover {
+            background: rgba(255, 165, 0, 0.4);
+            box-shadow: 0 0 30px #ffa500;
+        }
+
+        .alien-btn.secondary {
+            background: rgba(0, 255, 0, 0.2);
+            border-color: #00ff00;
+            color: #00ff00;
+        }
+
+        .alien-btn.secondary:hover {
+            background: rgba(0, 255, 0, 0.4);
+            box-shadow: 0 0 30px #00ff00;
+        }
+
+        /* Animations */
+        @keyframes portalPulse {
+            0% { opacity: 0.2; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.3); }
+        }
+
+        @keyframes portalSpin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        @keyframes scan {
+            0% { top: 0%; opacity: 0; }
+            50% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes textScroll {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* Data sections */
+        .data-section {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px #00ffff;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .data-item {
+            background: rgba(0, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .data-label {
+            font-size: 0.8em;
+            opacity: 0.7;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .data-value {
+            font-size: 1.2em;
+            font-weight: bold;
+            text-shadow: 0 0 5px #00ffff;
+        }
+
+        .key-item {
+            background: rgba(0, 255, 255, 0.1);
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin: 5px 0;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            animation: keyGlow 3s infinite alternate;
+        }
+
+        @keyframes keyGlow {
+            0% { box-shadow: 0 0 5px #00ffff; }
+            100% { box-shadow: 0 0 20px #00ffff; }
+        }
+
+        .error-message {
+            background: rgba(255, 50, 50, 0.2);
+            border: 2px solid #ff3232;
+            color: #ff3232;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            text-shadow: 0 0 10px #ff3232;
+        }
+        </style>`;
+
+        document.head.insertAdjacentHTML('beforeend', styles);
+    }
+
+    bindEvents() {
+        // Close button
+        document.getElementById('modalCloseBtn')?.addEventListener('click', () => this.close());
+        
+        // Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.isOpen) {
+                this.close();
+            }
+        });
+
+        // Click outside
+        this.modal?.addEventListener('click', (e) => {
+            if (e.target === this.modal) {
+                this.close();
+            }
+        });
+
+        // Action buttons
+        document.getElementById('forgeKeyBtn')?.addEventListener('click', () => this.forgeKey());
+        document.getElementById('viewExplorerBtn')?.addEventListener('click', () => this.viewExplorer());
+        document.getElementById('processDrawBtn')?.addEventListener('click', () => this.processDraw());
+    }
+
+    async open(drawId) {
+        // Ensure modal is created
+        if (!this.modal) {
+            console.error('Modal not initialized');
+            return;
+        }
+
+        this.currentDrawId = drawId;
+        this.isOpen = true;
+        this.modal.style.display = 'block';
+        
+        this.showLoading();
+        
+        try {
+            const response = await fetch(`/api/draws/${drawId}/`);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                this.populateData(data);
+            } else {
+                throw new Error(data.error || 'Failed to load quantum data');
+            }
+        } catch (error) {
+            this.showError(error.message);
+        }
+    }
+
+    close() {
+        if (this.modal) {
+            this.modal.style.display = 'none';
+        }
+        this.isOpen = false;
+        this.currentDrawId = null;
+    }
+
+    showLoading() {
+        const hologram = document.getElementById('drawHologram');
+        if (hologram) {
+            hologram.innerHTML = `
+                <div class="loading-pulse">
+                    <i class="fas fa-spinner fa-spin"></i><br>
+                    CONNECTING TO QUANTUM DATABASE...<br>
+                    <small>Downloading convergence protocol ${this.currentDrawId}</small>
+                </div>
+            `;
+        }
+    }
+
+    populateData(data) {
+        const hologram = document.getElementById('drawHologram');
+        if (!hologram) return;
+
+        const draw = data.draw;
+        
+        hologram.innerHTML = `
+            <div class="data-sections">
+                <div class="data-section">
+                    <div class="section-title">
+                        <i class="fas fa-dna"></i> CORE CONVERGENCE DATA
+                    </div>
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <div class="data-label">CONVERGENCE ID</div>
+                            <div class="data-value" id="modalDrawId">${draw.id}</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">PROTOCOL NAME</div>
+                            <div class="data-value" id="modalDrawTitle">${draw.title}</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">QUANTUM STATE</div>
+                            <div class="data-value" id="modalDrawStatus">${this.formatStatus(draw.status)}</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">ENERGY POOL</div>
+                            <div class="data-value" id="modalDrawPrize">${draw.prize_pool} ASTRA</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="data-section">
+                    <div class="section-title">
+                        <i class="fas fa-clock"></i> TEMPORAL DATA STREAM
+                    </div>
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <div class="data-label">CONVERGENCE TIME</div>
+                            <div class="data-value" id="modalDrawDate">${new Date(draw.draw_datetime).toLocaleString()}</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">PARTICIPANT SIGNATURES</div>
+                            <div class="data-value" id="modalParticipants">${data.participants_count} quantum entities</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">YOUR QUANTUM KEYS</div>
+                            <div class="data-value" id="modalUserKeys">${data.user_keys} synchronized</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">SYMBOL MATRIX</div>
+                            <div class="data-value" id="modalSymbol">${draw.symbol}</div>
+                        </div>
+                    </div>
+                </div>
+
+                ${draw.status === "ENDED" && data.winner ? `
+                <div class="data-section">
+                    <div class="section-title">
+                        <i class="fas fa-crown"></i> CONVERGENCE CHAMPION
+                    </div>
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <div class="data-label">QUANTUM ENTITY</div>
+                            <div class="data-value">${data.winner.username}</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">WINNING SIGNATURE</div>
+                            <div class="data-value">${data.winner.ticket_serial}</div>
+                        </div>
+                    </div>
+                </div>
+                ` : ''}
+
+                <div class="data-section">
+                    <div class="section-title">
+                        <i class="fas fa-key"></i> QUANTUM KEY MATRIX
+                    </div>
+                    <div id="starKeysList">
+                        ${data.star_keys && data.star_keys.length > 0 ? 
+                            data.star_keys.map(key => `
+                                <div class="key-item">
+                                    <i class="fas fa-key"></i> KEY_${key} - QUANTUM_ACTIVE
+                                </div>
+                            `).join('') : 
+                            '<div class="data-value">No quantum keys detected in signature matrix</div>'
+                        }
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Update process button visibility
+        const processBtn = document.getElementById('processDrawBtn');
+        if (processBtn) {
+            processBtn.style.display = (draw.status === "ACTIVE" && this.isUserStaff()) ? 'block' : 'none';
+        }
+    }
+
+    formatStatus(status) {
+        const statusMap = {
+            'ACTIVE': '🟢 QUANTUM_ACTIVE',
+            'ENDED': '🔴 CONVERGENCE_COMPLETE',
+            'PENDING': '🟡 MATRIX_CHARGING'
+        };
+        return statusMap[status] || status;
+    }
+
+    isUserStaff() {
+        // Implement based on your user system
+        return document.body.dataset.userIsStaff === 'true';
+    }
+
+    forgeKey() {
+        if (this.currentDrawId) {
+            alert(`Initiating quantum key forge for convergence ${this.currentDrawId}`);
+        }
+    }
+
+    viewExplorer() {
+        if (this.currentDrawId) {
+            window.open(`https://hashscan.io/testnet/token/0.0.6916857`, '_blank');
+        }
+    }
+
+    processDraw() {
+        if (this.currentDrawId) {
+            if (confirm('Activate quantum convergence protocol? This will initiate the selection process.')) {
+                // Implement your process draw functionality
+                console.log('Processing draw:', this.currentDrawId);
+            }
+        }
+    }
+
+    showError(message) {
+        const hologram = document.getElementById('drawHologram');
+        if (hologram) {
+            hologram.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i><br>
+                    <h3>QUANTUM SYSTEM ERROR</h3>
+                    <p>${message}</p>
+                    <button class="alien-btn" onclick="sciFiModal.open(${this.currentDrawId})">
+                        <i class="fas fa-redo"></i> RETRY CONNECTION
+                    </button>
+                </div>
+            `;
+        }
+    }
+}
+
+// Initialize modal when DOM is ready
+let sciFiModal;
+
+document.addEventListener('DOMContentLoaded', function() {
+    sciFiModal = new SciFiModal();
+});
+
+// Global function for button clicks
+function viewDrawDetailss(drawId) {
+    if (window.sciFiModal) {
+        sciFiModal.open(drawId);
+    } else {
+        console.error('Quantum interface not initialized');
+        alert('Quantum interface loading... Please try again.');
+    }
+}
+</script>

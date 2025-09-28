@@ -58,6 +58,7 @@ def submit_message(message):
 
     try:
         receipt = transaction.execute(client)
+        print(receipt)
         print(f"Message submitted to topic {topic_id}: {message}")
         return {
             'status':'success',

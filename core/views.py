@@ -10,16 +10,23 @@ from django.db.models import Sum, Count, Q
 from django.core.cache import cache
 from django.views.decorators.cache import cache_page
 from django.db import transaction  # Fixed import
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponseRedirect
 import json
 import string
 import random
 import logging
+import requests
 
 from core.models import UserWallet, Draw, ForgedKey, Alert
 from hiero.utils import create_new_account
 from hiero.ft import associate_token
 from hiero.nft import create_nft, mint_nft, associate_nft, transfer_nft
 from hiero.hcs import submit_message
+from core.main import generate_star_convergence_with_mapping
+
+def id_generator(size=8, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
 
 logger = logging.getLogger(__name__)
 
@@ -230,7 +237,10 @@ def dashboard(request):
     active_draws = Draw.objects.filter(
         status__in=["upcoming", "active"],
     )[:10]
-    total_prizes = Draw.objects.get(status='active').prize_pool
+    try:
+        total_prizes = Draw.objects.get(status=Draw.DrawStatus.ACTIVE).prize_pool
+    except:
+        total_prizes = 0
     all_draws = Draw.objects.all()
     # User's winning history
     user_wins = Draw.objects.filter(
@@ -297,7 +307,7 @@ def submit_keys(request):
                 assc=associate_nft(account_id=user_wallet.recipient_id, token_id=draw.nft_id, account_private_key=user_wallet.decrypt_key(), nft_id=nft_['message'])
                 if assc['status'] == 'success':
                     # Create forged key
-                    serial_number = f"AK{draw_id:04d}{user_wallet_id:04d}{nft_['serial']}"
+                    serial_number = f"AK{draw_id}{user_wallet_id}{nft_['serial']}"
                     forged_key = ForgedKey.objects.create(
                         user_wallet=user_wallet,
                         draw=draw,
@@ -334,7 +344,7 @@ def create_draw(request):
         
         title = request.POST['title']
         symbol = request.POST['symbol']
-        status = request.POST['status']
+        status = request.POST['status'].upper()
         prize_pool = request.POST['prize_pool']
         draw_datetime = request.POST['draw_datetime']
         
@@ -372,35 +382,48 @@ def create_draw(request):
 # Optimized API views with selective field loading
 @login_required
 def draw_detail(request, draw_id):
+    user = request.user
     """Optimized draw detail with field selection"""
     draw = get_object_or_404(Draw.objects.only(
         'id', 'title', 'status', 'prize_pool', 'draw_datetime', 'total_tickets_sold', 'winner_wallet_id', 'winning_ticket_serial'
     ), id=draw_id)
-    
-    
+
+    # Get user's star keys for this draw
+    user_star_keys = ForgedKey.objects.filter(
+        user_wallet__user=user,
+        draw=draw
+    ).values_list('serial_number', flat=True)
+
     draw_data = {
-        'id': draw.id,
-        'title': draw.title,
-        'status': draw.status,
-        'prize_pool': float(draw.prize_pool),
-        'draw_datetime': draw.draw_datetime,
-        'total_tickets_sold': draw.total_tickets_sold,
-        'can_participate': draw.can_participate(),
+        "success": True,
+        "draw": {
+            "id": draw.id,
+            "title": draw.title,
+            "symbol": "NEB7",
+            "prize_pool": draw.prize_pool,
+            "status": draw.status,
+            "draw_datetime": draw.draw_datetime,
+            "nft_token_id": draw.nft_id,
+            "nft_contract": draw.nft_id
+        },
+        "participants_count": draw.total_tickets_sold,
+        "user_keys": len(user_star_keys),
+        "star_keys": list(user_star_keys),
     }
-    
-    if draw.status == Draw.DrawStatus.ENDED:
+    print(draw.nft_id)
+    if draw.status == "ENDED":
         draw_data['winning_keys'] = draw.get_star_keys()
         if draw.winner_wallet_id:
             # Efficiently get winner username
             winner_username = User.objects.filter(
-                userwallet__id=draw.winner_wallet_id
+                id=draw.winner_wallet.user.id
             ).values_list('username', flat=True).first()
             draw_data['winner'] = {
                 'username': winner_username,
                 'ticket_serial': draw.winning_ticket_serial
             }
     
-    return JsonResponse({'draw': draw_data})
+    return JsonResponse(draw_data)
 
 @login_required
 def user_keys(request):
@@ -476,13 +499,26 @@ def process_draw(request, draw_id):
     
     try:
         draw = get_object_or_404(Draw, id=draw_id)
-        
-        if draw.status != Draw.DrawStatus.ACTIVE or draw.draw_datetime > timezone.now():
+        if draw.status != Draw.DrawStatus.ACTIVE and draw.draw_datetime < timezone.now():
             return JsonResponse({'success': False, 'error': 'Draw cannot be processed'})
         
-        # Find winner
-        winner = draw.map_winner()
+        try:
+            star_keys = generate_star_convergence_with_mapping()
+            print(star_keys)
+            msg = {
+                'draw':draw.title,
+                'contract_id':draw.nft_id,
+                'star_keys':star_keys,
+                'timestamp':timezone.now()
+            }
+            hcs_msg = submit_message(message=f"{msg}")
+            if hcs_msg['status'] == 'success':
+                draw.star_keys = str(star_keys)
+                draw.save()
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': f'Star Key Initialization Failed: {e}'})
         
+        winner = draw.map_winner()
         with transaction.atomic():
             if winner:
                 prize_amount = draw.prize_pool * 0.7
@@ -493,9 +529,11 @@ def process_draw(request, draw_id):
                     winner_wallet=winner.user_wallet,
                     winning_ticket_serial=winner.serial_number
                 )
+                Draw.objects.filter(status=Draw.DrawStatus.UPCOMING).update(status=Draw.DrawStatus.ACTIVE)
+                Alert.objects.create(title="Cosmic Victory!", icon="trophy", content=f"{draw.title} Convergence Winner announced! ")
             else:
                 Draw.objects.filter(id=draw_id).update(status=Draw.DrawStatus.ENDED)
-        
+                Draw.objects.filter(status=Draw.DrawStatus.UPCOMING).update(status=Draw.DrawStatus.ACTIVE)
         # Clear relevant caches
         cache.delete_many(["platform_stats", "landing_page_data"])
         
@@ -515,3 +553,59 @@ def process_draw(request, draw_id):
     
 def faqs(request):
     return render(request, 'faqs.html')
+
+def buy_astra(request):
+    pass
+
+@login_required(login_url="login")
+def pay_mpesa(request):
+    user = request.user
+    if request.method == "POST":
+        tel = request.POST['tel']
+        amount = request.POST['amount']
+        if tel and amount:
+            reference = id_generator()
+            ua = {
+                    'Content-Type': 'application/json',
+                    'Authorization':'Basic WDFkN3VBYVYzTUxsYjI1VmNhS2U6UHBEMlFnVkMxUXJOalNWTWU4bHhXejd6RFVNNWwzcldnQlcwZkR6cQ==',
+                }
+            url = 'https://backend.payhero.co.ke/api/v2/payments'
+            
+            data = {
+                "amount": int(amount),
+                "phone_number": f"{tel}",
+                "channel_id": 947, 
+                "provider": "m-pesa",
+                "external_reference": f"{reference}",
+                "callback_url": "https://astraldraw.com/payment/mpesa/success/"
+            }
+            res = requests.post(url=url, json=data, headers=ua)
+            js = res.json()
+            print(js)
+            if js['success'] == True:
+                # Add EXception to handle Already Exists subscription
+                #Transaction.objects.create(user=user, amount=amount, reference=reference)
+                messages.success(request, f"STK push initiated successfully, If you did not get any pop up on your phone try following this manual steps to complete your payment: {js['manual_instructions']}")
+            else:
+                messages.warning(request, "An error occured while trying to process your payment, please try again later")
+        else:
+            messages.warning(request, "All Fields are requeired!")
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+@csrf_exempt
+def contributeSuccess(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            response_data = data.get('response', {})
+            reference = response_data.get("ExternalReference")
+            status = response_data.get("Status")
+            payment =  None#Contribute.objects.get(reference=reference)
+            if status == "Success":
+                payment.status = "Completed"
+                payment.save()
+            else:
+                payment.status = "Cancelled"
+                payment.save()
+        except Exception as e:
+            print(e)

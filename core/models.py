@@ -150,6 +150,7 @@ class Draw(models.Model):
         Returns the winning ForgedKey object or None.
         """
         winning_keys = self.get_star_keys()
+        print(winning_keys)
         if not winning_keys or len(winning_keys) != 6:
             return None
             
@@ -242,7 +243,10 @@ class Draw(models.Model):
     def is_active(self):
         """Check if draw is currently active."""
         return self.status
-
+    
+    def can_process(self):
+        return self.draw_datetime < timezone.now()
+    
     def can_participate(self):
         """Check if users can still participate in this draw."""
         return self.status in [self.DrawStatus.UPCOMING, self.DrawStatus.ACTIVE] and self.draw_datetime > timezone.now()
