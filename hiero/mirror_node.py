@@ -124,3 +124,27 @@ def display_balance_report():
         print("\nTop Holders:")
         for holder in sorted(holders, key=lambda x: -x['balance'])[:5]:  # Show top 5
             print(f"   {holder['account']}: {holder['balance']:>12,} tokens")
+
+def get_balance(id):
+    #id = '0.0.6918174'
+    url = f"https://testnet.mirrornode.hedera.com/api/v1/accounts/{id}/tokens"
+    bal = requests.get(url=url)
+    jsn = bal.json()
+    tokens = jsn['tokens']
+    balance = 0
+    for token in tokens:
+        if token['token_id'] == '0.0.6918197':
+            balance = token['balance']
+            return balance
+    return balance
+
+'''
+{'tokens': 
+[
+{'automatic_association': False, 'balance': 0, 'created_timestamp': '1758749143.579549599', 'decimals': 2, 'token_id': '0.0.6784793', 'freeze_status': 'NOT_APPLICABLE', 'kyc_status': 'NOT_APPLICABLE'}, 
+{'automatic_association': False, 'balance': 1, 'created_timestamp': '1758985326.457101000', 'decimals': 0, 'token_id': '0.0.6912941', 'freeze_status': 'UNFROZEN', 'kyc_status': 'NOT_APPLICABLE'}, 
+{'automatic_association': False, 'balance': 1, 'created_timestamp': '1759005540.380057017', 'decimals': 0, 'token_id': '0.0.6916857', 'freeze_status': 'UNFROZEN', 'kyc_status': 'NOT_APPLICABLE'}, 
+{'automatic_association': False, 'balance': 1, 'created_timestamp': '1759046914.196592800', 'decimals': 0, 'token_id': '0.0.6918207', 'freeze_status': 'UNFROZEN', 'kyc_status': 'NOT_APPLICABLE'}, 
+{'automatic_association': False, 'balance': 1, 'created_timestamp': '1759054809.497101226', 'decimals': 0, 'token_id': '0.0.6918461', 'freeze_status': 'UNFROZEN', 'kyc_status': 'NOT_APPLICABLE'}], 
+'links': {'next': None}}
+'''

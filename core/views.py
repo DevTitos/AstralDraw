@@ -17,6 +17,8 @@ import string
 import random
 import logging
 import requests
+import os
+from dotenv import load_dotenv
 
 from core.models import UserWallet, Draw, ForgedKey, Alert
 from hiero.utils import create_new_account
@@ -24,7 +26,13 @@ from hiero.ft import associate_token
 from hiero.nft import create_nft, mint_nft, associate_nft, transfer_nft
 from hiero.hcs import submit_message
 from core.main import generate_star_convergence_with_mapping
+from hiero.mirror_node import get_balance
 
+from hiero_sdk_python import (
+    AccountId,
+)
+
+load_dotenv()
 def id_generator(size=8, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
@@ -234,8 +242,9 @@ def dashboard(request):
         'id', 'serial_number', 'created_at', 'draw__title', 'draw__status'
     ).order_by('-created_at')[:10]
     # Active draws user can participate in
+    pool_id = AccountId.from_string(os.getenv('NBL_ID'))
     active_draws = Draw.objects.filter(
-        status__in=["upcoming", "active"],
+        status__in=[Draw.DrawStatus.UPCOMING, Draw.DrawStatus.ACTIVE],
     )[:10]
     try:
         total_prizes = Draw.objects.get(status=Draw.DrawStatus.ACTIVE).prize_pool
@@ -246,7 +255,7 @@ def dashboard(request):
     user_wins = Draw.objects.filter(
         winner_wallet=user_wallet
     ).only('title', 'prize_pool', 'draw_datetime').order_by('-draw_datetime')[:5]
-    
+    astra_bal = get_balance(user_wallet.recipient_id)
     context = {
         'user_wallet': user_wallet,
         'user_keys': user_keys,
@@ -256,7 +265,9 @@ def dashboard(request):
         'all_draws':all_draws,
         'cosmic_users':cosmic_users,
         'keys_forged':keys_forged,
-        'total_prizes':total_prizes
+        'total_prizes':total_prizes,
+        'pool_id':pool_id,
+        'astra_bal':astra_bal,
     }
     
     cache.set(cache_key, context, 120)  # 2 minute cache
@@ -294,6 +305,12 @@ def submit_keys(request):
             messages.warning(request, "Keys already submitted for this draw!")
             return redirect(request.META.get('HTTP_REFERER', '/'))
         # Payment Comes here
+        try:
+            astra_bal = get_balance(user_wallet.recipient_id)
+        except Exception as e:
+            print(e)
+            messages.warning(request, "Insufficient Astral to Participate in this draw, please top up your account and try again!")
+            return redirect(request.META.get('HTTP_REFERER', '/'))
         # Check user Astra balance using Mirror Node
         star_keys = [key_1, key_2, key_3, key_4, key_5, key_6]
         

@@ -963,18 +963,6 @@
                     </li>
                 </ul>
             </nav>
-            
-            <nav class="nav-section">
-                <div class="nav-title">System</div>
-                <ul class="nav-items">
-                    <li class="nav-item">
-                        <a class="nav-link" data-section="support">
-                            <i class="fas fa-life-ring nav-icon"></i>
-                            <span>Quantum Support</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
         </aside>
         
         <!-- Main Content -->
@@ -1001,7 +989,7 @@
                     
                     <div class="stat-card">
                         <div class="stat-icon"><i class="fas fa-coins"></i></div>
-                        <div class="stat-value">{{ user_wallet.balance|default:"0" }} ASTRA</div>
+                        <div class="stat-value">{{ astra_bal }} ASTRA</div>
                         <div class="stat-label">Nebula Balance</div>
                     </div>
                     
@@ -1054,8 +1042,8 @@
                         <button class="action-btn btn-primary" onclick="showSection('draws')">
                             <i class="fas fa-eye"></i> View Active Draws
                         </button>
-                        <button class="action-btn btn-warning" onclick="debugDate()" style="margin-left: 0.5rem;">
-                            <i class="fas fa-bug"></i> Debug Date
+                        <button class="action-btn btn-warning" onclick="verifyNFT( '{{next_draw.nft_id}}' )" style="margin-left: 0.5rem;">
+                            <i class="fas fa-search"></i> Verify Draw
                         </button>
                     </div>
                 </div>
@@ -1147,6 +1135,9 @@
                                 <i class="fas fa-key"></i> Forge Key
                             </button>
                             {% endif %}
+                            <button class="action-btn btn-warning" onclick="verifyNFT( '{{draw.nft_id}}' )" style="margin-left: 0.5rem;">
+                            <i class="fas fa-search"></i> Verify Draw
+                        </button>
                         </div>
                     </div>
                     {% endfor %}
@@ -1639,6 +1630,13 @@ function getCookie(name) {
         }
     }
     return cookieValue;
+}
+
+function verifyPool(tokenId) {
+    window.open(`https://hashscan.io/testnet/token/${tokenId}`, '_blank');
+}
+function verifyNFT(tokenId) {
+    window.open(`https://hashscan.io/testnet/token/${tokenId}`, '_blank');
 }
     </script>
 </body>

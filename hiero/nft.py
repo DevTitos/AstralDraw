@@ -41,12 +41,12 @@ def create_test_account(client):
     # Generate private key for new account
     new_account_private_key = PrivateKey.generate()
     new_account_public_key = new_account_private_key.public_key()
-    
+    client, operator_id, operator_key = setup_client()
     # Create new account with initial balance of 1 HBAR
     transaction = (
         AccountCreateTransaction()
         .set_key(new_account_public_key)
-        .set_initial_balance(Hbar(1))
+        .set_initial_balance(Hbar(1000))
         .freeze_with(client)
     )
     

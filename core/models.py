@@ -315,11 +315,28 @@ class ForgedKey(models.Model):
     def get_star_keys(self) -> list:
         """Decrypt and return star keys as list."""
         if not self.star_keys:
+            print("NOT FOUND")
             return []
         try:
             decrypted = self.decrypt_data(self.star_keys)
+
+            # If it's already a list, return it directly
+            if isinstance(decrypted, list):
+                return decrypted
+
+            # If it's a string representation of a list, convert it
+            if decrypted.startswith('[') and decrypted.endswith(']'):
+                # Remove brackets and split by commas
+                cleaned = decrypted.strip('[]').replace("'", "").replace('"', '')
+                keys_list = [key.strip() for key in cleaned.split(',')]
+                return keys_list
+
+            # Try to parse as JSON
+            import json
             return json.loads(decrypted)
-        except (json.JSONDecodeError, ValueError):
+
+        except Exception as e:
+            print(f"Error parsing star keys: {e}")
             return []
 
     def set_star_keys(self, keys_list: list):

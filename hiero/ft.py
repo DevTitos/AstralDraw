@@ -14,18 +14,20 @@ from hiero_sdk_python import (
     AccountCreateTransaction,
     TokenAssociateTransaction,
 )
-
+from hiero_sdk_python.hbar import Hbar
+from hiero_sdk_python.response_code import ResponseCode
 load_dotenv()
 
 operator_id = AccountId.from_string(os.getenv('OPERATOR_ID'))
 operator_key = PrivateKey.from_string_ed25519(os.getenv('OPERATOR_KEY'))
 token_id = TokenId.from_string(os.getenv('Token_ID'))
+nbl_id = AccountId.from_string(os.getenv('NBL_ID'))
+nbl_key = PrivateKey.from_string_ed25519(os.getenv('NBL_KEY'))
 
 def transfer_tokens(recipient_id, amount):
     network = Network(network='testnet')
     client = Client(network)
-    token_id = TokenId.from_string(os.getenv('TOKEN_ID'))
-
+    
     client.set_operator(operator_id, operator_key)
 
     transaction = (
@@ -95,7 +97,7 @@ def create_token_fungible_finite():
     # In this example, we set up a default empty token create transaction, then set the values
     transaction = (
         TokenCreateTransaction()
-        .set_token_name("ASTRAL")
+        .set_token_name("ASTRAL TOKEN")
         .set_token_symbol("ASTRA")
         .set_decimals(2)
         .set_initial_supply(100000000)  # TokenType.FUNGIBLE_COMMON must have >0 initial supply. Cannot exceed max supply
@@ -103,18 +105,17 @@ def create_token_fungible_finite():
         .set_token_type(TokenType.FUNGIBLE_COMMON)
         .set_supply_type(SupplyType.FINITE)
         .set_max_supply(1000000000)
+        .set_admin_key(admin_key)
+        .set_supply_key(supply_key)
+        .set_freeze_key(freeze_key)
         .freeze_with(client) # Freeze the transaction. Returns self so we can sign.
+
     )
     
-    # Add optional keys only if they exist
-    if admin_key:
-        transaction.set_admin_key(admin_key)
-    if supply_key:
-        transaction.set_supply_key(supply_key)
-    if freeze_key:
-        transaction.set_freeze_key(freeze_key)
-    if pause_key:
-        transaction.set_pause_key(pause_key)
+    #if supply_key:
+    #    transaction.set_supply_key(supply_key)
+    #if pause_key:
+    #    transaction.set_pause_key(pause_key)
     # Required signature by treasury (operator)
     transaction.sign(operator_key)
     # Sign with adminKey if provided
@@ -131,5 +132,19 @@ def create_token_fungible_finite():
     except Exception as e:
         print(f"Token creation failed: {str(e)}")
         sys.exit(1)
-if __name__ == "__main__":
-    create_token_fungible_finite()
+
+def setup_client():
+    """Initialize and set up the client with operator account"""
+    # Initialize network and client
+    network = Network(network='testnet')
+    client = Client(network)
+
+    # Set up operator account
+    operator_id = AccountId.from_string(os.getenv('OPERATOR_ID'))
+    operator_key = PrivateKey.from_string(os.getenv('OPERATOR_KEY'))
+    client.set_operator(operator_id, operator_key)
+    
+    return client, operator_id, operator_key
+
+#associate_token(recipient_id_new=nbl_id, recipient_key_new=nbl_key)
+#transfer_tokens(recipient_id=nbl_id, amount=1000000)
