@@ -22,7 +22,7 @@ from dotenv import load_dotenv
 
 from core.models import UserWallet, Draw, ForgedKey, Alert
 from hiero.utils import create_new_account
-from hiero.ft import associate_token
+from hiero.ft import associate_token, transfer_tokens, fund_pool
 from hiero.nft import create_nft, mint_nft, associate_nft, transfer_nft
 from hiero.hcs import submit_message
 from core.main import generate_star_convergence_with_mapping
@@ -193,8 +193,8 @@ def landing(request):
     
     # Use only() to load only necessary fields
     active_draws = Draw.objects.filter(
-        status__in=[Draw.DrawStatus.UPCOMING, Draw.DrawStatus.ACTIVE]
-    ).only('id', 'title', 'prize_pool', 'draw_datetime').order_by('draw_datetime')[:3]
+        status__in=[Draw.DrawStatus.UPCOMING, Draw.DrawStatus.ACTIVE, Draw.DrawStatus.ENDED]
+    ).only('id', 'title', 'prize_pool', 'draw_datetime').order_by('draw_datetime')[3:]
     
     recent_winners = Draw.objects.filter(
         status=Draw.DrawStatus.ENDED,
@@ -202,7 +202,10 @@ def landing(request):
     ).select_related('winner_wallet__user').only(
         'title', 'prize_pool', 'draw_datetime', 'winner_wallet__user__first_name'
     )[:5]
-    
+    try:
+        active = Draw.objects.get(status=Draw.DrawStatus.ACTIVE)
+    except:
+        active = None
     # Use aggregate with specific fields
     stats = Draw.objects.aggregate(
         total_draws=Count('id'),
@@ -214,6 +217,7 @@ def landing(request):
         'active_draws': active_draws,
         'recent_winners': recent_winners,
         'stats': stats,
+        'active':active
     }
     
     cache.set(cache_key, context, 300)
@@ -226,8 +230,8 @@ def dashboard(request):
     cache_key = f"dashboard_{user_id}"
     cached_data = cache.get(cache_key)
     
-    if cached_data:
-        return render(request, 'dash.html', cached_data)
+    #if cached_data:
+    #    return render(request, 'dash.html', cached_data)
     
     # Get or create wallet efficiently
     user_wallet = UserWallet.objects.get(
@@ -255,7 +259,10 @@ def dashboard(request):
     user_wins = Draw.objects.filter(
         winner_wallet=user_wallet
     ).only('title', 'prize_pool', 'draw_datetime').order_by('-draw_datetime')[:5]
-    astra_bal = get_balance(user_wallet.recipient_id)
+    try:
+        astra_bal = get_balance(user_wallet.recipient_id)
+    except Exception as e:
+        astra_bal = 0.00
     context = {
         'user_wallet': user_wallet,
         'user_keys': user_keys,
@@ -304,11 +311,12 @@ def submit_keys(request):
         if ForgedKey.objects.filter(user_wallet=user_wallet, draw=draw).exists():
             messages.warning(request, "Keys already submitted for this draw!")
             return redirect(request.META.get('HTTP_REFERER', '/'))
-        # Payment Comes here
+    
         try:
             astra_bal = get_balance(user_wallet.recipient_id)
         except Exception as e:
-            print(e)
+            astra_bal = 0
+        if astra_bal < 100:
             messages.warning(request, "Insufficient Astral to Participate in this draw, please top up your account and try again!")
             return redirect(request.META.get('HTTP_REFERER', '/'))
         # Check user Astra balance using Mirror Node
@@ -335,6 +343,11 @@ def submit_keys(request):
                     draw.save()
                     # CReate HCS Message for immutability
                     submit_message(message=ticket_metadata)
+                    # Transfer Astra from user wallet to Nebula Pool
+                    transfer = fund_pool(recipient_id=user_wallet.recipient_id, amount=100, account_private_key=user_wallet.decrypt_key())
+                    if transfer['status'] == 'failed':
+                        messages.warning(request, f"Token Transfer Failed")
+                        return redirect(request.META.get('HTTP_REFERER', '/'))
             else:
                 messages.warning(request, f"Forging Failed: {nft_['message']}")
                 return redirect(request.META.get('HTTP_REFERER', '/'))
@@ -571,8 +584,51 @@ def process_draw(request, draw_id):
 def faqs(request):
     return render(request, 'faqs.html')
 
+
+def id_generator():
+    # ✅ Replace with your actual reference generator
+    import uuid
+    return str(uuid.uuid4())[:10]
+
+@login_required(login_url="login")
+@require_http_methods(["POST"])
 def buy_astra(request):
-    pass
+    try:
+        tel = request.POST.get("tel")
+        amount = request.POST.get("amount")
+        user = request.user
+        user_wallet = UserWallet.objects.get(user=user)
+        if not tel or not amount:
+            messages.warning(request, "Pone Number and amount are required")
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        try:
+            amount = int(amount)
+            if amount <= 0:
+                raise ValueError
+        except ValueError:
+            messages.warning(request, "Amount must be a positive integer.")
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        reference = id_generator()
+
+
+        # Transfer Token to User Wallet
+        process_buy = transfer_tokens(recipient_id=user_wallet.recipient_id, amount=amount*100)# Because of two decimal places
+        if process_buy['status'] == "failed":
+            messages.warning(request, "Failed to Transfer ASTRA. Try again later.")
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        else:
+            messages.success(request, f"{amount} ASTRA Transfered successfully to your account. Check your phone.")
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    
+    except requests.RequestException as e:
+        logger.error(f"M-Pesa API Error: {e}")
+        messages.warning(request, "Payment gateway unreachable.")
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+    except Exception as e:
+        logger.exception("Unexpected error in buy_astra view")
+        messages.warning(request, "nternal server error.")
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 @login_required(login_url="login")
 def pay_mpesa(request):

@@ -877,6 +877,9 @@
                 <button class="control-btn" onclick="openModal('notificationsModal')">
                     <i class="fas fa-bell"></i> <span>Alerts</span>
                 </button>
+                <button class="control-btn" onclick="openModal('purchaseAstraModal')">
+                    <i class="fas fa-cash"></i> <span>Buy Astra</span>
+                </button>
                 <button class="control-btn" onclick="openModal('settingsModal')">
                     <i class="fas fa-cog"></i> <span>Settings</span>
                 </button>
@@ -1040,11 +1043,14 @@
 
                     <div style="margin-top: 1rem;">
                         <button class="action-btn btn-primary" onclick="showSection('draws')">
-                            <i class="fas fa-eye"></i> View Active Draws
+                            <i class="fas fa-eye"></i> All Draws
                         </button>
                         <button class="action-btn btn-warning" onclick="verifyNFT( '{{next_draw.nft_id}}' )" style="margin-left: 0.5rem;">
                             <i class="fas fa-search"></i> Verify Draw
                         </button>
+                        <button class="action-btn btn-success" onclick="openModal('forgeKeyModal')">
+                                <i class="fas fa-key"></i> Forge Key
+                            </button>
                     </div>
                 </div>
                 
@@ -1124,8 +1130,11 @@
                         <div class="stat-value">{{ draw.prize_pool }} ASTRA</div>
                         <div class="stat-label">{{ draw.title }} Convergence</div>
                         <span class="status-badge status-{{ key.draw.status|lower }}">
-                                    {{ draw.status }}
-                                </span>
+                            {{ draw.status }}
+                        </span>
+                        {% if draw.status == "ENDED" %}
+                        <div class="stat-label">{{ draw.get_star_keys }}</div>
+                        {% endif %}
                         <div style="margin-top: 1rem;">
                             <button class="action-btn btn-primary" onclick="viewDrawDetailss({{ draw.id }})">
                                 <i class="fas fa-eye"></i> View Details

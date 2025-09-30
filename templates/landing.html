@@ -1181,8 +1181,13 @@
             
             <div class="prize-container">
                 <div class="prize-visual">
-                    <div class="prize-amount">42,000 ASTRA</div>
-                    <div class="prize-label">Nebula-7 Convergence</div>
+                    {% if active %}
+                    <div class="prize-amount">{{active.prize_pool}} ASTRA</div>
+                    <div class="prize-label">{{active.title}} Convergence</div>
+                    {% else %}
+                    <div class="prize-amount">1,000,000 ASTRA</div>
+                    <div class="prize-label">Nebula- Convergence</div>
+                    {% endif %}
                 </div>
                 <div class="prize-details">
                     <p class="prize-info">The Nebula Vault grows with each Star Key forged. When the Cosmic Alignment occurs, one lucky participant will receive the entire prize pool, with Stellar Echoes awarded to additional winners.</p>
@@ -1193,8 +1198,10 @@
                         <li><i class="fas fa-check"></i> <span>Instant prize distribution to winners</span></li>
                         <li><i class="fas fa-check"></i> <span>No hidden fees or charges</span></li>
                     </ul>
+                    <a href="{% url 'login' %}">
+                        <button class="cta-btn primary">Forge Star Key Now</button>
+                    </a>
                     
-                    <button class="cta-btn primary" onclick="openModal('registerModal')">Forge Star Key Now</button>
                 </div>
             </div>
         </section>
@@ -1204,26 +1211,14 @@
             <p class="section-subtitle">Witness the history of cosmic fortune. These are our most recent Nebula Vault emissions to lucky participants.</p>
             
             <div class="draws-container">
+                {% for draw in active_draws %}
                 <div class="draw-card">
-                    <div class="draw-id">Nebula-6 Convergence</div>
-                    <div class="draw-winner">0x8a3d...e7c2</div>
-                    <div class="draw-prize">8,400 ASTRA</div>
-                    <div class="draw-date">Stardate: 2265.09.21</div>
+                    <div class="draw-id">{{draw.title}} Convergence</div>
+                    <div class="draw-winner">{{draw.nft_id}}</div>
+                    <div class="draw-prize">{{draw.prize_pool}} ASTRA</div>
+                    <div class="draw-date">Stardate: {{draw.draw_datetime}}</div>
                 </div>
-                
-                <div class="draw-card">
-                    <div class="draw-id">Nebula-5 Convergence</div>
-                    <div class="draw-winner">0x5f2a...9d14</div>
-                    <div class="draw-prize">7,200 ASTRA</div>
-                    <div class="draw-date">Stardate: 2265.09.14</div>
-                </div>
-                
-                <div class="draw-card">
-                    <div class="draw-id">Nebula-4 Convergence</div>
-                    <div class="draw-winner">0x3c71...b862</div>
-                    <div class="draw-prize">9,100 ASTRA</div>
-                    <div class="draw-date">Stardate: 2265.09.07</div>
-                </div>
+                {% endfor %}
             </div>
         </section>
         

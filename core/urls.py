@@ -24,6 +24,7 @@ urlpatterns = [
     # User Data URLs
     path('my-keys/', views.user_keys, name='user_keys'),
     path('platform-stats/', views.platform_stats, name='platform_stats'),
+    path('buy/ASTRA/mpesa/', views.buy_astra, name='buy_astra'),
     
     # API URLs (JSON endpoints)
     path('api/draws/<int:draw_id>/', views.draw_detail, name='api_draw_detail'),

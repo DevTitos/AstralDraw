@@ -1,0 +1,79 @@
+<!-- Full Page Cosmic Astra Purchase Modal -->
+<div id="cosmicAstraModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80">
+  <div class="bg-gradient-to-br from-purple-900 via-indigo-800 to-black rounded-2xl shadow-2xl w-full max-w-lg mx-4 p-6 relative animate-fadeIn">
+    <!-- Close Button -->
+    <button onclick="closeCosmicModal()" class="absolute top-4 right-4 text-white hover:text-gray-300">
+      ✕
+    </button>
+
+    <!-- Modal Header -->
+    <h2 class="text-3xl text-white text-center font-bold mb-4">🚀 Buy Astra</h2>
+    <p class="text-gray-300 text-center mb-6">Purchase Astra using M‑Pesa for instant access.</p>
+
+    <!-- Purchase Form -->
+    <form id="astraPurchaseForm" method="POST" onsubmit="return submitAstraPurchase(event)">
+      <!-- CSRF Token will be inserted dynamically -->
+      <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+      <div class="mb-4">
+        <label for="tel" class="block text-gray-300 mb-1">Phone Number</label>
+        <input type="text" id="tel" name="tel" placeholder="2547XXXXXXXX" class="w-full px-4 py-2 rounded-xl bg-gray-900 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+      </div>
+
+      <div class="mb-6">
+        <label for="amount" class="block text-gray-300 mb-1">Amount (KES)</label>
+        <input type="number" id="amount" name="amount" placeholder="100" class="w-full px-4 py-2 rounded-xl bg-gray-900 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+      </div>
+
+      <button type="submit" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl shadow-lg transition-transform transform hover:scale-105">Pay Now</button>
+    </form>
+
+    <p id="modalMessage" class="text-center text-sm text-gray-300 mt-4"></p>
+  </div>
+</div>
+
+<script>
+function openCosmicModal() {
+  document.getElementById("cosmicAstraModal").classList.remove("hidden");
+}
+
+function closeCosmicModal() {
+  document.getElementById("cosmicAstraModal").classList.add("hidden");
+}
+
+async function submitAstraPurchase(event) {
+  event.preventDefault();
+
+  const form = document.getElementById("astraPurchaseForm");
+  const formData = new FormData(form);
+
+  try {
+    const response = await fetch("{% url 'pay_mpesa' %}", {
+      method: "POST",
+      headers: {
+        'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+      },
+      body: formData
+    });
+
+    if (!response.ok) throw new Error("Network error. Please try again.");
+
+    document.getElementById("modalMessage").innerText = "✅ Payment initiated successfully. Check your phone for STK Push.";
+    document.getElementById("modalMessage").classList.remove("text-red-500");
+    document.getElementById("modalMessage").classList.add("text-green-400");
+
+  } catch (error) {
+    document.getElementById("modalMessage").innerText = "❌ Payment failed. Please try again later.";
+    document.getElementById("modalMessage").classList.remove("text-green-400");
+    document.getElementById("modalMessage").classList.add("text-red-500");
+  }
+}
+</script>
+
+<style>
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-fadeIn { animation: fadeIn 0.3s ease-out; }
+</style>
