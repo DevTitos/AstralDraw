@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Celestial Chess - Complete Game Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a2a, #1a0033);
+            color: #00f3ff;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            border-bottom: 3px solid #00f3ff;
+        }
+
+        .game-title {
+            font-size: 4em;
+            background: linear-gradient(45deg, #00f3ff, #ff00ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 50px rgba(0, 243, 255, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #8888ff;
+            font-size: 1.4em;
+            margin-bottom: 20px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .nav-tab {
+            background: rgba(0, 50, 100, 0.6);
+            border: 2px solid #00f3ff;
+            border-radius: 25px;
+            padding: 12px 25px;
+            color: #00f3ff;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab:hover {
+            background: rgba(0, 243, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(45deg, #00f3ff, #ff00ff);
+            color: #0a0a2a;
+        }
+
+        .content-section {
+            display: none;
+            background: rgba(0, 20, 40, 0.8);
+            border: 2px solid #00f3ff;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.2);
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: #00f3ff;
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ff00ff;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #ff00ff;
+            font-size: 1.6em;
+            margin: 25px 0 15px 0;
+        }
+
+        h4 {
+            color: #00ff88;
+            font-size: 1.3em;
+            margin: 20px 0 10px 0;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        ul, ol {
+            margin: 15px 0 15px 30px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .card {
+            background: rgba(0, 50, 100, 0.6);
+            border: 1px solid #00f3ff;
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 243, 255, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-icon {
+            font-size: 2em;
+            margin-right: 15px;
+        }
+
+        .card-title {
+            color: #00f3ff;
+            font-size: 1.4em;
+            font-weight: bold;
+        }
+
+        .piece-demo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .piece-visual {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            color: white;
+            text-shadow: 1px 1px 2px black;
+        }
+
+        .piece-prime {
+            background: radial-gradient(circle, #ff4444, #aa0000);
+            border: 2px solid #ff8888;
+        }
+
+        .piece-fibonacci {
+            background: radial-gradient(circle, #44ff44, #00aa00);
+            border: 2px solid #88ff88;
+        }
+
+        .piece-square {
+            background: radial-gradient(circle, #4444ff, #0000aa);
+            border: 2px solid #8888ff;
+        }
+
+        .piece-composite {
+            background: radial-gradient(circle, #ffff44, #aaaa00);
+            border: 2px solid #ffff88;
+        }
+
+        .movement-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+            margin: 15px 0;
+            max-width: 250px;
+        }
+
+        .grid-cell {
+            aspect-ratio: 1;
+            background: rgba(0, 50, 100, 0.3);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+        }
+
+        .grid-cell.piece {
+            border: 2px solid gold;
+        }
+
+        .grid-cell.valid {
+            background: rgba(0, 255, 0, 0.3);
+        }
+
+        .grid-cell.attack {
+            background: rgba(255, 0, 0, 0.3);
+        }
+
+        .tech-tree {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .tech-card {
+            background: rgba(0, 100, 200, 0.3);
+            border: 1px solid #00f3ff;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .tech-level {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .level-badge {
+            background: #ff00ff;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8em;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .table th {
+            background: rgba(0, 243, 255, 0.2);
+            color: #00f3ff;
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #00f3ff;
+        }
+
+        .table td {
+            padding: 12px;
+            border: 1px solid #00f3ff;
+            background: rgba(0, 50, 100, 0.3);
+        }
+
+        .warning-box {
+            background: rgba(255, 165, 0, 0.2);
+            border: 2px solid #ffa500;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .tip-box {
+            background: rgba(0, 255, 136, 0.2);
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00f3ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(45deg, #00f3ff, #ff00ff);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 25px;
+            color: white;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+        }
+
+        .back-to-game {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .glossary-term {
+            color: #00ff88;
+            font-weight: bold;
+            cursor: help;
+            border-bottom: 1px dotted #00ff88;
+        }
+
+        .quick-nav {
+            position: sticky;
+            top: 20px;
+            background: rgba(0, 20, 40, 0.9);
+            border: 2px solid #ff00ff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .quick-nav h4 {
+            margin-top: 0;
+            color: #ff00ff;
+        }
+
+        .quick-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .quick-link {
+            background: rgba(0, 243, 255, 0.2);
+            border: 1px solid #00f3ff;
+            border-radius: 15px;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quick-link:hover {
+            background: rgba(0, 243, 255, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="game-title">CELESTIAL CHESS</h1>
+            <div class="subtitle">The Ultimate Quantum Warfare Strategy Game</div>
+            <p>Master the art of mathematical combat in this alien-technology enhanced chess variant</p>
+        </div>
+
+        <div class="quick-nav">
+            <h4>🚀 Quick Navigation</h4>
+            <div class="quick-links">
+                <div class="quick-link" onclick="showSection('basics')">Game Basics</div>
+                <div class="quick-link" onclick="showSection('pieces')">Piece Types</div>
+                <div class="quick-link" onclick="showSection('movement')">Movement</div>
+                <div class="quick-link" onclick="showSection('abilities')">Abilities</div>
+                <div class="quick-link" onclick="showSection('multiplayer')">Multiplayer</div>
+                <div class="quick-link" onclick="showSection('strategies')">Strategies</div>
+            </div>
+        </div>
+
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="showSection('basics')">🎮 Game Basics</div>
+            <div class="nav-tab" onclick="showSection('pieces')">♟️ Piece Types</div>
+            <div class="nav-tab" onclick="showSection('movement')">🚀 Movement</div>
+            <div class="nav-tab" onclick="showSection('abilities')">⚡ Abilities</div>
+            <div class="nav-tab" onclick="showSection('victory')">🏆 Victory</div>
+            <div class="nav-tab" onclick="showSection('multiplayer')">🌐 Multiplayer</div>
+            <div class="nav-tab" onclick="showSection('strategies')">🧠 Strategies</div>
+            <div class="nav-tab" onclick="showSection('lore')">📖 Lore</div>
+        </div>
+
+        <!-- Game Basics Section -->
+        <div id="basics" class="content-section active">
+            <h2>🎮 Game Basics</h2>
+            
+            <h3>What is Celestial Chess?</h3>
+            <p>Celestial Chess is an advanced strategy game that combines traditional chess concepts with mathematical principles and alien quantum technology. Two commanders battle across an 8x8 quantum matrix using mathematically-enhanced pieces.</p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">🌌</div>
+                        <div class="card-title">The Board</div>
+                    </div>
+                    <p>8x8 Quantum Matrix with special tiles that alter game physics:</p>
+                    <ul>
+                        <li><strong>Wormholes:</strong> Instant teleportation</li>
+                        <li><strong>Dark Matter:</strong> Movement penalties</li>
+                        <li><strong>Quantum Tiles:</strong> Ability enhancements</li>
+                        <li><strong>Neutron Stars:</strong> Gravity wells</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">⏰</div>
+                        <div class="card-title">Game Flow</div>
+                    </div>
+                    <p>Real-time strategy with consequences:</p>
+                    <ul>
+                        <li><strong>3-minute timers</strong> per player</li>
+                        <li><strong>Energy system</strong> for special abilities</li>
+                        <li><strong>Time penalties</strong> drain quantum energy</li>
+                        <li><strong>Multiple victory</strong> conditions</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">💰</div>
+                        <div class="card-title">Economy</div>
+                    </div>
+                    <p>Stake ASTRA tokens for competitive play:</p>
+                    <ul>
+                        <li><strong>Minimum stake:</strong> 100 ASTRA</li>
+                        <li><strong>Winner takes 90%</strong> of total stake</li>
+                        <li><strong>10% platform fee</strong> for development</li>
+                        <li><strong>Practice mode</strong> available</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Getting Started</h3>
+            <ol>
+                <li><strong>Choose your mode:</strong> Practice or Ranked Multiplayer</li>
+                <li><strong>Set your stake:</strong> Decide ASTRA amount (ranked only)</li>
+                <li><strong>Understand the pieces:</strong> Learn number type movements</li>
+                <li><strong>Master abilities:</strong> Use quantum energy strategically</li>
+                <li><strong>Plan your strategy:</strong> Balance offense and defense</li>
+            </ol>
+
+            <div class="tip-box">
+                <h4>💡 Pro Tip</h4>
+                <p>Start with Practice Mode to learn piece movements and special abilities before risking ASTRA tokens in ranked matches. Watch your timer - slow play costs quantum energy!</p>
+            </div>
+        </div>
+
+        <!-- Piece Types Section -->
+        <div id="pieces" class="content-section">
+            <h2>♟️ Piece Types & Properties</h2>
+            
+            <h3>Mathematical Classification</h3>
+            <p>Every piece is a number with mathematical properties that determine its movement and abilities:</p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <div class="piece-demo">
+                        <div class="piece-visual piece-prime">7</div>
+                        <div>
+                            <h4>Prime Numbers</h4>
+                            <p><strong>Quantum Singularities</strong> - Elite offensive pieces</p>
+                        </div>
+                    </div>
+                    <ul>
+                        <li><strong>Movement:</strong> Diagonal + Knight</li>
+                        <li><strong>Special:</strong> Phase through matter</li>
+                        <li><strong>Weakness:</strong> Other primes</li>
+                        <li><strong>Examples:</strong> 7, 17, 23, 41</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="piece-demo">
+                        <div class="piece-visual piece-fibonacci">8</div>
+                        <div>
+                            <h4>Fibonacci Sequence</h4>
+                            <p><strong>Resonance Harmonizers</strong> - Combo specialists</p>
+                        </div>
+                    </div>
+                    <ul>
+                        <li><strong>Movement:</strong> Orthogonal waves</li>
+                        <li><strong>Special:</strong> Chain reactions</li>
+                        <li><strong>Weakness:</strong> Prime numbers</li>
+                        <li><strong>Examples:</strong> 8, 13, 21, 55</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="piece-demo">
+                        <div class="piece-visual piece-square">16</div>
+                        <div>
+                            <h4>Perfect Squares</h4>
+                            <p><strong>Dimensional Anchors</strong> - Area control</p>
+                        </div>
+                    </div>
+                    <ul>
+                        <li><strong>Movement:</strong> Jump moves</li>
+                        <li><strong>Special:</strong> Teleportation</li>
+                        <li><strong>Weakness:</strong> Fibonacci chains</li>
+                        <li><strong>Examples:</strong> 16, 25, 36, 64</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="piece-demo">
+                        <div class="piece-visual piece-composite">12</div>
+                        <div>
+                            <h4>Composite Numbers</h4>
+                            <p><strong>Plasma Constructs</strong> - Balanced units</p>
+                        </div>
+                    </div>
+                    <ul>
+                        <li><strong>Movement:</strong> Standard queen</li>
+                        <li><strong>Special:</strong> Versatile positioning</li>
+                        <li><strong>Weakness:</strong> Specialized counters</li>
+                        <li><strong>Examples:</strong> 12, 18, 24, 28</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Reality Core Pieces</h3>
+            <p>Each player has one <strong>Reality Core</strong> piece that must be protected:</p>
+            <ul>
+                <li><strong>Player 1:</strong> Prime 23 - "Chronos Weaver"</li>
+                <li><strong>Player 2:</strong> Prime 17 - "Quantum Sentinel"</li>
+                <li>Losing your Reality Core means instant defeat</li>
+                <li>Cores have enhanced defensive capabilities</li>
+            </ul>
+
+            <div class="warning-box">
+                <h4>⚠️ Critical Knowledge</h4>
+                <p>Your Reality Core is your most important piece! Protect it at all costs while trying to capture your opponent's Core. Losing it means immediate game over.</p>
+            </div>
+        </div>
+
+        <!-- Movement Section -->
+        <div id="movement" class="content-section">
+            <h2>🚀 Movement Patterns</h2>
+
+            <h3>Prime Number Movement</h3>
+            <p>Primes move in quantum tunneling patterns - diagonal and knight combinations:</p>
+            
+            <div class="movement-grid">
+                <div class="grid-cell">◼</div><div class="grid-cell valid">◼</div><div class="grid-cell">◼</div><div class="grid-cell valid">◼</div><div class="grid-cell">◼</div>
+                <div class="grid-cell valid">◼</div><div class="grid-cell">◼</div><div class="grid-cell">◼</div><div class="grid-cell">◼</div><div class="grid-cell valid">◼</div>
+                <div class="grid-cell">◼</div><div class="grid-cell">◼</div><div class="grid-cell piece">7</div><div class="grid-cell">◼</div><div class="grid-cell">◼</div>
+                <div class="grid-cell valid">◼</div><div class="grid-cell">◼</div><div class="grid-cell">◼</div><div class="grid-cell">◼</div><div class="grid-cell valid">◼</div>
+                <div class="grid-cell">◼</div><div class="grid-cell valid">◼</div><div class="grid-cell">◼</div><div class="grid-cell valid">◼</div><div class="grid-cell">◼</div>
+            </div>
+
+            <h3>Fibonacci Movement</h3>
+            <p>Fibonacci pieces move in wave propagation patterns - extended orthogonal moves:</p>
+            
+            <div class="movement-grid">
+                <div class="grid-cell">◼</div><div class="grid-cell valid">◼</div><div class="grid-cell">◼</div><div class="grid-cell valid">◼</div><div class="grid-cell">◼</div>
+                <div class="grid-cell">◼</div><div class="grid-cell valid">◼</div><div class="grid-cell">◼</div><div class="grid-cell valid">◼</div><div class="grid-cell">◼</div>
+                <div class="grid-cell valid">◼</div><div class="grid-cell valid">◼</div><div class="grid-cell piece">8</div><div class="grid-cell valid">◼</div><div class="grid-cell valid">◼</div>
+                <div class="grid-cell">◼</div><div class="grid-cell valid">◼</div><div class="grid-cell">◼</div><div class="grid-cell valid">◼</div><div class="grid-cell">◼</div>
+                <div class="grid-cell">◼</div><div class="grid-cell valid">◼</div><div class="grid-cell">◼</div><div class="grid-cell valid">◼</div><div class="grid-cell">◼</div>
+            </div>
+
+            <h3>Special Tile Effects</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Tile Type</th>
+                        <th>Appearance</th>
+                        <th>Effect</th>
+                        <th>Strategy Tip</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Wormhole</td>
+                        <td>🌀 Swirling colors</td>
+                        <td>Instant teleport to linked wormhole</td>
+                        <td>Use for surprise attacks or escapes</td>
+                    </tr>
+                    <tr>
+                        <td>Dark Matter</td>
+                        <td>⚫ Black/purple glow</td>
+                        <td>Movement range halved</td>
+                        <td>Defend key areas, avoid with primes</td>
+                    </tr>
+                    <tr>
+                        <td>Quantum Tile</td>
+                        <td>🔵 Blue pulsating</td>
+                        <td>Ability cost reduced by 50%</td>
+                        <td>Stage pieces here for ability usage</td>
+                    </tr>
+                    <tr>
+                        <td>Neutron Star</td>
+                        <td>⚪ White gravity well</td>
+                        <td>Pieces pulled toward center each turn</td>
+                        <td>Use for positional advantages</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Abilities Section -->
+        <div id="abilities" class="content-section">
+            <h2>⚡ Quantum Abilities</h2>
+
+            <h3>Energy System</h3>
+            <p>Each player starts with 100 Quantum Energy that regenerates 10 points per turn. Use energy for special abilities:</p>
+
+            <div class="tech-tree">
+                <div class="tech-card">
+                    <div class="tech-level">
+                        <h4>🕳️ Singularity Collapse</h4>
+                        <span class="level-badge">25 Energy</span>
+                    </div>
+                    <p>Create a black hole that captures all adjacent enemy pieces</p>
+                    <ul>
+                        <li>Range: 1 square around user</li>
+                        <li>Cooldown: 3 turns</li>
+                        <li>Best with: Prime numbers</li>
+                    </ul>
+                </div>
+
+                <div class="tech-card">
+                    <div class="tech-level">
+                        <h4>⏳ Temporal Loop</h4>
+                        <span class="level-badge">30 Energy</span>
+                    </div>
+                    <p>Reverse the last move made by either player</p>
+                    <ul>
+                        <li>Can undo captures</li>
+                        <li>Strategic game-changer</li>
+                        <li>Use to recover from mistakes</li>
+                    </ul>
+                </div>
+
+                <div class="tech-card">
+                    <div class="tech-level">
+                        <h4>🌀 Quantum Tunnel</h4>
+                        <span class="level-badge">20 Energy</span>
+                    </div>
+                    <p>Teleport any piece to any empty square</p>
+                    <ul>
+                        <li>Range: Entire board</li>
+                        <li>Great for positioning</li>
+                        <li>Escape or attack tool</li>
+                    </ul>
+                </div>
+
+                <div class="tech-card">
+                    <div class="tech-level">
+                        <h4>⚡ Reality Anchor</h4>
+                        <span class="level-badge">15 Energy</span>
+                    </div>
+                    <p>Prevent special abilities in target area for 2 turns</p>
+                    <ul>
+                        <li>Area: 3x3 squares</li>
+                        <li>Duration: 2 turns</li>
+                        <li>Defensive utility</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Research Tree</h3>
+            <p>As games progress, research new technologies:</p>
+            <ol>
+                <li><strong>Basic Teleportation:</strong> Unlock Quantum Tunnel ability</li>
+                <li><strong>Move Reversal:</strong> Access Temporal Loop</li>
+                <li><strong>Reality Anchor:</strong> Learn area denial</li>
+                <li><strong>Advanced Tech:</strong> Multi-piece entanglement, reality splicing</li>
+            </ol>
+
+            <div class="tip-box">
+                <h4>💡 Energy Management</h4>
+                <p>Don't waste energy on low-value abilities. Save for critical moments when you can gain significant advantage or prevent defeat. Remember that energy regenerates slowly!</p>
+            </div>
+        </div>
+
+        <!-- Victory Conditions Section -->
+        <div id="victory" class="content-section">
+            <h2>🏆 Victory Conditions</h2>
+
+            <h3>Primary Victory Methods</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">🎯</div>
+                        <div class="card-title">Reality Core Capture</div>
+                    </div>
+                    <p>Capture your opponent's Reality Core piece (Prime 23 or 17)</p>
+                    <ul>
+                        <li>Instant victory</li>
+                        <li>Highest priority objective</li>
+                        <li>Requires penetrating defenses</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">⚡</div>
+                        <div class="card-title">Energy Depletion</div>
+                    </div>
+                    <p>Reduce opponent's quantum energy to zero</p>
+                    <ul>
+                        <li>Passive victory condition</li>
+                        <li>Time-based strategy</li>
+                        <li>Penalizes slow play</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">🏃</div>
+                        <div class="card-title">Time Out</div>
+                    </div>
+                    <p>Opponent runs out of time on their clock</p>
+                    <ul>
+                        <li>3-minute timer per player</li>
+                        <li>Energy drains when time is low</li>
+                        <li>Pressure-based victory</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Secondary Objectives</h3>
+            <p>While not instant victory, these provide significant advantages:</p>
+            <ul>
+                <li><strong>Prime Domination:</strong> Control 75% of prime numbers on board</li>
+                <li><strong>Fibonacci Chain:</strong> Create a complete Fibonacci sequence</li>
+                <li><strong>Square Formation:</strong> Control all four corner squares</li>
+                <li><strong>Pattern Completion:</strong> Complete cosmic mathematical patterns</li>
+            </ul>
+
+            <div class="warning-box">
+                <h4>⚠️ Multiple Victory Paths</h4>
+                <p>Don't focus solely on one victory condition! The best players maintain pressure on multiple fronts, forcing opponents to split their attention and resources.</p>
+            </div>
+        </div>
+
+        <!-- Multiplayer Section -->
+        <div id="multiplayer" class="content-section">
+            <h2>🌐 Multiplayer & Economy</h2>
+
+            <h3>Game Modes</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">🎯</div>
+                        <div class="card-title">Practice Mode</div>
+                    </div>
+                    <p>Learn the game without risk</p>
+                    <ul>
+                        <li>No ASTRA stakes</li>
+                        <li>AI opponents available</li>
+                        <li>Perfect for beginners</li>
+                        <li>Unlimited play time</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">⚡</div>
+                        <div class="card-title">Challenge Mode</div>
+                    </div>
+                    <p>Challenge specific players</p>
+                    <ul>
+                        <li>Set custom stakes</li>
+                        <li>30-second acceptance window</li>
+                        <liDirect competition</li>
+                        <li>Ranked or friendly</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">🏆</div>
+                        <div class="card-title">Ranked Arena</div>
+                    </div>
+                    <p>Competitive matchmaking</p>
+                    <ul>
+                        <li>ELO rating system</li>
+                        <li>Seasonal rewards</li>
+                        <li>Global leaderboards</li>
+                        <li>Progression system</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>ASTRA Token Economy</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Action</th>
+                        <th>ASTRA Cost</th>
+                        <th>Benefit</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Minimum Stake</td>
+                        <td>100 ASTRA</td>
+                        <td>Enter ranked games</td>
+                        <td>Prevents spam</td>
+                    </tr>
+                    <tr>
+                        <td>Winner's Share</td>
+                        <td>90% of total</td>
+                        <td>Majority of pot</td>
+                        <td>Incentivizes skill</td>
+                    </tr>
+                    <tr>
+                        <td>Platform Fee</td>
+                        <td>10% of total</td>
+                        <td>Ecosystem development</td>
+                        <td>Funds improvements</td>
+                    </tr>
+                    <tr>
+                        <td>Maximum Stake</td>
+                        <td>10,000 ASTRA</td>
+                        <td>High-stakes games</td>
+                        <td>Risk management</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Ranking System</h3>
+            <p>Progress through cosmic tiers based on skill:</p>
+            <ol>
+                <li><strong>Protostar</strong> (0-799): Learning phase</li>
+                <li><strong>Nova</strong> (800-1199): Basic competence</li>
+                <li><strong>Galactic Player</strong> (1200-1599): Solid strategies</li>
+                <li><strong>Stellar Expert</strong> (1600-1999): Advanced techniques</li>
+                <li><strong>Cosmic Master</strong> (2000-2399): Elite level</li>
+                <li><strong>Quantum Grandmaster</strong> (2400+): Top players</li>
+            </ol>
+        </div>
+
+        <!-- Strategies Section -->
+        <div id="strategies" class="content-section">
+            <h2>🧠 Advanced Strategies</h2>
+
+            <h3>Opening Strategies</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>Prime Gambit</h4>
+                    <p>Aggressive prime number development</p>
+                    <div class="code-block">
+        Development: 2, 3, 5, 7, 11<br>
+        Goal: Early center control<br>
+        Risk: High<br>
+        Reward: Pressure from start
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4>Fibonacci Defense</h4>
+                    <p>Chain-based positional play</p>
+                    <div class="code-block">
+        Development: 1, 2, 3, 5, 8<br>
+        Goal: Solid structure<br>
+        Risk: Low<br>
+        Reward: Late-game strength
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4>Square Fortress</h4>
+                    <p>Area control with perfect squares</p>
+                    <div class="code-block">
+        Development: 4, 9, 16, 25<br>
+        Goal: Board domination<br>
+        Risk: Medium<br>
+        Reward: Space advantage
+                    </div>
+                </div>
+            </div>
+
+            <h3>Mid-Game Tactics</h3>
+            <ul>
+                <li><strong>Number Trading:</strong> Exchange favorable pieces while maintaining mathematical advantages</li>
+                <li><strong>Energy Management:</strong> Save abilities for critical turning points</li>
+                <li><strong>Tile Control:</strong> Utilize special tiles for positional advantages</li>
+                <li><strong>Pattern Recognition:</strong> Identify and complete cosmic patterns</li>
+            </ul>
+
+            <h3>Endgame Techniques</h3>
+            <ul>
+                <li><strong>Prime Conversion:</strong> Use remaining primes to restrict opponent movement</li>
+                <li><strong>Fibonacci Finisher:</strong> Convert material advantage into winning chains</li>
+                <li><strong>Time Management:</strong> Use clock pressure to force opponent mistakes</li>
+                <li><strong>Energy Starvation:</strong> Force opponent to waste quantum energy</li>
+            </ul>
+
+            <div class="tip-box">
+                <h4>🎯 Pro Strategy: The Quantum Triangle</h4>
+                <p>Maintain a balanced force of one Prime, one Fibonacci, and one Square piece working together. This "Quantum Triangle" can handle any threat while maintaining offensive pressure on multiple victory conditions.</p>
+            </div>
+        </div>
+
+        <!-- Lore Section -->
+        <div id="lore" class="content-section">
+            <h2>📖 Cosmic Lore</h2>
+
+            <h3>The Xylos Discovery</h3>
+            <p>In 2347, humanity's deep space probes detected the Xylos Code - an alien mathematical language that appears to govern quantum reality itself. This discovery revealed that advanced civilizations use mathematical constructs for warfare and communication.</p>
+
+            <h3>Faction Backgrounds</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>👽 Quantum Collective</h4>
+                    <p><strong>Philosophy:</strong> Mastery through energy manipulation</p>
+                    <p><strong>Homeworld:</strong> Cygnus X-1 quantum realm</p>
+                    <p><strong>Specialty:</strong> Singularity technology and reality bending</p>
+                </div>
+
+                <div class="card">
+                    <h4>👾 Temporal Syndicate</h4>
+                    <p><strong>Philosophy:</strong> Control through chronological dominance</p>
+                    <p><strong>Homeworld:</strong> Orion temporal nexus</p>
+                    <p><strong>Specialty:</strong> Time manipulation and prediction algorithms</p>
+                </div>
+            </div>
+
+            <h3>The Celestial War</h3>
+            <p>Celestial Chess emerged as the primary training simulator for the Galactic Defense Force. Commanders from across the universe battle not for territory, but for understanding of cosmic mathematics and quantum physics.</p>
+
+            <h3>Alien Technology</h3>
+            <ul>
+                <li><strong>Quantum Entanglement:</strong> Instant communication across space</li>
+                <li><strong>Temporal Engineering:</strong> Manipulation of time streams</li>
+                <li><strong>Reality Anchors:</strong> Technology to stabilize local physics</li>
+                <li><strong>Multiverse Access:</strong> Gateway to parallel dimensions</li>
+            </ul>
+
+            <div class="tip-box">
+                <h4>🌌 The Greater Purpose</h4>
+                <p>Beyond mere competition, Celestial Chess serves as humanity's first step toward understanding advanced alien civilizations and preparing for eventual contact. Each game advances our knowledge of quantum reality.</p>
+            </div>
+        </div>
+
+        <div class="back-to-game">
+            <a href="celestial-chess-game.html" class="btn">🚀 Play Celestial Chess Now</a>
+            <p>Ready to test your skills in the quantum arena?</p>
+        </div>
+    </div>
+
+    <script>
+        // Initialize stars background
+        function initStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 150; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = Math.random() * 2 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 5 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Show specific section
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Activate corresponding tab (find by onclick content)
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                if (tab.getAttribute('onclick').includes(sectionId)) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            // Scroll to top of section
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize page
+        window.onload = function() {
+            initStars();
+            
+            // Add glossary term tooltips
+            document.querySelectorAll('.glossary-term').forEach(term => {
+                term.title = 'Click for definition';
+            });
+        };
+
+        // Simple search functionality
+        function searchGuide() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const sections = document.querySelectorAll('.content-section');
+            let found = false;
+            
+            sections.forEach(section => {
+                const content = section.textContent.toLowerCase();
+                if (content.includes(searchTerm) && searchTerm.length > 2) {
+                    section.style.backgroundColor = 'rgba(0, 255, 136, 0.1)';
+                    found = true;
+                } else {
+                    section.style.backgroundColor = '';
+                }
+            });
+            
+            if (!found && searchTerm.length > 2) {
+                alert('No results found for: ' + searchTerm);
+            }
+        }
+    </script>
+</body>
+</html>

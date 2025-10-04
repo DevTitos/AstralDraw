@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Celestial Chess - Alien Tech Simulator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a2a, #1a0033);
+            color: #00f3ff;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #00f3ff;
+            padding-bottom: 20px;
+        }
+
+        .game-title {
+            font-size: 3em;
+            background: linear-gradient(45deg, #00f3ff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0, 243, 255, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #8888ff;
+            font-size: 1.2em;
+        }
+
+        .game-area {
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .player-panel {
+            background: rgba(0, 20, 40, 0.8);
+            border: 2px solid #00f3ff;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+        }
+
+        .player-title {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #00f3ff;
+            font-size: 1.3em;
+        }
+
+        .energy-bar {
+            height: 20px;
+            background: #002244;
+            border-radius: 10px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .energy-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00f3ff, #ff00ff);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .tech-tree {
+            margin-top: 20px;
+        }
+
+        .tech-item {
+            background: rgba(0, 50, 100, 0.6);
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tech-item:hover {
+            background: rgba(0, 100, 200, 0.8);
+            transform: translateX(5px);
+        }
+
+        .tech-item.researched {
+            background: rgba(0, 150, 50, 0.6);
+            border-left: 4px solid #00ff88;
+        }
+
+        .chess-board {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            gap: 2px;
+            background: rgba(0, 243, 255, 0.1);
+            border: 3px solid #00f3ff;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 0 50px rgba(0, 243, 255, 0.2);
+        }
+
+        .board-square {
+            aspect-ratio: 1;
+            background: rgba(0, 50, 100, 0.3);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .board-square:hover {
+            background: rgba(0, 243, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .board-square.quantum-tile {
+            background: radial-gradient(circle, #00f3ff33, transparent);
+            animation: pulse 2s infinite;
+        }
+
+        .board-square.dark-matter {
+            background: radial-gradient(circle, #ff00ff33, transparent);
+        }
+
+        .board-square.wormhole {
+            background: conic-gradient(from 0deg, #00f3ff, #ff00ff, #00f3ff);
+        }
+
+        .piece {
+            width: 80%;
+            height: 80%;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px black;
+            transition: all 0.3s ease;
+        }
+
+        .piece.prime {
+            background: radial-gradient(circle, #ff4444, #aa0000);
+            border: 2px solid #ff8888;
+        }
+
+        .piece.fibonacci {
+            background: radial-gradient(circle, #44ff44, #00aa00);
+            border: 2px solid #88ff88;
+        }
+
+        .piece.square {
+            background: radial-gradient(circle, #4444ff, #0000aa);
+            border: 2px solid #8888ff;
+        }
+
+        .piece.composite {
+            background: radial-gradient(circle, #ffff44, #aaaa00);
+            border: 2px solid #ffff88;
+        }
+
+        .piece.selected {
+            box-shadow: 0 0 20px gold;
+            transform: scale(1.1);
+        }
+
+        .piece.valid-move {
+            box-shadow: 0 0 15px #00ff00;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .action-panel {
+            background: rgba(0, 20, 40, 0.8);
+            border: 2px solid #ff00ff;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .action-title {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #ff00ff;
+        }
+
+        .ability-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .ability {
+            background: rgba(255, 0, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .ability:hover {
+            background: rgba(255, 0, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .ability.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .log-panel {
+            background: rgba(0, 20, 40, 0.8);
+            border: 2px solid #00ff88;
+            border-radius: 15px;
+            padding: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .log-title {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #00ff88;
+        }
+
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        .cosmic-event {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid #ff00ff;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            z-index: 1000;
+            animation: cosmicPulse 2s infinite;
+        }
+
+        @keyframes cosmicPulse {
+            0%, 100% { box-shadow: 0 0 50px rgba(255, 0, 255, 0.5); }
+            50% { box-shadow: 0 0 80px rgba(255, 0, 255, 0.8); }
+        }
+
+        .victory-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0, 243, 255, 0.3), rgba(255, 0, 255, 0.3));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .victory-message {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            border: 4px solid gold;
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="game-title">QUANTUM CELESTIAL CHESS</h1>
+            <div class="subtitle">Alien Technology Warfare Simulator - Classified: Cosmic Clearance Required</div>
+        </div>
+
+        <div class="game-area">
+            <!-- Player 1 Panel -->
+            <div class="player-panel">
+                <div class="player-title">👽 PLAYER 1 - QUANTUM COLLECTIVE</div>
+                <div class="energy-display">
+                    <div>QUANTUM ENERGY:</div>
+                    <div class="energy-bar">
+                        <div class="energy-fill" id="p1-energy" style="width: 100%"></div>
+                    </div>
+                    <div id="p1-energy-text">100/100</div>
+                </div>
+                
+                <div class="tech-tree">
+                    <div class="tech-title">XENOTECH RESEARCH:</div>
+                    <div class="tech-item" onclick="researchTech('quantum_entanglement', 1)">🔮 Basic Teleportation</div>
+                    <div class="tech-item" onclick="researchTech('temporal_engineering', 1)">⏳ Move Reversal</div>
+                    <div class="tech-item" onclick="researchTech('reality_anchor', 1)">⚡ Reality Anchor</div>
+                </div>
+            </div>
+
+            <!-- Chess Board -->
+            <div class="chess-board" id="chess-board">
+                <!-- Board will be generated by JavaScript -->
+            </div>
+
+            <!-- Player 2 Panel -->
+            <div class="player-panel">
+                <div class="player-title">👾 PLAYER 2 - TEMPORAL SYNDICATE</div>
+                <div class="energy-display">
+                    <div>QUANTUM ENERGY:</div>
+                    <div class="energy-bar">
+                        <div class="energy-fill" id="p2-energy" style="width: 100%"></div>
+                    </div>
+                    <div id="p2-energy-text">100/100</div>
+                </div>
+                
+                <div class="tech-tree">
+                    <div class="tech-title">XENOTECH RESEARCH:</div>
+                    <div class="tech-item" onclick="researchTech('quantum_entanglement', 2)">🔮 Basic Teleportation</div>
+                    <div class="tech-item" onclick="researchTech('temporal_engineering', 2)">⏳ Move Reversal</div>
+                    <div class="tech-item" onclick="researchTech('reality_anchor', 2)">⚡ Reality Anchor</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="action-panel">
+                <div class="action-title">QUANTUM ABILITIES</div>
+                <div class="ability-grid">
+                    <div class="ability" onclick="useAbility('singularity')">
+                        <div>🕳️ SINGULARITY COLLAPSE</div>
+                        <div>Cost: 25 Energy</div>
+                    </div>
+                    <div class="ability" onclick="useAbility('temporal_loop')">
+                        <div>⏳ TEMPORAL LOOP</div>
+                        <div>Cost: 30 Energy</div>
+                    </div>
+                    <div class="ability" onclick="useAbility('quantum_tunnel')">
+                        <div>🌀 QUANTUM TUNNEL</div>
+                        <div>Cost: 20 Energy</div>
+                    </div>
+                    <div class="ability" onclick="useAbility('reality_anchor')">
+                        <div>⚡ REALITY ANCHOR</div>
+                        <div>Cost: 15 Energy</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="log-panel">
+                <div class="log-title">QUANTUM BATTLE LOG</div>
+                <div id="battle-log">
+                    <div class="log-entry">🌌 Quantum matrix initialized...</div>
+                    <div class="log-entry">👽 Player 1: Quantum Collective online</div>
+                    <div class="log-entry">👾 Player 2: Temporal Syndicate online</div>
+                    <div class="log-entry">⚡ Begin temporal warfare simulation</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        const gameState = {
+            currentPlayer: 1,
+            selectedPiece: null,
+            players: {
+                1: { energy: 100, tech: [], pieces: [] },
+                2: { energy: 100, tech: [], pieces: [] }
+            },
+            board: [],
+            turn: 1,
+            gameActive: true
+        };
+
+        // Initialize stars background
+        function initStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = Math.random() * 3 + 'px';
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 5 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Initialize game board
+        function initBoard() {
+            const board = document.getElementById('chess-board');
+            board.innerHTML = '';
+            
+            // Create special tiles
+            const specialTiles = {
+                '2,2': 'quantum-tile',
+                '5,5': 'dark-matter', 
+                '1,7': 'wormhole',
+                '6,1': 'wormhole'
+            };
+
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    const square = document.createElement('div');
+                    square.className = 'board-square';
+                    square.dataset.row = row;
+                    square.dataset.col = col;
+                    
+                    const tileKey = `${row},${col}`;
+                    if (specialTiles[tileKey]) {
+                        square.classList.add(specialTiles[tileKey]);
+                    }
+                    
+                    square.addEventListener('click', () => handleSquareClick(row, col));
+                    board.appendChild(square);
+                }
+            }
+
+            // Initialize pieces
+            setupPieces();
+        }
+
+        // Setup initial pieces
+        function setupPieces() {
+            // Player 1 pieces (bottom)
+            placePiece(6, 0, 7, 1);  // Prime
+            placePiece(6, 1, 8, 1);  // Fibonacci
+            placePiece(6, 2, 16, 1); // Square
+            placePiece(6, 3, 12, 1); // Composite
+            placePiece(7, 0, 23, 1); // Prime (Reality Core)
+            placePiece(7, 1, 21, 1); // Fibonacci
+            placePiece(7, 2, 36, 1); // Square
+            placePiece(7, 3, 18, 1); // Composite
+
+            // Player 2 pieces (top)
+            placePiece(0, 4, 41, 2); // Prime
+            placePiece(0, 5, 55, 2); // Fibonacci  
+            placePiece(0, 6, 64, 2); // Square
+            placePiece(0, 7, 24, 2); // Composite
+            placePiece(1, 4, 17, 2); // Prime (Reality Core)
+            placePiece(1, 5, 13, 2); // Fibonacci
+            placePiece(1, 6, 49, 2); // Square
+            placePiece(1, 7, 28, 2); // Composite
+        }
+
+        // Place a piece on the board
+        function placePiece(row, col, number, player) {
+            const piece = {
+                number,
+                player,
+                row,
+                col,
+                type: getNumberType(number)
+            };
+            
+            gameState.players[player].pieces.push(piece);
+            updateBoardVisual();
+        }
+
+        // Get number type for styling
+        function getNumberType(number) {
+            if (isPrime(number)) return 'prime';
+            if (isFibonacci(number)) return 'fibonacci';
+            if (isPerfectSquare(number)) return 'square';
+            return 'composite';
+        }
+
+        // Mathematical helpers
+        function isPrime(num) {
+            for (let i = 2; i <= Math.sqrt(num); i++) {
+                if (num % i === 0) return false;
+            }
+            return num > 1;
+        }
+
+        function isFibonacci(num) {
+            return [1, 2, 3, 5, 8, 13, 21, 34, 55].includes(num);
+        }
+
+        function isPerfectSquare(num) {
+            return [1, 4, 9, 16, 25, 36, 49, 64].includes(num);
+        }
+
+        // Update board visual representation
+        function updateBoardVisual() {
+            const squares = document.querySelectorAll('.board-square');
+            squares.forEach(square => {
+                square.innerHTML = '';
+                square.classList.remove('valid-move');
+            });
+
+            // Place pieces
+            [1, 2].forEach(player => {
+                gameState.players[player].pieces.forEach(piece => {
+                    const square = document.querySelector(`[data-row="${piece.row}"][data-col="${piece.col}"]`);
+                    if (square) {
+                        const pieceElement = document.createElement('div');
+                        pieceElement.className = `piece ${piece.type}`;
+                        pieceElement.textContent = piece.number;
+                        if (gameState.selectedPiece === piece) {
+                            pieceElement.classList.add('selected');
+                        }
+                        square.appendChild(pieceElement);
+                    }
+                });
+            });
+        }
+
+        // Handle square clicks
+        function handleSquareClick(row, col) {
+            if (!gameState.gameActive) return;
+
+            const piece = getPieceAt(row, col);
+            
+            if (piece && piece.player === gameState.currentPlayer) {
+                // Select own piece
+                gameState.selectedPiece = piece;
+                showValidMoves(piece);
+            } else if (gameState.selectedPiece) {
+                // Try to move selected piece
+                attemptMove(gameState.selectedPiece, row, col);
+            }
+            
+            updateBoardVisual();
+        }
+
+        // Get piece at coordinates
+        function getPieceAt(row, col) {
+            for (let player of [1, 2]) {
+                const piece = gameState.players[player].pieces.find(p => 
+                    p.row === row && p.col === col
+                );
+                if (piece) return piece;
+            }
+            return null;
+        }
+
+        // Show valid moves for a piece
+        function showValidMoves(piece) {
+            const moves = calculateValidMoves(piece);
+            moves.forEach(([row, col]) => {
+                const square = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+                if (square) {
+                    square.classList.add('valid-move');
+                }
+            });
+        }
+
+        // Calculate valid moves based on piece type
+        function calculateValidMoves(piece) {
+            const moves = [];
+            const { type, row, col } = piece;
+
+            switch (type) {
+                case 'prime':
+                    // Diagonal and knight moves
+                    for (let i = -1; i <= 1; i += 2) {
+                        for (let j = -1; j <= 1; j += 2) {
+                            addMoveIfValid(moves, row + i, col + j);
+                            addMoveIfValid(moves, row + i * 2, col + j);
+                            addMoveIfValid(moves, row + i, col + j * 2);
+                        }
+                    }
+                    break;
+                    
+                case 'fibonacci':
+                    // Orthogonal moves
+                    for (let i = -2; i <= 2; i++) {
+                        if (i !== 0) {
+                            addMoveIfValid(moves, row + i, col);
+                            addMoveIfValid(moves, row, col + i);
+                        }
+                    }
+                    break;
+                    
+                case 'square':
+                    // Jump moves
+                    for (let i = -2; i <= 2; i += 2) {
+                        for (let j = -2; j <= 2; j += 2) {
+                            if (i !== 0 || j !== 0) {
+                                addMoveIfValid(moves, row + i, col + j);
+                            }
+                        }
+                    }
+                    break;
+                    
+                default: // composite
+                    // Standard queen moves
+                    for (let i = -1; i <= 1; i++) {
+                        for (let j = -1; j <= 1; j++) {
+                            if (i !== 0 || j !== 0) {
+                                addMoveIfValid(moves, row + i, col + j);
+                            }
+                        }
+                    }
+            }
+            
+            return moves;
+        }
+
+        function addMoveIfValid(moves, row, col) {
+            if (row >= 0 && row < 8 && col >= 0 && col < 8) {
+                const targetPiece = getPieceAt(row, col);
+                if (!targetPiece || targetPiece.player !== gameState.currentPlayer) {
+                    moves.push([row, col]);
+                }
+            }
+        }
+
+        // Attempt to move a piece
+        function attemptMove(piece, targetRow, targetCol) {
+            const validMoves = calculateValidMoves(piece);
+            const isValidMove = validMoves.some(([row, col]) => 
+                row === targetRow && col === targetCol
+            );
+
+            if (isValidMove) {
+                const targetPiece = getPieceAt(targetRow, targetCol);
+                
+                if (targetPiece) {
+                    // Capture piece
+                    gameState.players[targetPiece.player].pieces = 
+                        gameState.players[targetPiece.player].pieces.filter(p => p !== targetPiece);
+                    addLogEntry(`💥 ${getPlayerName(gameState.currentPlayer)} captured ${targetPiece.number}!`);
+                }
+
+                // Move piece
+                piece.row = targetRow;
+                piece.col = targetCol;
+                
+                addLogEntry(`🚀 ${getPlayerName(gameState.currentPlayer)} moved ${piece.number} to (${targetRow},${targetCol})`);
+                
+                // Check for victory
+                checkVictoryConditions();
+                
+                // Switch turns
+                gameState.currentPlayer = gameState.currentPlayer === 1 ? 2 : 1;
+                gameState.turn++;
+                gameState.selectedPiece = null;
+                
+                // Recharge energy
+                gameState.players[1].energy = Math.min(100, gameState.players[1].energy + 10);
+                gameState.players[2].energy = Math.min(100, gameState.players[2].energy + 10);
+                updateEnergyDisplays();
+                
+                // Random cosmic event
+                if (Math.random() < 0.3) {
+                    triggerCosmicEvent();
+                }
+            }
+        }
+
+        // Research technology
+        function researchTech(tech, player) {
+            if (!gameState.players[player].tech.includes(tech)) {
+                gameState.players[player].tech.push(tech);
+                addLogEntry(`🔬 ${getPlayerName(player)} researched ${tech.replace('_', ' ').toUpperCase()}!`);
+                
+                // Update UI
+                document.querySelectorAll(`.tech-item`).forEach(item => {
+                    if (item.textContent.includes(tech.replace('_', ' '))) {
+                        item.classList.add('researched');
+                    }
+                });
+            }
+        }
+
+        // Use special ability
+        function useAbility(ability) {
+            const player = gameState.currentPlayer;
+            const cost = getAbilityCost(ability);
+            
+            if (gameState.players[player].energy >= cost) {
+                gameState.players[player].energy -= cost;
+                updateEnergyDisplays();
+                
+                addLogEntry(`⚡ ${getPlayerName(player)} used ${ability.replace('_', ' ').toUpperCase()}!`);
+                
+                // Ability effects would be implemented here
+                switch (ability) {
+                    case 'singularity':
+                        // Create black hole effect
+                        break;
+                    case 'temporal_loop':
+                        // Reverse last move
+                        break;
+                    case 'quantum_tunnel':
+                        // Teleport piece
+                        break;
+                    case 'reality_anchor':
+                        // Lock area
+                        break;
+                }
+            }
+        }
+
+        function getAbilityCost(ability) {
+            const costs = {
+                'singularity': 25,
+                'temporal_loop': 30,
+                'quantum_tunnel': 20,
+                'reality_anchor': 15
+            };
+            return costs[ability] || 0;
+        }
+
+        // Check victory conditions
+        function checkVictoryConditions() {
+            // Check if reality core is captured
+            const p1Core = gameState.players[1].pieces.find(p => p.number === 23);
+            const p2Core = gameState.players[2].pieces.find(p => p.number === 17);
+            
+            if (!p1Core) {
+                endGame(2, "Reality Core Destruction");
+            } else if (!p2Core) {
+                endGame(1, "Reality Core Destruction");
+            }
+            
+            // Check energy domination
+            if (gameState.players[1].energy <= 0) {
+                endGame(2, "Energy Depletion");
+            } else if (gameState.players[2].energy <= 0) {
+                endGame(1, "Energy Depletion");
+            }
+        }
+
+        // End the game
+        function endGame(winner, reason) {
+            gameState.gameActive = false;
+            addLogEntry(`🏆 ${getPlayerName(winner)} VICTORY! Reason: ${reason}`);
+            
+            // Show victory screen
+            setTimeout(() => {
+                alert(`QUANTUM VICTORY!\n${getPlayerName(winner)} has achieved ${reason}!\nThe multiverse is safe... for now.`);
+            }, 1000);
+        }
+
+        // Trigger random cosmic event
+        function triggerCosmicEvent() {
+            const events = [
+                "🌞 SOLAR FLARE: Quantum abilities cost 50% less energy this turn!",
+                "🌪️ NEBULA STORM: Movement range reduced by 50%!",
+                "💫 QUANTUM ANOMALY: Pieces randomly teleport!",
+                "🌀 TEMPORAL RIFT: Players swap control for 2 turns!",
+                "⚡ DARK MATTER SURGE: All special abilities disabled!"
+            ];
+            
+            const event = events[Math.floor(Math.random() * events.length)];
+            addLogEntry(`🌌 COSMIC EVENT: ${event}`);
+        }
+
+        // Utility functions
+        function getPlayerName(player) {
+            return player === 1 ? "QUANTUM COLLECTIVE" : "TEMPORAL SYNDICATE";
+        }
+
+        function addLogEntry(message) {
+            const log = document.getElementById('battle-log');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.textContent = message;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function updateEnergyDisplays() {
+            document.getElementById('p1-energy').style.width = `${gameState.players[1].energy}%`;
+            document.getElementById('p1-energy-text').textContent = `${gameState.players[1].energy}/100`;
+            document.getElementById('p2-energy').style.width = `${gameState.players[2].energy}%`;
+            document.getElementById('p2-energy-text').textContent = `${gameState.players[2].energy}/100`;
+        }
+
+        // Initialize game
+        window.onload = function() {
+            initStars();
+            initBoard();
+            addLogEntry("🚀 Quantum Celestial Chess simulation initialized!");
+            addLogEntry("🎯 Select your pieces and conquer the quantum matrix!");
+        };
+    </script>
+</body>
+</html>

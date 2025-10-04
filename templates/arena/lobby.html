@@ -1,0 +1,402 @@
+{% extends 'arena/base.html' %}
+
+{% block title %}Astral Arena Lobby - Cosmic PvP Combat{% endblock %}
+
+{% block content %}
+<div class="lobby-container">
+    <!-- Header -->
+    <div class="lobby-header">
+        <h1>🌌 Astral Arena Lobby</h1>
+        <p>Challenge cosmic commanders and stake ASTRA in strategic PvP combat</p>
+    </div>
+
+    <!-- Player Stats -->
+    <div class="player-stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">🏅</div>
+            <div class="stat-info">
+                <div class="stat-value">{{ arena_profile.tier|title }}</div>
+                <div class="stat-label">Current Tier</div>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">⭐</div>
+            <div class="stat-info">
+                <div class="stat-value">{{ arena_profile.rating }}</div>
+                <div class="stat-label">ELO Rating</div>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">⚔️</div>
+            <div class="stat-info">
+                <div class="stat-value">{{ arena_profile.games_played }}</div>
+                <div class="stat-label">Games Played</div>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">🔥</div>
+            <div class="stat-info">
+                <div class="stat-value">{{ arena_profile.win_streak }}</div>
+                <div class="stat-label">Win Streak</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <button class="action-btn primary" onclick="openModal('challenge-modal')">
+            ⚡ Challenge Player
+        </button>
+        <button class="action-btn secondary" onclick="findQuickMatch()">
+            🎯 Quick Match
+        </button>
+        <button class="action-btn secondary" onclick="openModal('tournament-modal')">
+            🏆 Join Tournament
+        </button>
+    </div>
+
+    <!-- Pending Challenges -->
+    {% if pending_challenges %}
+    <div class="section">
+        <h2>⏳ Pending Challenges</h2>
+        <div class="challenges-list">
+            {% for challenge in pending_challenges %}
+            <div class="challenge-card">
+                <div class="challenge-info">
+                    <div class="challenger">{{ challenge.challenger.username }}</div>
+                    <div class="stake">Stake: {{ challenge.stake_amount }} ASTRA</div>
+                    <div class="time-remaining" data-expires="{{ challenge.expires_at|date:'c' }}">
+                        Expires in: <span class="countdown"></span>
+                    </div>
+                </div>
+                <div class="challenge-actions">
+                    <button class="btn btn-primary" onclick="acceptChallenge({{ challenge.id }})">
+                        ✅ Accept
+                    </button>
+                    <button class="btn btn-secondary" onclick="rejectChallenge({{ challenge.id }})">
+                        ❌ Reject
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Active Tournaments -->
+    {% if active_tournaments %}
+    <div class="section">
+        <h2>🏆 Active Tournaments</h2>
+        <div class="tournaments-grid">
+            {% for tournament in active_tournaments %}
+            <div class="tournament-card">
+                <div class="tournament-header">
+                    <h3>{{ tournament.name }}</h3>
+                    <span class="tournament-type">{{ tournament.tournament_type|title }}</span>
+                </div>
+                <div class="tournament-details">
+                    <div class="detail">
+                        <span>💰 Entry:</span>
+                        <span>{{ tournament.entry_fee }} ASTRA</span>
+                    </div>
+                    <div class="detail">
+                        <span>🎯 Prize Pool:</span>
+                        <span>{{ tournament.total_prize_pool }} ASTRA</span>
+                    </div>
+                    <div class="detail">
+                        <span>👥 Players:</span>
+                        <span>{{ tournament.current_players }}/{{ tournament.max_players }}</span>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="joinTournament({{ tournament.id }})">
+                    Join Tournament
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Recent Activity -->
+    <div class="section">
+        <h2>📊 Your Recent Games</h2>
+        <div class="recent-games">
+            <!-- This would be populated via AJAX or additional context -->
+            <div class="empty-state">
+                <p>No recent games. Challenge someone to start playing!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Challenge Modal -->
+{% include 'arena/partials/_challenge_modal.html' %}
+
+<!-- Tournament Modal -->
+<div class="modal" id="tournament-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">🏆 Join Tournament</h2>
+            <button class="close-modal" onclick="closeModal('tournament-modal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Tournament system coming soon!</p>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal('tournament-modal')">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .lobby-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 30px 0;
+        border-bottom: 2px solid var(--neon-blue);
+    }
+
+    .lobby-header h1 {
+        font-size: 3em;
+        background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink), var(--alien-green));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 10px;
+    }
+
+    .player-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: rgba(0, 50, 100, 0.6);
+        border: 2px solid var(--neon-blue);
+        border-radius: 15px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 243, 255, 0.3);
+    }
+
+    .stat-icon {
+        font-size: 2.5em;
+    }
+
+    .stat-value {
+        font-size: 1.8em;
+        font-weight: bold;
+        color: var(--cosmic-gold);
+    }
+
+    .stat-label {
+        color: var(--text-muted);
+        font-size: 0.9em;
+    }
+
+    .quick-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+    }
+
+    .action-btn {
+        padding: 15px 30px;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.1em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 200px;
+    }
+
+    .action-btn.primary {
+        background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink));
+        color: white;
+    }
+
+    .action-btn.secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--neon-blue);
+        border: 2px solid var(--neon-blue);
+    }
+
+    .action-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 30px rgba(0, 243, 255, 0.5);
+    }
+
+    .section {
+        margin-bottom: 40px;
+        padding: 20px;
+        background: rgba(0, 20, 40, 0.6);
+        border-radius: 15px;
+        border: 1px solid var(--neon-border);
+    }
+
+    .section h2 {
+        color: var(--neon-blue);
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--neon-pink);
+        padding-bottom: 10px;
+    }
+
+    .challenges-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .challenge-card {
+        background: rgba(0, 50, 100, 0.6);
+        border: 1px solid var(--neon-blue);
+        border-radius: 10px;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .challenger {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: var(--cosmic-gold);
+    }
+
+    .stake {
+        color: var(--alien-green);
+        font-weight: bold;
+    }
+
+    .challenge-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .tournaments-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .tournament-card {
+        background: rgba(0, 50, 100, 0.6);
+        border: 2px solid var(--cosmic-gold);
+        border-radius: 15px;
+        padding: 20px;
+    }
+
+    .tournament-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .tournament-header h3 {
+        color: var(--cosmic-gold);
+        margin: 0;
+    }
+
+    .tournament-type {
+        background: var(--neon-pink);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8em;
+    }
+
+    .tournament-details {
+        margin-bottom: 15px;
+    }
+
+    .detail {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: var(--text-muted);
+    }
+</style>
+
+<script>
+    {% block extra_js %}
+    // Challenge countdown timers
+    function updateChallengeCountdowns() {
+        document.querySelectorAll('.time-remaining').forEach(element => {
+            const expires = new Date(element.dataset.expires);
+            const now = new Date();
+            const diff = expires - now;
+            
+            if (diff <= 0) {
+                element.innerHTML = 'Expired';
+                element.style.color = '#ff4444';
+            } else {
+                const seconds = Math.floor(diff / 1000);
+                element.querySelector('.countdown').textContent = `${seconds}s`;
+            }
+        });
+    }
+
+    // Update countdowns every second
+    setInterval(updateChallengeCountdowns, 1000);
+    updateChallengeCountdowns();
+
+    // Challenge functions
+    async function acceptChallenge(challengeId) {
+        const result = await makeRequest("{% url 'arena_respond_challenge' %}", {
+            challenge_id: challengeId,
+            action: 'accept'
+        });
+        
+        if (result.success) {
+            window.location.href = "{% url 'arena_game' 'GAME_ID' %}".replace('GAME_ID', result.game_id);
+        } else {
+            alert(result.message);
+            location.reload();
+        }
+    }
+
+    async function rejectChallenge(challengeId) {
+        const result = await makeRequest("{% url 'arena_respond_challenge' %}", {
+            challenge_id: challengeId,
+            action: 'reject'
+        });
+        
+        if (result.success) {
+            location.reload();
+        } else {
+            alert(result.message);
+        }
+    }
+
+    async function findQuickMatch() {
+        // This would matchmake with random player
+        alert('Quick match feature coming soon!');
+    }
+
+    async function joinTournament(tournamentId) {
+        // Tournament join logic
+        alert('Tournament join feature coming soon!');
+    }
+    {% endblock %}
+</script>
+{% endblock %}

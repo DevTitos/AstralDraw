@@ -8,6 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls')),  # Your app URLs
     #path('accounts/', include('django.contrib.auth.urls')),  # Django auth URLs
+    path('arena/', include('arena.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_URL)
 
 if settings.DEBUG:

@@ -1,0 +1,170 @@
+<!-- Challenge Modal -->
+<div class="modal" id="challenge-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">⚡ Challenge Player</h2>
+            <button class="close-modal" onclick="closeModal('challenge-modal')">&times;</button>
+        </div>
+        
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Select Opponent</label>
+                <select id="opponent-select" class="form-select">
+                    <option value="">Choose a player...</option>
+                    {% for player in available_players %}
+                    <option value="{{ player.id }}">
+                        {{ player.username }} ({{ player.arena_profile.tier|title }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>ASTRA Stake Amount</label>
+                <input type="number" id="stake-amount" class="form-input" 
+                       min="100" max="10000" value="1000" step="100">
+                <div class="form-hint">
+                    Minimum: 100 ASTRA | Platform fee: 10%
+                </div>
+            </div>
+            
+            <div class="stake-summary">
+                <div class="summary-item">
+                    <span>Your Stake:</span>
+                    <span id="your-stake">1,000 ASTRA</span>
+                </div>
+                <div class="summary-item">
+                    <span>Total Pot:</span>
+                    <span id="total-pot">2,000 ASTRA</span>
+                </div>
+                <div class="summary-item">
+                    <span>Platform Fee:</span>
+                    <span id="platform-fee">200 ASTRA</span>
+                </div>
+                <div class="summary-item total">
+                    <span>Winner Gets:</span>
+                    <span id="winner-gets">1,800 ASTRA</span>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal('challenge-modal')">
+                    Cancel
+                </button>
+                <button class="btn btn-primary" onclick="sendChallenge()">
+                    Send Challenge
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--neon-blue);
+        font-weight: bold;
+    }
+
+    .form-select, .form-input {
+        width: 100%;
+        padding: 12px;
+        background: rgba(0, 50, 100, 0.6);
+        border: 1px solid var(--neon-blue);
+        border-radius: 8px;
+        color: var(--neon-blue);
+        font-size: 1em;
+    }
+
+    .form-select:focus, .form-input:focus {
+        outline: none;
+        box-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+    }
+
+    .form-hint {
+        font-size: 0.8em;
+        color: var(--text-muted);
+        margin-top: 5px;
+    }
+
+    .stake-summary {
+        background: rgba(0, 50, 100, 0.6);
+        border: 1px solid var(--neon-blue);
+        border-radius: 10px;
+        padding: 15px;
+        margin: 20px 0;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+
+    .summary-item.total {
+        border-top: 1px solid var(--neon-blue);
+        padding-top: 8px;
+        font-weight: bold;
+        color: var(--cosmic-gold);
+    }
+
+    .modal-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+</style>
+
+<script>
+    // Update stake summary when amount changes
+    document.addEventListener('DOMContentLoaded', function() {
+        const stakeInput = document.getElementById('stake-amount');
+        stakeInput.addEventListener('input', updateStakeSummary);
+        updateStakeSummary();
+    });
+
+    function updateStakeSummary() {
+        const stake = parseInt(document.getElementById('stake-amount').value) || 0;
+        const totalPot = stake * 2;
+        const platformFee = totalPot * 0.1;
+        const winnerGets = totalPot - platformFee;
+        
+        document.getElementById('your-stake').textContent = stake.toLocaleString() + ' ASTRA';
+        document.getElementById('total-pot').textContent = totalPot.toLocaleString() + ' ASTRA';
+        document.getElementById('platform-fee').textContent = platformFee.toLocaleString() + ' ASTRA';
+        document.getElementById('winner-gets').textContent = winnerGets.toLocaleString() + ' ASTRA';
+    }
+
+    async function sendChallenge() {
+        const opponentId = document.getElementById('opponent-select').value;
+        const stakeAmount = document.getElementById('stake-amount').value;
+        
+        if (!opponentId) {
+            alert('Please select an opponent');
+            return;
+        }
+        
+        if (stakeAmount < 100) {
+            alert('Minimum stake is 100 ASTRA');
+            return;
+        }
+        
+        const result = await makeRequest("{% url 'arena_create_challenge' %}", {
+            opponent_id: opponentId,
+            stake_amount: stakeAmount
+        });
+        
+        if (result.success) {
+            alert('Challenge sent successfully!');
+            closeModal('challenge-modal');
+            location.reload();
+        } else {
+            alert(result.message);
+        }
+    }
+</script>
