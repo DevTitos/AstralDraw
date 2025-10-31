@@ -1,0 +1,509 @@
+{% extends 'arena/base.html' %}
+
+{% block title %}Astral Arena - Leaderboard{% endblock %}
+
+{% block content %}
+<div class="leaderboard-container">
+    <div class="leaderboard-header">
+        <h1>🏆 Astral Arena Leaderboard</h1>
+        <p>Top cosmic commanders competing for glory and ASTRA rewards</p>
+    </div>
+
+    <!-- Season Selector -->
+    <div class="season-selector">
+        <label for="season-select">Select Season:</label>
+        <select id="season-select" onchange="changeSeason(this.value)">
+            <option value="s1" {% if season == 's1' %}selected{% endif %}>Season 1</option>
+            <option value="s2" {% if season == 's2' %}selected{% endif %}>Season 2</option>
+            <option value="s3" {% if season == 's3' %}selected{% endif %}>Season 3</option>
+        </select>
+    </div>
+
+    <!-- Leaderboard Table -->
+    <div class="leaderboard-table-container">
+        <table class="leaderboard-table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Player</th>
+                    <th>Tier</th>
+                    <th>Rating</th>
+                    <th>Games</th>
+                    <th>Win Rate</th>
+                    <th>ASTRA Won</th>
+                    <th>Streak</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in leaderboard %}
+                <tr class="{% if entry.player == user %}current-user{% endif %}">
+                    <td class="rank-cell">
+                        {% if entry.position == 1 %}
+                            <span class="rank-medal">🥇</span>
+                        {% elif entry.position == 2 %}
+                            <span class="rank-medal">🥈</span>
+                        {% elif entry.position == 3 %}
+                            <span class="rank-medal">🥉</span>
+                        {% else %}
+                            <span class="rank-number">#{{ entry.position }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="player-cell">
+                        <div class="player-info">
+                            <div class="player-avatar">
+                                {{ entry.player.username|first|upper }}
+                            </div>
+                            <div class="player-details">
+                                <div class="player-name">{{ entry.player.username }}</div>
+                                <div class="player-join-date">
+                                    Joined {{ entry.player.date_joined|date:"M Y" }}
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="tier-cell">
+                        <span class="tier-badge tier-{{ entry.player.arena_profile.tier }}">
+                            {{ entry.player.arena_profile.get_tier_display }}
+                        </span>
+                    </td>
+                    <td class="rating-cell">
+                        <strong>{{ entry.rating }}</strong>
+                    </td>
+                    <td class="games-cell">
+                        {{ entry.games_played }}
+                    </td>
+                    <td class="winrate-cell">
+                        <div class="winrate-bar">
+                            <div class="winrate-fill" style="width: {{ entry.win_rate }}%"></div>
+                            <span class="winrate-text">{{ entry.win_rate }}%</span>
+                        </div>
+                    </td>
+                    <td class="astra-cell">
+                        <span class="astra-amount">{{ entry.astra_won }}</span>
+                        <small>ASTRA</small>
+                    </td>
+                    <td class="streak-cell">
+                        {% if entry.player.arena_profile.win_streak > 0 %}
+                            <span class="win-streak">🔥 {{ entry.player.arena_profile.win_streak }}</span>
+                        {% else %}
+                            <span class="no-streak">-</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="empty-message">
+                        <div class="empty-state">
+                            <h3>No leaderboard data yet</h3>
+                            <p>Be the first to play and claim the top spot!</p>
+                            <a href="{% url 'arena_lobby' %}" class="btn btn-primary">
+                                🎮 Start Playing
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- User's Position (if not in top 100) -->
+    {% if user.is_authenticated and user_rank and user_rank.position > 100 %}
+    <div class="user-position">
+        <div class="user-rank-card">
+            <h3>Your Position</h3>
+            <div class="user-rank-info">
+                <span class="rank">#{{ user_rank.position }}</span>
+                <span class="username">{{ user.username }}</span>
+                <span class="rating">{{ user_rank.rating }}</span>
+                <span class="tier">{{ user_rank.tier }}</span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Leaderboard Info -->
+    <div class="leaderboard-info">
+        <div class="info-card">
+            <h3>📊 How Rankings Work</h3>
+            <ul>
+                <li><strong>ELO Rating:</strong> Gain/lose points based on opponent strength</li>
+                <li><strong>Win Rate:</strong> Percentage of games won</li>
+                <li><strong>ASTRA Won:</strong> Total ASTRA earned from victories</li>
+                <li><strong>Win Streak:</strong> Consecutive wins (bonus points)</li>
+            </ul>
+        </div>
+        
+        <div class="info-card">
+            <h3>🎯 Tier System</h3>
+            <div class="tier-list">
+                <div class="tier-item">
+                    <span class="tier-badge tier-quantum">Quantum Grandmaster</span>
+                    <span>2400+ Rating</span>
+                </div>
+                <div class="tier-item">
+                    <span class="tier-badge tier-cosmic">Cosmic Master</span>
+                    <span>2000-2399</span>
+                </div>
+                <div class="tier-item">
+                    <span class="tier-badge tier-stellar">Stellar Expert</span>
+                    <span>1600-1999</span>
+                </div>
+                <div class="tier-item">
+                    <span class="tier-badge tier-galactic">Galactic Player</span>
+                    <span>1200-1599</span>
+                </div>
+                <div class="tier-item">
+                    <span class="tier-badge tier-nova">Nova</span>
+                    <span>800-1199</span>
+                </div>
+                <div class="tier-item">
+                    <span class="tier-badge tier-protostar">Protostar</span>
+                    <span>0-799</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .leaderboard-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 30px 0;
+        border-bottom: 2px solid var(--neon-blue);
+    }
+
+    .leaderboard-header h1 {
+        font-size: 3em;
+        background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink), var(--cosmic-gold));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 10px;
+    }
+
+    .season-selector {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .season-selector label {
+        color: var(--neon-blue);
+        font-weight: bold;
+        margin-right: 10px;
+    }
+
+    .season-selector select {
+        background: rgba(0, 50, 100, 0.6);
+        border: 2px solid var(--neon-blue);
+        border-radius: 8px;
+        padding: 8px 16px;
+        color: var(--neon-blue);
+        font-size: 1em;
+    }
+
+    .leaderboard-table-container {
+        background: rgba(0, 20, 40, 0.8);
+        border: 2px solid var(--neon-blue);
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 30px;
+        overflow-x: auto;
+    }
+
+    .leaderboard-table {
+        width: 100%;
+        border-collapse: collapse;
+        color: var(--text-light);
+    }
+
+    .leaderboard-table th {
+        background: rgba(0, 243, 255, 0.2);
+        color: var(--neon-blue);
+        padding: 15px 10px;
+        text-align: left;
+        font-weight: bold;
+        border-bottom: 2px solid var(--neon-blue);
+    }
+
+    .leaderboard-table td {
+        padding: 12px 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .leaderboard-table tr:hover {
+        background: rgba(0, 243, 255, 0.1);
+    }
+
+    .leaderboard-table tr.current-user {
+        background: rgba(255, 215, 0, 0.2);
+        border-left: 4px solid var(--cosmic-gold);
+    }
+
+    .rank-cell {
+        text-align: center;
+        font-weight: bold;
+        width: 80px;
+    }
+
+    .rank-medal {
+        font-size: 1.5em;
+    }
+
+    .rank-number {
+        color: var(--text-muted);
+    }
+
+    .player-cell {
+        min-width: 200px;
+    }
+
+    .player-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .player-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: white;
+    }
+
+    .player-name {
+        font-weight: bold;
+        color: var(--text-light);
+    }
+
+    .player-join-date {
+        font-size: 0.8em;
+        color: var(--text-muted);
+    }
+
+    .tier-cell {
+        width: 150px;
+    }
+
+    .tier-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8em;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .tier-quantum { background: linear-gradient(45deg, #ff00ff, #00ffff); color: black; }
+    .tier-cosmic { background: linear-gradient(45deg, #ff4444, #ffaa00); color: white; }
+    .tier-stellar { background: linear-gradient(45deg, #4444ff, #8888ff); color: white; }
+    .tier-galactic { background: linear-gradient(45deg, #44ff44, #00aa00); color: black; }
+    .tier-nova { background: linear-gradient(45deg, #ffff44, #ffaa00); color: black; }
+    .tier-protostar { background: linear-gradient(45deg, #888888, #cccccc); color: black; }
+
+    .rating-cell {
+        text-align: center;
+        font-size: 1.1em;
+        width: 100px;
+    }
+
+    .games-cell {
+        text-align: center;
+        width: 80px;
+    }
+
+    .winrate-cell {
+        width: 120px;
+    }
+
+    .winrate-bar {
+        position: relative;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        height: 20px;
+        overflow: hidden;
+    }
+
+    .winrate-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--alien-green), #00ff00);
+        border-radius: 10px;
+        transition: width 0.3s ease;
+    }
+
+    .winrate-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 0.8em;
+        font-weight: bold;
+        color: white;
+        text-shadow: 1px 1px 2px black;
+    }
+
+    .astra-cell {
+        text-align: right;
+        width: 120px;
+    }
+
+    .astra-amount {
+        color: var(--cosmic-gold);
+        font-weight: bold;
+        font-size: 1.1em;
+    }
+
+    .streak-cell {
+        text-align: center;
+        width: 80px;
+    }
+
+    .win-streak {
+        background: rgba(255, 0, 0, 0.3);
+        color: #ff4444;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-weight: bold;
+        font-size: 0.9em;
+    }
+
+    .empty-message {
+        text-align: center;
+        padding: 40px !important;
+    }
+
+    .empty-state {
+        color: var(--text-muted);
+    }
+
+    .empty-state h3 {
+        margin-bottom: 10px;
+    }
+
+    .user-position {
+        margin-bottom: 30px;
+    }
+
+    .user-rank-card {
+        background: rgba(255, 215, 0, 0.2);
+        border: 2px solid var(--cosmic-gold);
+        border-radius: 15px;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .user-rank-card h3 {
+        color: var(--cosmic-gold);
+        margin-bottom: 15px;
+    }
+
+    .user-rank-info {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .user-rank-info .rank {
+        font-size: 1.5em;
+        font-weight: bold;
+        color: var(--cosmic-gold);
+    }
+
+    .leaderboard-info {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .info-card {
+        background: rgba(0, 50, 100, 0.6);
+        border: 1px solid var(--neon-blue);
+        border-radius: 15px;
+        padding: 20px;
+    }
+
+    .info-card h3 {
+        color: var(--neon-blue);
+        margin-bottom: 15px;
+        border-bottom: 1px solid var(--neon-blue);
+        padding-bottom: 10px;
+    }
+
+    .info-card ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .info-card li {
+        margin-bottom: 8px;
+        padding-left: 20px;
+        position: relative;
+    }
+
+    .info-card li:before {
+        content: "•";
+        color: var(--neon-blue);
+        position: absolute;
+        left: 0;
+    }
+
+    .tier-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .tier-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    @media (max-width: 768px) {
+        .leaderboard-info {
+            grid-template-columns: 1fr;
+        }
+        
+        .player-info {
+            flex-direction: column;
+            text-align: center;
+            gap: 5px;
+        }
+        
+        .user-rank-info {
+            flex-direction: column;
+            gap: 10px;
+        }
+    }
+</style>
+
+<script>
+    {% block extra_js %}
+    function changeSeason(season) {
+        window.location.href = `{% url 'arena_leaderboard' %}?season=${season}`;
+    }
+
+    // Add some interactive effects
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animate win rate bars on load
+        setTimeout(() => {
+            document.querySelectorAll('.winrate-fill').forEach(bar => {
+                const currentWidth = bar.style.width;
+                bar.style.width = '0';
+                setTimeout(() => {
+                    bar.style.width = currentWidth;
+                }, 100);
+            });
+        }, 500);
+    });
+    {% endblock %}
+</script>
+{% endblock %}

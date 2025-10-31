@@ -17,7 +17,14 @@ urlpatterns = [
     path('game/move/', views.make_move, name='arena_make_move'),
     path('game/ability/', views.use_ability, name='arena_use_ability'),
     
-    # Tournament System (additional endpoints)
+    # Tournament System
     path('tournaments/', views.tournament_list, name='arena_tournaments'),
+    path('tournaments/my/', views.my_tournaments, name='arena_my_tournaments'),
+    path('tournament/<int:tournament_id>/', views.tournament_detail, name='tournament_detail'),
     path('tournament/<int:tournament_id>/join/', views.join_tournament, name='arena_join_tournament'),
+    path('tournament/create/', views.create_tournament, name='arena_create_tournament'),  # Staff only
+
+    path('practice/', views.practice_lobby, name='arena_practice'),
+    path('practice/start/', views.start_practice_game, name='arena_start_practice'),
+    path('practice/ai-move/', views.ai_make_move, name='arena_ai_move'),
 ]

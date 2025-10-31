@@ -63,14 +63,13 @@ def create_test_account(client):
     
     return account_id, new_account_private_key
 
+# The Astral Council
+# Stellar Assembly SLA
+# Celestial Board CLB
+# Cosmic Community
 def create_nft(title, symbol):
     """Create a non-fungible token EG"""
-    # NEBULA-1
-    # NEBULA-2
-    # NEBULA-3
-    # NEBULA-4
-    # NEBULA-5
-    # NEBULA-6
+
     client, operator_id, operator_key = setup_client()
     transaction = (
         TokenCreateTransaction()
@@ -188,42 +187,3 @@ def associate_nft(account_id, token_id, account_private_key, nft_id):
         'status':'success',
         'message':f"Successfully transferred NFT to account {account_id}"
     }
-
-def transfer_nft():
-    """
-    Demonstrates the nft transfer functionality by:
-    1. Creating a new account
-    2. Creating a nft
-    3. Minting a nft
-    4. Associating the nft with the new account
-    5. Transferring the nft to the new account
-    """
-    client, operator_id, operator_key = setup_client()
-    #account_id, new_account_private_key = create_test_account(client)
-    token_id = create_nft(client, operator_id, operator_key)
-    print(f"TOKEN ID: {token_id}")
-    #token_id=AccountId.from_string(os.getenv('REG'))
-    #nft_id = mint_nft(client, token_id, operator_key)
-    #print(f"NFT ID: {nft_id}")
-    #associate_nft(client, account_id, token_id, new_account_private_key)
-    
-    # Transfer nft to the new account
-    #transfer_transaction = (
-    #    TransferTransaction()
-    #    .add_nft_transfer(nft_id, operator_id, account_id)
-    #    .freeze_with(client)
-    #)
-    #
-    #receipt = transfer_transaction.execute(client)
-    #
-    ## Check if nft transfer was successful
-    #if receipt.status != ResponseCode.SUCCESS:
-    #    print(f"NFT transfer failed with status: {ResponseCode(receipt.status).name}")
-    #    sys.exit(1)
-    #
-    #print(f"Successfully transferred NFT to account {account_id}")
-
-if __name__ == "__main__":
-    transfer_nft()
-
-

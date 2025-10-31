@@ -1,0 +1,140 @@
+{% extends "admin/change_form.html" %}
+{% load static %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+    .game-preview {
+        background: #0a0a2a;
+        border: 2px solid #00f3ff;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px 0;
+        color: #00f3ff;
+        font-family: 'Courier New', monospace;
+    }
+    
+    .game-state {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .player-info {
+        background: rgba(0, 50, 100, 0.6);
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #00f3ff;
+    }
+    
+    .player-info.winner {
+        border-color: #00ff88;
+        background: rgba(0, 255, 136, 0.1);
+    }
+    
+    .board-preview {
+        display: grid;
+        grid-template-columns: repeat(8, 30px);
+        grid-template-rows: repeat(8, 30px);
+        gap: 1px;
+        background: rgba(0, 243, 255, 0.1);
+        padding: 10px;
+        border-radius: 5px;
+        margin: 10px 0;
+    }
+    
+    .board-square {
+        background: rgba(0, 50, 100, 0.3);
+        border: 1px solid rgba(0, 243, 255, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: bold;
+    }
+    
+    .move-history {
+        max-height: 200px;
+        overflow-y: auto;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+    
+    .move-entry {
+        padding: 5px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 12px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{{ block.super }}
+
+{% if original %}
+<div class="game-preview">
+    <h3>🎮 Game Preview - {{ original.game_id }}</h3>
+    
+    <div class="game-state">
+        <div class="player-info {% if original.winner == original.player1 %}winner{% endif %}">
+            <h4>Player 1: {{ original.player1.username }}</h4>
+            <p>Energy: {{ original.player1_energy }}/100</p>
+            <p>Time: {{ original.player1_time_remaining }}s</p>
+            <p>Rating: {{ original.player1.arena_profile.rating }}</p>
+        </div>
+        
+        <div class="player-info {% if original.winner == original.player2 %}winner{% endif %}">
+            <h4>Player 2: {{ original.player2.username }}</h4>
+            <p>Energy: {{ original.player2_energy }}/100</p>
+            <p>Time: {{ original.player2_time_remaining }}s</p>
+            <p>Rating: {{ original.player2.arena_profile.rating }}</p>
+        </div>
+    </div>
+    
+    {% if original.board_state %}
+    <div class="board-section">
+        <h4>Current Board State</h4>
+        <div class="board-preview">
+            <!-- Simplified board preview -->
+            {% for row in "12345678" %}
+                {% for col in "abcdefgh" %}
+                <div class="board-square" title="{{ col }}{{ row }}">
+                    <!-- Piece indicators would go here -->
+                </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    {% if original.move_history %}
+    <div class="move-history-section">
+        <h4>Move History ({{ original.move_history|length }} moves)</h4>
+        <div class="move-history">
+            {% for move in original.move_history %}
+            <div class="move-entry">
+                Turn {{ move.turn }}: Player {{ move.player }} 
+                {{ move.from|join:"," }} → {{ move.to|join:"," }}
+                <small>{{ move.timestamp }}</small>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="game-actions">
+        <a href="/arena/game/{{ original.game_id }}/" target="_blank" class="button">
+            👀 Watch Live Game
+        </a>
+        {% if original.status == 'active' %}
+        <a href="?force_complete={{ original.id }}" class="button">
+            🏁 Force Complete
+        </a>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

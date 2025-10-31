@@ -1,0 +1,708 @@
+{% extends 'arena/base.html' %}
+
+{% block title %}Astral Arena - {{ tournament.name }}{% endblock %}
+
+{% block content %}
+<div class="tournament-detail-container">
+    <!-- Tournament Header -->
+    <div class="tournament-header">
+        <div class="tournament-banner">
+            <h1>{{ tournament.name }}</h1>
+            <div class="tournament-meta">
+                <span class="tournament-type">{{ tournament.get_tournament_type_display }}</span>
+                <span class="tournament-status {% if tournament.is_active %}active{% elif tournament.is_completed %}completed{% else %}upcoming{% endif %}">
+                    {% if tournament.is_active %}LIVE{% elif tournament.is_completed %}COMPLETED{% else %}UPCOMING{% endif %}
+                </span>
+            </div>
+        </div>
+        
+        <div class="tournament-stats">
+            <div class="stat">
+                <div class="stat-value">{{ tournament.current_players }}</div>
+                <div class="stat-label">Players</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">{{ tournament.entry_fee }} ASTRA</div>
+                <div class="stat-label">Entry Fee</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">{{ tournament.total_prize_pool }} ASTRA</div>
+                <div class="stat-label">Prize Pool</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">{{ tournament.max_players }}</div>
+                <div class="stat-label">Max Players</div>
+            </div>
+        </div>
+        
+        <div class="tournament-timeline">
+            <div class="timeline-item {% if tournament.start_time <= now %}completed{% endif %}">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <strong>Start</strong>
+                    <div>{{ tournament.start_time|date:"M j, Y H:i" }}</div>
+                </div>
+            </div>
+            <div class="timeline-item {% if tournament.is_completed %}completed{% elif tournament.is_active %}active{% endif %}">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <strong>{% if tournament.is_completed %}Ended{% else %}Ends{% endif %}</strong>
+                    <div>{{ tournament.end_time|date:"M j, Y H:i" }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tournament Actions -->
+    <div class="tournament-actions">
+        {% if tournament.is_active %}
+            <div class="action-status">
+                <span class="live-indicator">🔴 LIVE</span>
+                <p>Tournament is currently in progress</p>
+            </div>
+        {% elif tournament.is_completed %}
+            <div class="action-status">
+                <span class="completed-indicator">✅ COMPLETED</span>
+                <p>This tournament has ended</p>
+            </div>
+        {% else %}
+            {% if user_participation %}
+                <div class="action-status">
+                    <span class="joined-indicator">✅ JOINED</span>
+                    <p>You are registered for this tournament</p>
+                    <small>Tournament starts {{ tournament.start_time|timeuntil }}</small>
+                </div>
+            {% elif can_join %}
+                <button class="btn btn-primary btn-large" onclick="joinTournament({{ tournament.id }})">
+                    🎯 Join Tournament - {{ tournament.entry_fee }} ASTRA
+                </button>
+                <p class="join-info">Join before {{ tournament.start_time|date:"M j, H:i" }}</p>
+            {% else %}
+                <div class="action-status">
+                    <span class="closed-indicator">🔒 REGISTRATION CLOSED</span>
+                    <p>Tournament has already started or is full</p>
+                </div>
+            {% endif %}
+        {% endif %}
+        
+        <a href="{% url 'arena_tournaments' %}" class="btn btn-secondary">
+            ← Back to Tournaments
+        </a>
+    </div>
+
+    <!-- Participants List -->
+    <div class="section">
+        <h2>👥 Participants ({{ participants|length }}/{{ tournament.max_players }})</h2>
+        <div class="participants-grid">
+            {% for participant in participants %}
+            <div class="participant-card {% if participant.player == user %}current-user{% endif %}">
+                <div class="participant-avatar">
+                    {{ participant.player.username|first|upper }}
+                </div>
+                <div class="participant-info">
+                    <div class="participant-name">{{ participant.player.username }}</div>
+                    <div class="participant-rating">
+                        Rating: {{ participant.player.arena_profile.rating }}
+                    </div>
+                    {% if participant.position %}
+                    <div class="participant-position">
+                        🏅 Final Position: #{{ participant.position }}
+                    </div>
+                    {% endif %}
+                    {% if participant.prize_won > 0 %}
+                    <div class="participant-prize">
+                        💰 Won: {{ participant.prize_won }} ASTRA
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="participant-actions">
+                    <a href="{% url 'arena_player_stats' participant.player.username %}" class="btn btn-sm">
+                        👁️ Profile
+                    </a>
+                    {% if participant.player != user and not tournament.is_completed %}
+                    <button class="btn btn-sm btn-primary" 
+                            onclick="challengePlayer({{ participant.player.id }})">
+                        ⚡ Challenge
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <p>No participants yet. Be the first to join!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Tournament Bracket (Simplified) -->
+    {% if tournament.is_active or tournament.is_completed %}
+    <div class="section">
+        <h2>📊 Tournament Bracket</h2>
+        <div class="bracket-container">
+            {% if tournament_games %}
+                <div class="games-list">
+                    {% for game in tournament_games %}
+                    <div class="tournament-game {% if game.winner %}completed{% else %}active{% endif %}">
+                        <div class="game-players">
+                            <div class="player {% if game.player1 == game.winner %}winner{% endif %}">
+                                {{ game.player1.username }}
+                                <span class="rating">({{ game.player1.arena_profile.rating }})</span>
+                            </div>
+                            <div class="vs">VS</div>
+                            <div class="player {% if game.player2 == game.winner %}winner{% endif %}">
+                                {{ game.player2.username }}
+                                <span class="rating">({{ game.player2.arena_profile.rating }})</span>
+                            </div>
+                        </div>
+                        <div class="game-result">
+                            {% if game.winner %}
+                                <span class="winner">🏆 {{ game.winner.username }} wins</span>
+                                <span class="victory-type">({{ game.victory_type|title }})</span>
+                            {% else %}
+                                <span class="in-progress">🕒 In Progress</span>
+                            {% endif %}
+                        </div>
+                        <div class="game-actions">
+                            {% if game.status == 'active' %}
+                            <a href="{% url 'arena_game' game.game_id %}" class="btn btn-sm" target="_blank">
+                                👀 Watch
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <p>Tournament bracket will be generated when the tournament starts.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Prize Distribution -->
+    <div class="section">
+        <h2>💰 Prize Distribution</h2>
+        <div class="prize-distribution">
+            <div class="prize-tier">
+                <div class="tier-rank">🥇 1st Place</div>
+                <div class="tier-prize">{{ first_prize|default:"50%" }} of Prize Pool</div>
+            </div>
+            <div class="prize-tier">
+                <div class="tier-rank">🥈 2nd Place</div>
+                <div class="tier-prize">{{ second_prize|default:"30%" }} of Prize Pool</div>
+            </div>
+            <div class="prize-tier">
+                <div class="tier-rank">🥉 3rd Place</div>
+                <div class="tier-prize">{{ third_prize|default:"20%" }} of Prize Pool</div>
+            </div>
+        </div>
+        <div class="prize-note">
+            <p><strong>Note:</strong> Prize distribution may vary based on final participant count. Platform fee of 10% is deducted from the total prize pool.</p>
+        </div>
+    </div>
+
+    <!-- Tournament Rules -->
+    <div class="section">
+        <h2>📜 Tournament Rules</h2>
+        <div class="rules-list">
+            <div class="rule-item">
+                <strong>Format:</strong> Single elimination bracket
+            </div>
+            <div class="rule-item">
+                <strong>Time Control:</strong> 3 minutes per player + energy system
+            </div>
+            <div class="rule-item">
+                <strong>Victory Conditions:</strong> Core capture, energy depletion, or timeout
+            </div>
+            <div class="rule-item">
+                <strong>Entry Fee:</strong> {{ tournament.entry_fee }} ASTRA (non-refundable)
+            </div>
+            <div class="rule-item">
+                <strong>Platform Fee:</strong> 10% of total prize pool
+            </div>
+            {% if not tournament.is_completed %}
+            <div class="rule-item">
+                <strong>Registration:</strong> Closes at tournament start time
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .tournament-detail-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .tournament-header {
+        background: linear-gradient(135deg, var(--deep-space), #1a0033);
+        border: 3px solid var(--neon-blue);
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .tournament-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink), var(--alien-green));
+    }
+
+    .tournament-banner h1 {
+        font-size: 2.5em;
+        background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink), var(--cosmic-gold));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 10px;
+    }
+
+    .tournament-meta {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .tournament-type {
+        background: var(--neon-pink);
+        color: white;
+        padding: 5px 12px;
+        border-radius: 15px;
+        font-size: 0.9em;
+        font-weight: bold;
+    }
+
+    .tournament-status {
+        padding: 5px 12px;
+        border-radius: 15px;
+        font-size: 0.9em;
+        font-weight: bold;
+    }
+
+    .tournament-status.active {
+        background: var(--alien-green);
+        color: black;
+    }
+
+    .tournament-status.completed {
+        background: var(--text-muted);
+        color: white;
+    }
+
+    .tournament-status.upcoming {
+        background: var(--neon-blue);
+        color: black;
+    }
+
+    .tournament-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        margin: 30px 0;
+    }
+
+    .stat {
+        text-align: center;
+        padding: 20px;
+        background: rgba(0, 50, 100, 0.6);
+        border: 1px solid var(--neon-blue);
+        border-radius: 10px;
+    }
+
+    .stat-value {
+        font-size: 1.8em;
+        font-weight: bold;
+        color: var(--cosmic-gold);
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        color: var(--text-muted);
+        font-size: 0.9em;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .tournament-timeline {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        position: relative;
+        margin-top: 30px;
+    }
+
+    .tournament-timeline::before {
+        content: '';
+        position: absolute;
+        top: 15px;
+        left: 25%;
+        right: 25%;
+        height: 2px;
+        background: var(--neon-blue);
+        z-index: 1;
+    }
+
+    .timeline-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        z-index: 2;
+    }
+
+    .timeline-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--text-muted);
+        margin-bottom: 10px;
+    }
+
+    .timeline-item.completed .timeline-dot {
+        background: var(--alien-green);
+    }
+
+    .timeline-item.active .timeline-dot {
+        background: var(--neon-blue);
+        animation: pulse 2s infinite;
+    }
+
+    .timeline-content {
+        text-align: center;
+    }
+
+    .tournament-actions {
+        background: rgba(0, 20, 40, 0.8);
+        border: 2px solid var(--neon-blue);
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .btn-large {
+        padding: 15px 30px;
+        font-size: 1.2em;
+        margin: 10px;
+    }
+
+    .action-status {
+        margin-bottom: 20px;
+    }
+
+    .live-indicator, .completed-indicator, .joined-indicator, .closed-indicator {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        display: inline-block;
+    }
+
+    .live-indicator { background: #ff4444; color: white; }
+    .completed-indicator { background: var(--alien-green); color: black; }
+    .joined-indicator { background: var(--cosmic-gold); color: black; }
+    .closed-indicator { background: var(--text-muted); color: white; }
+
+    .join-info {
+        color: var(--text-muted);
+        font-size: 0.9em;
+        margin-top: 10px;
+    }
+
+    .section {
+        background: rgba(0, 20, 40, 0.6);
+        border: 1px solid var(--neon-border);
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+    }
+
+    .section h2 {
+        color: var(--neon-blue);
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--neon-pink);
+        padding-bottom: 10px;
+    }
+
+    .participants-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 15px;
+    }
+
+    .participant-card {
+        background: rgba(0, 50, 100, 0.6);
+        border: 1px solid var(--neon-blue);
+        border-radius: 10px;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        transition: all 0.3s ease;
+    }
+
+    .participant-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 243, 255, 0.2);
+    }
+
+    .participant-card.current-user {
+        border-color: var(--cosmic-gold);
+        background: rgba(255, 215, 0, 0.1);
+    }
+
+    .participant-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: white;
+        font-size: 1.2em;
+    }
+
+    .participant-info {
+        flex: 1;
+    }
+
+    .participant-name {
+        font-weight: bold;
+        color: var(--text-light);
+        margin-bottom: 5px;
+    }
+
+    .participant-rating, .participant-position, .participant-prize {
+        font-size: 0.9em;
+        color: var(--text-muted);
+        margin-bottom: 2px;
+    }
+
+    .participant-prize {
+        color: var(--cosmic-gold);
+        font-weight: bold;
+    }
+
+    .participant-actions {
+        display: flex;
+        gap: 5px;
+    }
+
+    .btn-sm {
+        padding: 5px 10px;
+        font-size: 0.8em;
+    }
+
+    .bracket-container {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .games-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .tournament-game {
+        background: rgba(0, 50, 100, 0.6);
+        border: 1px solid var(--neon-blue);
+        border-radius: 8px;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .tournament-game.completed {
+        border-color: var(--alien-green);
+        background: rgba(0, 255, 136, 0.1);
+    }
+
+    .game-players {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex: 1;
+    }
+
+    .player {
+        padding: 8px 12px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .player.winner {
+        background: rgba(0, 255, 136, 0.2);
+        font-weight: bold;
+    }
+
+    .rating {
+        font-size: 0.8em;
+        color: var(--text-muted);
+    }
+
+    .vs {
+        color: var(--text-muted);
+        font-style: italic;
+    }
+
+    .game-result {
+        text-align: center;
+        flex: 0.5;
+    }
+
+    .winner {
+        color: var(--alien-green);
+        font-weight: bold;
+    }
+
+    .victory-type {
+        font-size: 0.8em;
+        color: var(--text-muted);
+    }
+
+    .in-progress {
+        color: var(--neon-blue);
+    }
+
+    .prize-distribution {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .prize-tier {
+        background: rgba(0, 50, 100, 0.6);
+        border: 2px solid var(--cosmic-gold);
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .tier-rank {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: var(--cosmic-gold);
+        margin-bottom: 10px;
+    }
+
+    .tier-prize {
+        font-size: 1.1em;
+        color: var(--text-light);
+    }
+
+    .prize-note {
+        background: rgba(255, 215, 0, 0.1);
+        border: 1px solid var(--cosmic-gold);
+        border-radius: 8px;
+        padding: 15px;
+        font-size: 0.9em;
+        color: var(--text-muted);
+    }
+
+    .rules-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .rule-item {
+        padding: 10px 15px;
+        background: rgba(0, 50, 100, 0.3);
+        border-radius: 8px;
+        border-left: 4px solid var(--neon-blue);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: var(--text-muted);
+        font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+        .tournament-stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .participants-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .tournament-game {
+            flex-direction: column;
+            gap: 10px;
+            text-align: center;
+        }
+        
+        .game-players {
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .prize-distribution {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<script>
+    {% block extra_js %}
+    async function joinTournament(tournamentId) {
+        const result = await makeRequest(`/arena/tournament/${tournamentId}/join/`);
+        
+        if (result.success) {
+            alert(result.message);
+            location.reload();
+        } else {
+            alert(result.message);
+        }
+    }
+
+    function challengePlayer(playerId) {
+        // This would open challenge modal
+        console.log('Challenge player:', playerId);
+        alert('Challenge feature would open here');
+    }
+
+    // Update countdown for upcoming tournaments
+    function updateTournamentCountdown() {
+        const startTime = new Date("{{ tournament.start_time|date:'c' }}");
+        const now = new Date();
+        const diff = startTime - now;
+        
+        if (diff > 0 && !{{ tournament.is_active|yesno:"true,false" }} && !{{ tournament.is_completed|yesno:"true,false" }}) {
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            
+            const countdownElement = document.querySelector('.join-info');
+            if (countdownElement) {
+                countdownElement.innerHTML = `Starts in: ${days}d ${hours}h ${minutes}m`;
+            }
+        }
+    }
+
+    // Update countdown every minute
+    {% if not tournament.is_active and not tournament.is_completed %}
+    setInterval(updateTournamentCountdown, 60000);
+    updateTournamentCountdown();
+    {% endif %}
+    {% endblock %}
+</script>
+{% endblock %}

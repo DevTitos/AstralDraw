@@ -276,6 +276,7 @@
             transition: all 0.3s ease;
             position: relative;
             border-left: 3px solid transparent;
+            cursor: pointer;
         }
         
         .nav-link:hover, .nav-link.active {
@@ -501,6 +502,18 @@
             background: rgba(0, 204, 255, 0.2);
             color: var(--quantum-blue);
             border: 1px solid var(--quantum-blue);
+        }
+        
+        .status-upcoming {
+            background: rgba(0, 204, 255, 0.2);
+            color: var(--quantum-blue);
+            border: 1px solid var(--quantum-blue);
+        }
+
+        .status-cancelled {
+            background: rgba(255, 42, 109, 0.2);
+            color: var(--warning-red);
+            border: 1px solid var(--warning-red);
         }
         
         /* Action Buttons */
@@ -842,9 +855,10 @@
 <body>
     <div class="stars" id="stars"></div>
     <div class="grid-lines"></div>
-    
+    {% include 'dashboard_modals.html' %}
+    {% include 'draw_modals.html' %}
+    {% include 'partials/_messages.html' %}
     <div class="dashboard">
-        <!-- Header -->
         <header class="header">
             <div class="user-info">
                 <div class="user-avatar">
@@ -862,6 +876,9 @@
             <div class="header-controls">
                 <button class="control-btn" onclick="openModal('notificationsModal')">
                     <i class="fas fa-bell"></i> <span>Alerts</span>
+                </button>
+                <button class="control-btn" onclick="openModal('purchaseAstraModal')">
+                    <i class="fas fa-cash"></i> <span>Buy Astra</span>
                 </button>
                 <button class="control-btn" onclick="openModal('settingsModal')">
                     <i class="fas fa-cog"></i> <span>Settings</span>
@@ -886,26 +903,25 @@
                 <div class="nav-title">Navigation</div>
                 <ul class="nav-items">
                     <li class="nav-item">
-                        <!-- Change this in your sidebar navigation -->
-                        <a href="#overview" class="nav-link active" onclick="showSection('overview'); return false;">
+                        <a class="nav-link active" data-section="overview">
                             <i class="fas fa-globe nav-icon"></i>
                             <span>Quantum Overview</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#star-keys" class="nav-link" onclick="showSection('star-keys')">
+                        <a class="nav-link" data-section="star-keys">
                             <i class="fas fa-key nav-icon"></i>
                             <span>Star Keys</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#draws" class="nav-link" onclick="showSection('draws')">
+                        <a class="nav-link" data-section="draws">
                             <i class="fas fa-dice nav-icon"></i>
                             <span>Astral Draws</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#wallet" class="nav-link" onclick="showSection('wallet')">
+                        <a class="nav-link" data-section="wallet">
                             <i class="fas fa-wallet nav-icon"></i>
                             <span>Nebula Vault</span>
                         </a>
@@ -925,7 +941,7 @@
                     </li>
                     <li class="nav-item">
                         <a href="#analytics" class="nav-link admin-only" onclick="showSection('analytics')">
-                            <i class="fas fa-chart-network nav-icon"></i>
+                            <i class="fas fa-cogs nav-icon"></i>
                             <span>Cosmic Analytics</span>
                         </a>
                     </li>
@@ -954,7 +970,6 @@
         
         <!-- Main Content -->
         <main class="main-content">
-            {% include 'partials/_messages.html' %}
             <!-- Overview Section -->
             <section id="overview" class="content-section active">
                 <div class="section-header">
@@ -977,7 +992,7 @@
                     
                     <div class="stat-card">
                         <div class="stat-icon"><i class="fas fa-coins"></i></div>
-                        <div class="stat-value">{{ user_wallet.balance|default:"0" }} ASTRA</div>
+                        <div class="stat-value">{{ astra_bal }} ASTRA</div>
                         <div class="stat-label">Nebula Balance</div>
                     </div>
                     
@@ -1028,11 +1043,14 @@
 
                     <div style="margin-top: 1rem;">
                         <button class="action-btn btn-primary" onclick="showSection('draws')">
-                            <i class="fas fa-eye"></i> View Active Draws
+                            <i class="fas fa-eye"></i> All Draws
                         </button>
-                        <button class="action-btn btn-warning" onclick="debugDate()" style="margin-left: 0.5rem;">
-                            <i class="fas fa-bug"></i> Debug Date
+                        <button class="action-btn btn-warning" onclick="verifyNFT( '{{next_draw.nft_id}}' )" style="margin-left: 0.5rem;">
+                            <i class="fas fa-search"></i> Verify Draw
                         </button>
+                        <button class="action-btn btn-success" onclick="openModal('forgeKeyModal')">
+                                <i class="fas fa-key"></i> Forge Key
+                            </button>
                     </div>
                 </div>
                 
@@ -1071,28 +1089,22 @@
                             <div>Convergence</div>
                             <div>Status</div>
                             <div>Forged Date</div>
-                            <div>Actions</div>
+                            <div>My Keys</div>
                         </div>
                         {% for key in user_keys %}
                         <div class="table-row">
-                            <div style="font-family: monospace;">{{ key.serial_number }}</div>
-                            <div>{{ key.draw.title }}</div>
+                            <div style="font-family: monospace;">{{key.serial_number}}</div>
+                            <div>{{key.draw.title}} Convergence</div>
                             <div>
-                                <span class="status-badge status-{{ key.draw.status|lower }}">
-                                    {{ key.draw.status }}
+                                <span class="status-badge status-active">
+                                    {{key.draw.status}}
                                 </span>
                             </div>
-                            <div>{{ key.created_at|date:"M d, Y" }}</div>
+                            <div>{{key.created_at}}</div>
                             <div>
-                                <button class="action-btn btn-primary" onclick="viewKeyDetails('{{ key.id }}')">
-                                    <i class="fas fa-search"></i> Inspect
-                                </button>
-                            </div>
-                        </div>
-                        {% empty %}
-                        <div class="table-row">
-                            <div colspan="5" style="text-align: center; padding: 2rem;">
-                                No star keys forged yet. <a href="#draws" onclick="showSection('draws')" style="color: var(--neon-cyan);">Join a convergence!</a>
+                                <span class="status-badge status-active">
+                                    {{key.get_star_keys}}
+                                </span>
                             </div>
                         </div>
                         {% endfor %}
@@ -1112,20 +1124,29 @@
                 </div>
                 
                 <div class="dashboard-grid">
-                    {% for draw in active_draws %}
+                    {% for draw in all_draws %}
                     <div class="stat-card">
                         <div class="stat-icon"><i class="fas fa-dice"></i></div>
                         <div class="stat-value">{{ draw.prize_pool }} ASTRA</div>
-                        <div class="stat-label">{{ draw.title }}</div>
+                        <div class="stat-label">{{ draw.title }} Convergence</div>
+                        <span class="status-badge status-{{ key.draw.status|lower }}">
+                            {{ draw.status }}
+                        </span>
+                        {% if draw.status == "ENDED" %}
+                        <div class="stat-label">{{ draw.get_star_keys }}</div>
+                        {% endif %}
                         <div style="margin-top: 1rem;">
-                            <button class="action-btn btn-primary" onclick="viewDraw('{{ draw.id }}')">
+                            <button class="action-btn btn-primary" onclick="viewDrawDetailss({{ draw.id }})">
                                 <i class="fas fa-eye"></i> View Details
                             </button>
-                            {% if draw.can_participate %}
-                            <button class="action-btn btn-warning" onclick="participateDraw('{{ draw.id }}')">
+                            {% if draw.status == "ACTIVE" %}
+                            <button class="action-btn btn-warning" onclick="openModal('forgeKeyModal')">
                                 <i class="fas fa-key"></i> Forge Key
                             </button>
                             {% endif %}
+                            <button class="action-btn btn-warning" onclick="verifyNFT( '{{draw.nft_id}}' )" style="margin-left: 0.5rem;">
+                            <i class="fas fa-search"></i> Verify Draw
+                        </button>
                         </div>
                     </div>
                     {% endfor %}
@@ -1147,13 +1168,13 @@
                         <div>
                             <p><strong>Public Key:</strong></p>
                             <p style="font-family: monospace; font-size: 0.8rem; word-break: break-all;">
-                                {{ user_wallet.public_key }}
+                                {{user_wallet.public_key}}
                             </p>
                         </div>
                         <div>
                             <p><strong>Account ID:</strong></p>
                             <p style="font-family: monospace; font-size: 0.8rem;">
-                                {{ user_wallet.recipient_id }}
+                                {{user_wallet.recipient_id}}
                             </p>
                         </div>
                     </div>
@@ -1170,7 +1191,6 @@
                 </div>
             </section>
             
-            {% if user.is_staff %}
             <!-- Admin Draws Section -->
             <section id="admin-draws" class="content-section">
                 <div class="section-header">
@@ -1181,7 +1201,8 @@
                 <button class="action-btn btn-primary" onclick="openModal('createDrawModal')">
                     <i class="fas fa-plus"></i> Create New Convergence
                 </button>
-                
+                <br>
+                <br>
                 <div class="data-table">
                     <div class="table-header">
                         <h3 class="table-title">All Convergences</h3>
@@ -1200,7 +1221,7 @@
                         <!-- Example Draw 2 -->
                         <div class="table-row">
                             <div>
-                                <strong>{{drwa.title}} Alignment</strong>
+                                <strong>{{draw.title}} Alignment</strong>
                                 <div style="font-size: 0.8rem; opacity: 0.7; margin-top: 0.2rem;">
                                     Symbol: {{draw.symbol}} NBL-
                                 </div>
@@ -1209,14 +1230,20 @@
                                 <span style="color: var(--alien-green); font-weight: 600;">{{draw.prize_pool}} ASTRA</span>
                             </div>
                             <div>
-                                {% if draw.status == "upcoming" %}
+                                {% if draw.status == "UPCOMING" %}
                                 <span class="status-badge status-upcoming">Upcoming</span>
+                                {% elif draw.status == "upcoming" %}
+                                <span class="status-badge status-upcoming">Upcoming</span>
+                                {% elif draw.status == "ACTIVE" %}
+                                <span class="status-badge status-active">Active</span>
                                 {% elif draw.status == "active" %}
                                 <span class="status-badge status-active">Active</span>
-                                {% elif draw.status == "completed" %}
+                                {% elif draw.status == "COMPLETED" %}
+                                <span class="status-badge btn-success">Completed</span>
+                                {% elif draw.status == "ENDED" %}
                                 <span class="status-badge status-completed">Completed</span>
                                 {% else %}
-                                <div style="font-size: 0.8rem; opacity: 0.7;">Cancelled</div>
+                                <span class="status-badge status-cancelled">Cancelled</span>
                                 {% endif %}
                             </div>
                             <div>
@@ -1227,23 +1254,28 @@
                                 <span style="color: var(--neon-cyan);">{{draw.total_tickets_sold}}</span>
                             </div>
                             <div>
-                                <button class="action-btn btn-primary" onclick="viewDrawDetails('quantum-3')">
+                                <button class="action-btn btn-primary" onclick="viewDraw('{{ draw.id }}')">
                                     <i class="fas fa-eye"></i> View
                                 </button>
-                                {% if draw.status == "upcoming" or "active" %}
-                                <button class="action-btn btn-warning" onclick="editDraw('quantum-3')">
-                                    <i class="fas fa-edit"></i> Edit
+                                {% if draw.status == "UPCOMING" or "ACTIVE" %}
+                                    <i class="fas fa-edit"></i>                                <button class="action-btn btn-warning" onclick="editDraw('quantum-3')">
+ Edit
                                 </button>
                                 <button class="action-btn btn-danger" onclick="cancelDraw('quantum-3')">
                                     <i class="fas fa-times"></i> Cancel
                                 </button>
                                 {% endif %}
-                                {% if draw.status == "completed" %}
+                                
+                                <button class="action-btn btn-warning" onclick="processDraw({{ draw.id }})">
+                                    <i class="fas fa-rocket"></i> Process
+                                </button>
+                                
+                                {% if draw.status == "COMPLETED" %}
                                 <button class="action-btn btn-warning" onclick="exportDrawData('stellar-5')">
                                     <i class="fas fa-download"></i> Export
                                 </button>
                                 {% endif %}
-                                {% if draw.status == "cancelled" %}
+                                {% if draw.status == "CANCELLED" %}
                                 <button class="action-btn btn-danger" onclick="deleteDraw('cosmic-2')">
                                     <i class="fas fa-trash"></i> Delete
                                 </button>
@@ -1255,7 +1287,6 @@
                 </div>
             </section>
             
-            <!-- Analytics Section -->
             <section id="analytics" class="content-section">
                 <div class="section-header">
                     <h1 class="section-title">Cosmic Analytics</h1>
@@ -1288,144 +1319,47 @@
                     </div>
                 </div>
             </section>
-            {% endif %}
+
+            <!-- Support Section -->
+            <section id="support" class="content-section">
+                <div class="section-header">
+                    <h1 class="section-title">Quantum Support</h1>
+                    <p class="section-subtitle">Get help with your cosmic journey</p>
+                </div>
+                
+                <div class="hologram">
+                    <h3 style="margin-bottom: 1rem; color: var(--hologram-teal);">
+                        <i class="fas fa-life-ring"></i> Support Resources
+                    </h3>
+                    <p>Need assistance with your Astral Draw experience? We're here to help!</p>
+                </div>
+            </section>
+
+            <!-- Users Section -->
+            <section id="users" class="content-section">
+                <div class="section-header">
+                    <h1 class="section-title">User Governance</h1>
+                    <p class="section-subtitle">Manage cosmic citizen accounts</p>
+                </div>
+                
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3 class="table-title">User Management</h3>
+                        <p>Administer user accounts and permissions</p>
+                    </div>
+                    <div class="table-content">
+                        <!-- User management content would go here -->
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
     
-    <!-- Modals -->
-    {% include 'dashboard_modals.html' %}
-
-
-    <style>
-            /* Add these status badge styles */
-        .status-upcoming {
-            background: rgba(0, 204, 255, 0.2);
-            color: var(--quantum-blue);
-            border: 1px solid var(--quantum-blue);
-        }
-
-        .status-completed {
-            background: rgba(0, 255, 102, 0.2);
-            color: var(--alien-green);
-            border: 1px solid var(--alien-green);
-        }
-
-        .status-cancelled {
-            background: rgba(255, 42, 109, 0.2);
-            color: var(--warning-red);
-            border: 1px solid var(--warning-red);
-        }
-
-        /* Responsive table improvements */
-        @media (max-width: 768px) {
-            .table-row {
-                grid-template-columns: 1fr;
-                text-align: left;
-                gap: 0.5rem;
-                padding: 1rem;
-            }
-
-            .table-row.header {
-                display: none;
-            }
-
-            .table-row > div::before {
-                content: attr(data-label);
-                font-weight: 600;
-                opacity: 0.7;
-                margin-right: 0.5rem;
-                text-transform: uppercase;
-                font-size: 0.8rem;
-            }
-
-            .table-row > div {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-
-            .table-row > div:last-child {
-                justify-content: flex-start;
-                gap: 0.5rem;
-                flex-wrap: wrap;
-            }
-        }
-    </style>
-    <script>
-        // Admin draw management functions
-        function viewDrawDetails(drawId) {
-            // Implementation to view draw details
-            console.log('Viewing draw:', drawId);
-            // Could open a modal or navigate to detail page
-            openModal('drawDetailsModal');
-            // Load draw details via AJAX
-        }
-
-        function editDraw(drawId) {
-            // Implementation to edit draw
-            console.log('Editing draw:', drawId);
-            // Pre-fill the create draw modal with existing data
-            openModal('createDrawModal');
-            // Load draw data and populate form
-        }
-
-        function cancelDraw(drawId) {
-            if (confirm(`Are you sure you want to cancel the ${drawId} convergence?`)) {
-                // API call to cancel draw
-                fetch(`/api/draws/${drawId}/cancel/`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': getCSRFToken(),
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showNotification('Convergence cancelled successfully', 'success');
-                        // Refresh the table
-                        loadAdminDraws();
-                    } else {
-                        showNotification('Failed to cancel convergence: ' + data.error, 'error');
-                    }
-                });
-            }
-        }
-
-        function deleteDraw(drawId) {
-            if (confirm(`Permanently delete ${drawId}? This action cannot be undone.`)) {
-                // API call to delete draw
-                fetch(`/api/draws/${drawId}/`, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRFToken': getCSRFToken()
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showNotification('Convergence deleted successfully', 'success');
-                        // Refresh the table
-                        loadAdminDraws();
-                    } else {
-                        showNotification('Failed to delete convergence: ' + data.error, 'error');
-                    }
-                });
-            }
-        }
-
-        function exportDrawData(drawId) {
-            // Implementation to export draw data
-            console.log('Exporting data for:', drawId);
-            // Trigger download of CSV or PDF report
-            showNotification('Exporting draw data...', 'info');
-        }
-    </script>
     <script>
         // Create background stars
         function createStars() {
             const starsContainer = document.getElementById('stars');
-            const starsCount = 300;
+            const starsCount = 200;
             
             for (let i = 0; i < starsCount; i++) {
                 const star = document.createElement('div');
@@ -1444,233 +1378,147 @@
             }
         }
         
-        // Countdown timer based on Django draw_datetime
-        function updateCountdown() {
-            // Get the next draw datetime from Django context
-            // This would be replaced with actual data from your backend
-            const nextDrawDatetime = "{{ next_draw.draw_datetime|date:'Y-m-d H:i:s' }}";
+        // Fixed Section Navigation
+        function showSection(sectionId) {
+            console.log('Showing section:', sectionId);
             
-            if (!nextDrawDatetime || nextDrawDatetime === "None") {
-                document.getElementById('countdownTimer').textContent = "NO DRAW";
-                document.getElementById('timeRemaining').textContent = "N/A";
-                document.getElementById('nextDrawDate').textContent = "--";
-                document.getElementById('nextDrawPrize').textContent = "--";
-                document.getElementById('nextDrawParticipants').textContent = "--";
-                return;
-            }
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
             
-            // Parse the datetime from Django format
-            const drawDate = new Date(nextDrawDatetime);
-            const now = new Date();
-            
-            const diff = drawDate - now;
-            
-            if (diff > 0) {
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-                
-                // Update header countdown
-                if (days > 0) {
-                    document.getElementById('countdownTimer').textContent = 
-                        `${days}d ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                } else {
-                    document.getElementById('countdownTimer').textContent = 
-                        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                }
-                
-                // Update dashboard stats
-                document.getElementById('timeRemaining').textContent = 
-                    days > 0 ? `${days}d ${hours}h` : `${hours}h ${minutes}m`;
-                
-                document.getElementById('nextDrawDate').textContent = 
-                    drawDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                
-                document.getElementById('nextDrawPrize').textContent = 
-                    "{{ next_draw.prize_pool|default:'0' }}";
-                
-                document.getElementById('nextDrawParticipants').textContent = 
-                    "{{ next_draw.total_tickets_sold|default:'0' }}";
+            // Show selected section
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                console.log('Section activated:', sectionId);
             } else {
-                document.getElementById('countdownTimer').textContent = "LIVE";
-                document.getElementById('timeRemaining').textContent = "NOW";
-                document.getElementById('nextDrawDate').textContent = "LIVE";
-                document.getElementById('nextDrawPrize').textContent = "{{ next_draw.prize_pool|default:'0' }}";
-                document.getElementById('nextDrawParticipants').textContent = "{{ next_draw.total_tickets_sold|default:'0' }}";
+                console.error('Section not found:', sectionId);
             }
-        }
-        
-        // Key forging functionality
-        function isNumberKey(evt) {
-            var charCode = (evt.which) ? evt.which : evt.keyCode;
-            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-                return false;
-            }
-            return true;
-        }
-        
-        function moveToNext(input, nextIndex) {
-            if (input.value.length === 1) {
-                const nextInput = input.parentElement.children[nextIndex];
-                if (nextInput) nextInput.focus();
-            }
-        }
-        
-        function moveToNextModal(input, nextIndex) {
-            if (input.value.length === 1) {
-                const inputs = document.querySelectorAll('#forgeKeyModal .key-digit');
-                if (nextIndex < inputs.length) {
-                    inputs[nextIndex].focus();
-                }
-            }
-        }
-        
-        function clearKeyInputs() {
-            const inputs = document.querySelectorAll('.key-digit');
-            inputs.forEach(input => {
-                input.value = '';
-            });
-            if (inputs[0]) inputs[0].focus();
-        }
-        
-        function forgeStarKey() {
-            const inputs = document.querySelectorAll('.key-digit');
-            let key = '';
-            let valid = true;
             
-            inputs.forEach(input => {
-                if (input.value === '' || isNaN(input.value)) {
-                    valid = false;
-                    input.style.borderColor = 'var(--warning-red)';
-                } else {
-                    key += input.value;
-                    input.style.borderColor = 'var(--alien-green)';
-                }
+            // Update active nav link
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
             });
             
-            if (valid && key.length === 6) {
-                // Submit to your Django view
-                alert(`Star Key ${key} forged successfully!`);
-                // Here you would send the key to your Django backend
-                // fetch('/submit-keys/', { method: 'POST', body: JSON.stringify({star_keys: key.split('')}) })
-            } else {
-                alert('Please enter 6 valid digits (0-9)');
+            // Find and activate the corresponding nav link
+            const activeLink = document.querySelector(`.nav-link[data-section="${sectionId}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+                console.log('Nav link activated for:', sectionId);
             }
-        }
-        
-        function submitStarKey() {
-            const inputs = document.querySelectorAll('#forgeKeyModal .key-digit');
-            let key = '';
-            let valid = true;
             
-            inputs.forEach(input => {
-                if (input.value === '' || isNaN(input.value)) {
-                    valid = false;
-                    input.style.borderColor = 'var(--warning-red)';
-                } else {
-                    key += input.value;
-                    input.style.borderColor = 'var(--alien-green)';
-                }
-            });
-            
-            if (valid && key.length === 6) {
-                const drawId = document.getElementById('drawSelection').value;
-                // Submit to your Django view
-                alert(`Star Key ${key} forged for draw ${drawId}!`);
-                closeModal('forgeKeyModal');
-                // Here you would send the key to your Django backend
-                // fetch('/submit-keys/' + drawId + '/', { method: 'POST', body: JSON.stringify({star_keys: key.split('')}) })
-            } else {
-                alert('Please enter 6 valid digits (0-9)');
+            // Close mobile sidebar
+            if (window.innerWidth <= 1024) {
+                toggleSidebar();
             }
-        }
-        
-        // Astra purchase functionality
-        let selectedAstraAmount = 0;
-        let selectedPaymentMethod = 'hbar';
-        
-        function selectAstraOption(element, amount) {
-            document.querySelectorAll('.astra-option').forEach(opt => {
-                opt.classList.remove('selected');
-            });
-            element.classList.add('selected');
-            selectedAstraAmount = amount;
-        }
-        
-        function selectPaymentMethod(element, method) {
-            document.querySelectorAll('.payment-method').forEach(opt => {
-                opt.classList.remove('selected');
-            });
-            element.classList.add('selected');
-            selectedPaymentMethod = method;
-        }
-        
-        function purchaseAstra() {
-            if (selectedAstraAmount > 0) {
-                alert(`Purchasing ${selectedAstraAmount} ASTRA via ${selectedPaymentMethod.toUpperCase()}`);
-                closeModal('purchaseAstraModal');
-            } else {
-                alert('Please select an ASTRA amount');
+            
+            // Initialize countdown if showing overview
+            if (sectionId === 'overview') {
+                initializeCountdown();
             }
         }
         
         // Modal functions
         function openModal(modalId) {
-            document.getElementById(modalId).style.display = 'flex';
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'flex';
+            }
         }
         
         function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-        
-        // Section navigation
-        function showSection(sectionId) {
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            document.getElementById(sectionId).classList.add('active');
-            
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            if (window.innerWidth <= 1024) {
-                toggleSidebar();
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
             }
         }
         
         // Mobile sidebar toggle
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            
-            if (window.innerWidth <= 1024) {
+            if (sidebar) {
                 sidebar.classList.toggle('active');
-                overlay.classList.toggle('active');
-                
-                // Prevent body scroll when sidebar is open
-                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
             }
         }
         
-        // Close sidebar when clicking on a link (mobile)
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', function() {
-                    if (window.innerWidth <= 1024) {
-                        toggleSidebar();
+        // Countdown Timer Functionality
+        function initializeCountdown() {
+            const nextDrawDateElement = document.getElementById('nextDrawDate');
+            const countdownTimer = document.getElementById('countdownTimer');
+            
+            // Get the draw datetime from the element text
+            const drawDatetimeText = nextDrawDateElement.textContent;
+            
+            if (drawDatetimeText && drawDatetimeText !== 'Calculating...') {
+                try {
+                    const drawDate = new Date(drawDatetimeText);
+                    
+                    if (isNaN(drawDate.getTime())) {
+                        throw new Error('Invalid date format');
                     }
-                });
-            });
-        });
+                    
+                    function updateCountdown() {
+                        const now = new Date().getTime();
+                        const timeLeft = drawDate.getTime() - now;
+                        
+                        if (timeLeft < 0) {
+                            // Draw time has passed
+                            document.getElementById('days').textContent = '00';
+                            document.getElementById('hours').textContent = '00';
+                            document.getElementById('minutes').textContent = '00';
+                            document.getElementById('seconds').textContent = '00';
+                            return;
+                        }
+                        
+                        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                        
+                        document.getElementById('days').textContent = days.toString().padStart(2, '0');
+                        document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                        document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                        document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+                    }
+                    
+                    // Update immediately and set interval
+                    updateCountdown();
+                    setInterval(updateCountdown, 1000);
+                    
+                } catch (error) {
+                    console.error('Error with countdown:', error);
+                }
+            }
+        }
         
         // Initialize dashboard
         document.addEventListener('DOMContentLoaded', function() {
             createStars();
-            //updateCountdown();
-            //setInterval(updateCountdown, 1000);
+            
+            // Set up event listeners for navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sectionId = this.getAttribute('data-section');
+                    if (sectionId) {
+                        showSection(sectionId);
+                    }
+                });
+            });
+            
+            // Set up event listeners for buttons that navigate to sections
+            document.querySelectorAll('[data-section]').forEach(button => {
+                if (button.classList.contains('action-btn') || button.classList.contains('control-btn')) {
+                    button.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const sectionId = this.getAttribute('data-section');
+                        if (sectionId) {
+                            showSection(sectionId);
+                        }
+                    });
+                }
+            });
             
             // Close modals when clicking outside
             window.addEventListener('click', function(event) {
@@ -1679,21 +1527,126 @@
                 }
             });
             
-            // Auto-hide sidebar on mobile initially
+            // Auto-hide sidebar on mobile
             if (window.innerWidth <= 1024) {
-                document.getElementById('sidebar').classList.remove('active');
-                document.getElementById('sidebarOverlay').classList.remove('active');
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar) {
+                    sidebar.classList.remove('active');
+                }
             }
             
-            // Handle window resize
-            window.addEventListener('resize', function() {
-                if (window.innerWidth > 1024) {
-                    document.getElementById('sidebar').classList.remove('active');
-                    document.getElementById('sidebarOverlay').classList.remove('active');
-                    document.body.style.overflow = '';
-                }
-            });
+            // Initialize countdown
+            initializeCountdown();
         });
+        
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 1024) {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar) {
+                    sidebar.classList.add('active');
+                }
+            }
+        });
+        
+        // Placeholder functions for other actions
+        function viewKeyDetails(keyId) {
+            console.log('Viewing key details:', keyId);
+            alert('Key details would be shown here for: ' + keyId);
+        }
+        
+        //function viewDraw(drawId) {
+        //    console.log('Viewing draw:', drawId);
+        //    alert('Draw details would be shown here for: ' + drawId);
+        //}
+        
+        function participateDraw(drawId) {
+            console.log('Participating in draw:', drawId);
+            alert('Participation modal would open for: ' + drawId);
+        }
+        
+        function viewDrawDetails(drawId) {
+            console.log('Viewing draw details:', drawId);
+            alert('Admin draw details would be shown here for: ' + drawId);
+        }
+        
+        function editDraw(drawId) {
+            console.log('Editing draw:', drawId);
+            alert('Edit draw modal would open for: ' + drawId);
+        }
+    </script>
+
+    <script>
+        function processDraw(drawId) {
+    if (!confirm('Are you sure you want to process this draw? This action cannot be undone.')) {
+        return;
+    }
+    
+    // Show loading state
+    const button = event.target;
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    button.disabled = true;
+    
+    // Get CSRF token for Django
+    const csrftoken = getCookie('csrftoken');
+    
+    fetch(`/api/draws/${drawId}/process/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (data.winner) {
+                alert(`Draw processed successfully! Winner: ${data.winner.username} (Ticket: ${data.winner.serial_number}) - Prize: $${data.winner.prize_amount}`);
+            } else {
+                alert('Draw processed successfully! No winner found.');
+            }
+            // Reload the page to reflect changes
+            location.reload();
+        } else {
+            alert('Error: ' + data.error);
+            // Reset button
+            button.innerHTML = originalText;
+            button.disabled = false;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while processing the draw.');
+        // Reset button
+        button.innerHTML = originalText;
+        button.disabled = false;
+    });
+}
+
+// Helper function to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function verifyPool(tokenId) {
+    window.open(`https://hashscan.io/testnet/token/${tokenId}`, '_blank');
+}
+function verifyNFT(tokenId) {
+    window.open(`https://hashscan.io/testnet/token/${tokenId}`, '_blank');
+}
     </script>
 </body>
 </html>

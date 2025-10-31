@@ -353,6 +353,75 @@
     </div>
 </div>
 
+
+
+
+
+
+<!-- Add this to game_interface.html -->
+{% if game.mode == 'practice' %}
+<div class="practice-mode-indicator">
+    <div class="ai-info">
+        <h3>🤖 Practice Mode</h3>
+        <p>Playing against: <strong>{{ game.board_state.ai_name }}</strong></p>
+        <p>Difficulty: <span class="difficulty-badge">{{ game.board_state.ai_difficulty|title }}</span></p>
+        <div class="practice-tips">
+            <button class="btn btn-sm" onclick="showPracticeTips()">💡 Show Tips</button>
+            <button class="btn btn-sm" onclick="restartPractice()">🔄 Restart</button>
+        </div>
+    </div>
+</div>
+
+<!-- Practice Tips Modal -->
+<div class="modal" id="practice-tips-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>💡 Practice Mode Tips</h2>
+            <button class="close-modal" onclick="closeModal('practice-tips-modal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="dynamic-tips">
+                <!-- Tips will be loaded based on game state -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showPracticeTips() {
+        // Load context-specific tips
+        const tips = getContextualTips();
+        document.getElementById('dynamic-tips').innerHTML = tips;
+        openModal('practice-tips-modal');
+    }
+ 
+    function restartPractice() {
+        if (confirm('Restart practice game?')) {
+            // Logic to restart the game
+            window.location.reload();
+        }
+    }
+
+    function getContextualTips() {
+        // Return tips based on current game state
+        return `
+            <div class="tip-section">
+                <h4>Current Situation Tips:</h4>
+                <ul>
+                    <li>Watch how the AI positions its pieces</li>
+                    <li>Try different piece combinations</li>
+                    <li>Experiment with ability timing</li>
+                    <li>Learn from the AI's move patterns</li>
+                </ul>
+            </div>
+        `;
+    }
+</script>
+{% endif %}
+
+
+
+
 <script>
     {% block extra_js %}
     const gameId = "{{ game.game_id }}";

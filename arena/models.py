@@ -41,6 +41,12 @@ class ArenaPlayer(models.Model):
     
     def __str__(self):
         return f"{self.user.username} - {self.tier} ({self.rating})"
+    
+    @property
+    def win_rate(self):
+        if self.games_played > 0:
+            return (self.games_won / self.games_played) * 100
+        return 0
 
 class ArenaGame(models.Model):
     GAME_MODES = [

@@ -1,0 +1,338 @@
+{% extends 'arena/base.html' %}
+
+{% block title %}Astral Arena - Tournaments{% endblock %}
+
+{% block content %}
+<div class="tournaments-container">
+    <div class="tournaments-header">
+        <h1>🏆 Astral Arena Tournaments</h1>
+        <p>Compete for glory and massive ASTRA prizes in scheduled tournaments</p>
+    </div>
+
+    <!-- Active Tournaments -->
+    <div class="tournaments-section">
+        <h2>⚡ Active Tournaments</h2>
+        {% if active_tournaments %}
+            <div class="tournaments-grid">
+                {% for tournament in active_tournaments %}
+                <div class="tournament-card active">
+                    <div class="tournament-header">
+                        <h3>{{ tournament.name }}</h3>
+                        <span class="tournament-status">LIVE</span>
+                    </div>
+                    <div class="tournament-details">
+                        <div class="detail">
+                            <span>🎯 Type:</span>
+                            <span>{{ tournament.get_tournament_type_display }}</span>
+                        </div>
+                        <div class="detail">
+                            <span>💰 Prize Pool:</span>
+                            <span class="prize-amount">{{ tournament.total_prize_pool }} ASTRA</span>
+                        </div>
+                        <div class="detail">
+                            <span>👥 Players:</span>
+                            <span>{{ tournament.current_players }}/{{ tournament.max_players }}</span>
+                        </div>
+                        <div class="detail">
+                            <span>⏰ Ends:</span>
+                            <span class="time-remaining" data-end="{{ tournament.end_time|date:'c' }}"></span>
+                        </div>
+                    </div>
+                    <div class="tournament-actions">
+                        {% if tournament.id in user_participations %}
+                            <a href="{% url 'tournament_detail' tournament.id %}" class="btn btn-primary">
+                                🎮 View Bracket
+                            </a>
+                        {% else %}
+                            <button class="btn btn-secondary" disabled>
+                                🔒 Tournament Started
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <p>No active tournaments at the moment. Check back soon!</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Upcoming Tournaments -->
+    <div class="tournaments-section">
+        <h2>📅 Upcoming Tournaments</h2>
+        {% if upcoming_tournaments %}
+            <div class="tournaments-grid">
+                {% for tournament in upcoming_tournaments %}
+                <div class="tournament-card upcoming">
+                    <div class="tournament-header">
+                        <h3>{{ tournament.name }}</h3>
+                        <span class="tournament-type">{{ tournament.get_tournament_type_display }}</span>
+                    </div>
+                    <div class="tournament-details">
+                        <div class="detail">
+                            <span>🎫 Entry Fee:</span>
+                            <span>{{ tournament.entry_fee }} ASTRA</span>
+                        </div>
+                        <div class="detail">
+                            <span>💰 Prize Pool:</span>
+                            <span class="prize-amount">{{ tournament.total_prize_pool }} ASTRA</span>
+                        </div>
+                        <div class="detail">
+                            <span>👥 Players:</span>
+                            <span>{{ tournament.current_players }}/{{ tournament.max_players }}</span>
+                        </div>
+                        <div class="detail">
+                            <span>🕐 Starts:</span>
+                            <span>{{ tournament.start_time|date:"M j, Y H:i" }}</span>
+                        </div>
+                    </div>
+                    <div class="tournament-actions">
+                        {% if tournament.id in user_participations %}
+                            <button class="btn btn-success" disabled>
+                                ✅ Joined
+                            </button>
+                        {% else %}
+                            <button class="btn btn-primary" 
+                                    onclick="joinTournament({{ tournament.id }})"
+                                    {% if not can_join %}disabled{% endif %}>
+                                🎯 Join Tournament
+                            </button>
+                        {% endif %}
+                        <a href="{% url 'tournament_detail' tournament.id %}" class="btn btn-secondary">
+                            ℹ️ Details
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <p>No upcoming tournaments scheduled. Check back later!</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Completed Tournaments -->
+    <div class="tournaments-section">
+        <h2>📊 Recent Tournaments</h2>
+        {% if completed_tournaments %}
+            <div class="tournaments-list">
+                {% for tournament in completed_tournaments %}
+                <div class="tournament-item completed">
+                    <div class="tournament-info">
+                        <h4>{{ tournament.name }}</h4>
+                        <span class="tournament-type">{{ tournament.get_tournament_type_display }}</span>
+                    </div>
+                    <div class="tournament-stats">
+                        <span>🏆 Prize Pool: {{ tournament.total_prize_pool }} ASTRA</span>
+                        <span>👥 {{ tournament.current_players }} Players</span>
+                        <span>📅 {{ tournament.end_time|date:"M j, Y" }}</span>
+                    </div>
+                    <a href="{% url 'tournament_detail' tournament.id %}" class="btn btn-secondary">
+                        View Results
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <p>No tournament history yet.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .tournaments-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 30px 0;
+        border-bottom: 2px solid var(--neon-blue);
+    }
+
+    .tournaments-header h1 {
+        font-size: 3em;
+        background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink), var(--cosmic-gold));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 10px;
+    }
+
+    .tournaments-section {
+        margin-bottom: 50px;
+        padding: 20px;
+        background: rgba(0, 20, 40, 0.6);
+        border-radius: 15px;
+        border: 1px solid var(--neon-border);
+    }
+
+    .tournaments-section h2 {
+        color: var(--neon-blue);
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--neon-pink);
+        padding-bottom: 10px;
+    }
+
+    .tournaments-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 20px;
+    }
+
+    .tournament-card {
+        background: rgba(0, 50, 100, 0.6);
+        border: 2px solid;
+        border-radius: 15px;
+        padding: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .tournament-card.active {
+        border-color: var(--alien-green);
+        box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+    }
+
+    .tournament-card.upcoming {
+        border-color: var(--neon-blue);
+    }
+
+    .tournament-card.completed {
+        border-color: var(--text-muted);
+        opacity: 0.8;
+    }
+
+    .tournament-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .tournament-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .tournament-header h3 {
+        color: var(--cosmic-gold);
+        margin: 0;
+    }
+
+    .tournament-status {
+        background: var(--alien-green);
+        color: var(--deep-space);
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8em;
+        font-weight: bold;
+    }
+
+    .tournament-type {
+        background: var(--neon-pink);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8em;
+    }
+
+    .tournament-details {
+        margin-bottom: 15px;
+    }
+
+    .detail {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        padding: 5px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .prize-amount {
+        color: var(--cosmic-gold);
+        font-weight: bold;
+    }
+
+    .tournament-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: space-between;
+    }
+
+    .tournaments-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .tournament-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(0, 50, 100, 0.6);
+        border: 1px solid var(--text-muted);
+        border-radius: 10px;
+        padding: 15px 20px;
+    }
+
+    .tournament-info h4 {
+        color: var(--text-light);
+        margin: 0 0 5px 0;
+    }
+
+    .tournament-stats {
+        display: flex;
+        gap: 20px;
+        color: var(--text-muted);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: var(--text-muted);
+        font-style: italic;
+    }
+</style>
+
+<script>
+    {% block extra_js %}
+    // Update countdown timers for active tournaments
+    function updateTournamentTimers() {
+        document.querySelectorAll('.time-remaining').forEach(element => {
+            const endTime = new Date(element.dataset.end);
+            const now = new Date();
+            const diff = endTime - now;
+            
+            if (diff <= 0) {
+                element.textContent = 'Ended';
+                element.style.color = '#ff4444';
+            } else {
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                element.textContent = `${hours}h ${minutes}m`;
+                
+                if (hours < 1) {
+                    element.style.color = '#ffaa00';
+                }
+            }
+        });
+    }
+
+    // Join tournament function
+    async function joinTournament(tournamentId) {
+        const result = await makeRequest(`/arena/tournament/${tournamentId}/join/`);
+        
+        if (result.success) {
+            alert(result.message);
+            location.reload();
+        } else {
+            alert(result.message);
+        }
+    }
+
+    // Initialize timers
+    setInterval(updateTournamentTimers, 60000); // Update every minute
+    updateTournamentTimers();
+    {% endblock %}
+</script>
+{% endblock %}

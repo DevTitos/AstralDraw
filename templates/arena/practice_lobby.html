@@ -1,0 +1,432 @@
+{% extends 'arena/base.html' %}
+
+{% block title %}Astral Arena - Practice Mode{% endblock %}
+
+{% block content %}
+<div class="practice-lobby-container">
+    <div class="practice-header">
+        <h1>🤖 Astral Arena Practice Mode</h1>
+        <p>Learn the game, test strategies, and improve your skills against AI opponents</p>
+    </div>
+
+    <!-- Practice Benefits -->
+    <div class="practice-benefits">
+        <div class="benefit-card">
+            <div class="benefit-icon">🎯</div>
+            <h3>Learn Basics</h3>
+            <p>Understand piece movements and special tiles without pressure</p>
+        </div>
+        <div class="benefit-card">
+            <div class="benefit-icon">⚡</div>
+            <h3>Test Strategies</h3>
+            <p>Experiment with different openings and ability combinations</p>
+        </div>
+        <div class="benefit-card">
+            <div class="benefit-icon">🆓</div>
+            <h3>Completely Free</h3>
+            <p>No ASTRA stakes - pure learning and improvement</p>
+        </div>
+        <div class="benefit-card">
+            <div class="benefit-icon">📊</div>
+            <h3>Instant Feedback</h3>
+            <p>See AI thought process and learn from its moves</p>
+        </div>
+    </div>
+
+    <!-- AI Difficulty Selection -->
+    <div class="difficulty-section">
+        <h2>Select AI Difficulty</h2>
+        <div class="difficulty-grid">
+            {% for ai in ai_difficulties %}
+            <div class="difficulty-card" data-difficulty="{{ ai.level }}">
+                <div class="difficulty-header">
+                    <h3>{{ ai.name }}</h3>
+                    <span class="ai-rating">Rating: {{ ai.rating }}</span>
+                </div>
+                <div class="difficulty-description">
+                    {{ ai.description }}
+                </div>
+                <div class="ai-personality">
+                    <div class="personality-trait">
+                        <span>Aggression:</span>
+                        <div class="trait-bar">
+                            <div class="trait-fill" style="width: {% if ai.level == 'beginner' %}30%{% elif ai.level == 'intermediate' %}50%{% elif ai.level == 'advanced' %}60%{% else %}80%{% endif %}"></div>
+                        </div>
+                    </div>
+                    <div class="personality-trait">
+                        <span>Strategy:</span>
+                        <div class="trait-bar">
+                            <div class="trait-fill" style="width: {% if ai.level == 'beginner' %}20%{% elif ai.level == 'intermediate' %}40%{% elif ai.level == 'advanced' %}60%{% else %}80%{% endif %}"></div>
+                        </div>
+                    </div>
+                    <div class="personality-trait">
+                        <span>Ability Usage:</span>
+                        <div class="trait-bar">
+                            <div class="trait-fill" style="width: {% if ai.level == 'beginner' %}10%{% elif ai.level == 'intermediate' %}30%{% elif ai.level == 'advanced' %}50%{% else %}70%{% endif %}"></div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-large" onclick="startPracticeGame('{{ ai.level }}')">
+                    🎮 Practice vs {{ ai.name }}
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Practice Tips -->
+    <div class="practice-tips">
+        <h2>💡 Practice Mode Tips</h2>
+        <div class="tips-grid">
+            <div class="tip-card">
+                <h4>For Beginners</h4>
+                <ul>
+                    <li>Start with Cosmic Cadet to learn basic movements</li>
+                    <li>Focus on understanding each piece type</li>
+                    <li>Practice using special tiles</li>
+                    <li>Learn to protect your Reality Core</li>
+                </ul>
+            </div>
+            <div class="tip-card">
+                <h4>For Intermediate</h4>
+                <ul>
+                    <li>Try different opening strategies</li>
+                    <li>Experiment with ability combinations</li>
+                    <li>Learn to read the AI's patterns</li>
+                    <li>Practice time management</li>
+                </ul>
+            </div>
+            <div class="tip-card">
+                <h4>For Advanced</h4>
+                <ul>
+                    <li>Challenge Galactic Guardian for tough games</li>
+                    <li>Test complex mathematical patterns</li>
+                    <li>Practice endgame scenarios</li>
+                    <li>Try unusual ability timings</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Start -->
+    <div class="quick-start">
+        <h2>🚀 Quick Start Guide</h2>
+        <div class="guide-steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <strong>Choose AI Difficulty</strong>
+                    <p>Select based on your experience level</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <strong>Learn Piece Movements</strong>
+                    <p>Each piece type moves differently - practice them all</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <strong>Use Special Tiles</strong>
+                    <p>Wormholes, Quantum Tiles, and Dark Matter change gameplay</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <strong>Master Abilities</strong>
+                    <p>Learn when to use each quantum ability for maximum effect</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .practice-lobby-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .practice-header {
+        text-align: center;
+        margin-bottom: 50px;
+        padding: 40px 0;
+        border-bottom: 2px solid var(--neon-blue);
+    }
+
+    .practice-header h1 {
+        font-size: 3em;
+        background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink), var(--alien-green));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 10px;
+    }
+
+    .practice-benefits {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 50px;
+    }
+
+    .benefit-card {
+        background: rgba(0, 50, 100, 0.6);
+        border: 2px solid var(--neon-blue);
+        border-radius: 15px;
+        padding: 25px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .benefit-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 243, 255, 0.3);
+    }
+
+    .benefit-icon {
+        font-size: 3em;
+        margin-bottom: 15px;
+    }
+
+    .benefit-card h3 {
+        color: var(--neon-blue);
+        margin-bottom: 10px;
+    }
+
+    .difficulty-section {
+        margin-bottom: 50px;
+    }
+
+    .difficulty-section h2 {
+        text-align: center;
+        color: var(--neon-blue);
+        margin-bottom: 30px;
+        font-size: 2em;
+    }
+
+    .difficulty-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+    }
+
+    .difficulty-card {
+        background: rgba(0, 20, 40, 0.8);
+        border: 2px solid;
+        border-radius: 15px;
+        padding: 25px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .difficulty-card[data-difficulty="beginner"] { border-color: var(--alien-green); }
+    .difficulty-card[data-difficulty="intermediate"] { border-color: var(--neon-blue); }
+    .difficulty-card[data-difficulty="advanced"] { border-color: var(--cosmic-gold); }
+    .difficulty-card[data-difficulty="expert"] { border-color: var(--neon-pink); }
+
+    .difficulty-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 243, 255, 0.2);
+    }
+
+    .difficulty-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .difficulty-header h3 {
+        color: var(--text-light);
+        margin: 0;
+    }
+
+    .ai-rating {
+        background: var(--neon-pink);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8em;
+        font-weight: bold;
+    }
+
+    .difficulty-description {
+        color: var(--text-muted);
+        margin-bottom: 20px;
+        line-height: 1.5;
+    }
+
+    .ai-personality {
+        margin-bottom: 20px;
+    }
+
+    .personality-trait {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .personality-trait span {
+        color: var(--text-light);
+        font-size: 0.9em;
+        width: 100px;
+    }
+
+    .trait-bar {
+        flex: 1;
+        background: rgba(255, 255, 255, 0.1);
+        height: 8px;
+        border-radius: 4px;
+        overflow: hidden;
+        margin: 0 10px;
+    }
+
+    .trait-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
+        border-radius: 4px;
+        transition: width 0.5s ease;
+    }
+
+    .btn-large {
+        padding: 15px 30px;
+        font-size: 1.1em;
+        width: 100%;
+    }
+
+    .practice-tips {
+        margin-bottom: 50px;
+    }
+
+    .practice-tips h2 {
+        text-align: center;
+        color: var(--neon-blue);
+        margin-bottom: 30px;
+        font-size: 2em;
+    }
+
+    .tips-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .tip-card {
+        background: rgba(0, 50, 100, 0.6);
+        border: 1px solid var(--neon-blue);
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .tip-card h4 {
+        color: var(--cosmic-gold);
+        margin-bottom: 15px;
+        border-bottom: 1px solid var(--neon-blue);
+        padding-bottom: 10px;
+    }
+
+    .tip-card ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .tip-card li {
+        margin-bottom: 8px;
+        padding-left: 20px;
+        position: relative;
+        color: var(--text-light);
+    }
+
+    .tip-card li:before {
+        content: "•";
+        color: var(--neon-blue);
+        position: absolute;
+        left: 0;
+    }
+
+    .quick-start {
+        background: rgba(0, 20, 40, 0.6);
+        border: 2px solid var(--neon-blue);
+        border-radius: 15px;
+        padding: 30px;
+    }
+
+    .quick-start h2 {
+        text-align: center;
+        color: var(--neon-blue);
+        margin-bottom: 30px;
+        font-size: 2em;
+    }
+
+    .guide-steps {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .step {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .step-number {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: white;
+        flex-shrink: 0;
+    }
+
+    .step-content strong {
+        color: var(--text-light);
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .step-content p {
+        color: var(--text-muted);
+        margin: 0;
+    }
+</style>
+
+<script>
+    {% block extra_js %}
+    async function startPracticeGame(difficulty) {
+        const result = await makeRequest("{% url 'arena_start_practice' %}", {
+            difficulty: difficulty
+        });
+        
+        if (result.success) {
+            window.location.href = "{% url 'arena_game' 'GAME_ID' %}".replace('GAME_ID', result.game_id);
+        } else {
+            alert(result.message);
+        }
+    }
+
+    // Add interactive effects
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animate trait bars on load
+        setTimeout(() => {
+            document.querySelectorAll('.trait-fill').forEach(bar => {
+                const currentWidth = bar.style.width;
+                bar.style.width = '0';
+                setTimeout(() => {
+                    bar.style.width = currentWidth;
+                }, 300);
+            });
+        }, 500);
+    });
+    {% endblock %}
+</script>
+{% endblock %}
