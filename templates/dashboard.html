@@ -18,6 +18,10 @@
             --quantum-blue: #00ccff;
             --hologram-teal: #00ffcc;
             --plasma-orange: #ff6600;
+            --governance-gold: #ffcc00;
+            --board-purple: #9b59b6;
+            --subordinate-blue: #3498db;
+            --community-green: #2ecc71;
         }
         
         * {
@@ -168,6 +172,36 @@
             margin-left: 1rem;
         }
         
+        .governance-badge {
+            background: linear-gradient(45deg, var(--governance-gold), var(--plasma-orange));
+            color: black;
+            padding: 0.2rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-left: 0.5rem;
+        }
+        
+        .board-badge {
+            background: linear-gradient(45deg, var(--board-purple), var(--neon-magenta));
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-left: 0.5rem;
+        }
+        
+        .subordinate-badge {
+            background: linear-gradient(45deg, var(--subordinate-blue), var(--quantum-blue));
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-left: 0.5rem;
+        }
+        
         .header-controls {
             display: flex;
             align-items: center;
@@ -314,6 +348,14 @@
             color: var(--plasma-orange);
         }
         
+        .governance-only {
+            border-left: 3px solid var(--governance-gold);
+        }
+        
+        .governance-only .nav-icon {
+            color: var(--governance-gold);
+        }
+        
         /* Main Content */
         .main-content {
             grid-area: main;
@@ -402,6 +444,90 @@
             font-size: 0.9rem;
             text-transform: uppercase;
             letter-spacing: 1px;
+        }
+        
+        /* Governance Cards */
+        .governance-card {
+            background: linear-gradient(135deg, rgba(10, 10, 31, 0.8), rgba(5, 5, 16, 0.8));
+            border: 1px solid;
+            border-radius: 15px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+        
+        .board-card {
+            border-color: var(--board-purple);
+        }
+        
+        .board-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--board-purple), var(--neon-magenta));
+        }
+        
+        .subordinate-card {
+            border-color: var(--subordinate-blue);
+        }
+        
+        .subordinate-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--subordinate-blue), var(--quantum-blue));
+        }
+        
+        .community-card {
+            border-color: var(--community-green);
+        }
+        
+        .community-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--community-green), var(--alien-green));
+        }
+        
+        .governance-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .governance-title i {
+            color: inherit;
+        }
+        
+        .governance-permissions {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .permission-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .permission-item i {
+            color: var(--alien-green);
         }
         
         /* Countdown Timer */
@@ -556,6 +682,26 @@
         .btn-danger:hover {
             background: rgba(255, 42, 109, 0.1);
             box-shadow: 0 0 10px var(--warning-red);
+        }
+        
+        .btn-success {
+            border-color: var(--alien-green);
+            color: var(--alien-green);
+        }
+        
+        .btn-success:hover {
+            background: rgba(0, 255, 102, 0.1);
+            box-shadow: 0 0 10px var(--alien-green);
+        }
+        
+        .btn-governance {
+            border-color: var(--governance-gold);
+            color: var(--governance-gold);
+        }
+        
+        .btn-governance:hover {
+            background: rgba(255, 204, 0, 0.1);
+            box-shadow: 0 0 10px var(--governance-gold);
         }
         
         /* Modal Styles */
@@ -715,6 +861,122 @@
             opacity: 0.7;
         }
         
+        /* Governance Discussion */
+        .discussion-topic {
+            background: rgba(10, 10, 31, 0.6);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        
+        .topic-header {
+            background: rgba(0, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .topic-title {
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .topic-icon {
+            font-size: 1.2rem;
+        }
+        
+        .topic-content {
+            padding: 1.5rem;
+            display: none;
+        }
+        
+        .topic-content.active {
+            display: block;
+        }
+        
+        .proposal-item {
+            background: rgba(15, 15, 35, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .proposal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .proposal-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .proposal-author {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        .proposal-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .proposal-description {
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        
+        .proposal-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .vote-results {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .vote-bar {
+            flex-grow: 1;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .vote-fill {
+            height: 100%;
+            border-radius: 5px;
+        }
+        
+        .vote-yes {
+            background: var(--alien-green);
+        }
+        
+        .vote-no {
+            background: var(--warning-red);
+        }
+        
+        .vote-count {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
         /* Mobile Menu */
         .mobile-menu-btn {
             display: none;
@@ -808,6 +1070,16 @@
             .control-btn i {
                 margin-right: 0;
             }
+            
+            .proposal-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .vote-results {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
         }
         
         @media (max-width: 480px) {
@@ -869,6 +1141,9 @@
                     <div class="role">
                         {{ user_wallet.recipient_id|default:"Cosmic Citizen" }}
                         {% if user.is_staff %}<span class="admin-badge">QUANTUM ADMIN</span>{% endif %}
+                        {% if user_governance_role == 'board' %}<span class="board-badge">CELESTIAL BOARD</span>{% endif %}
+                        {% if user_governance_role == 'subordinate' %}<span class="subordinate-badge">STELLAR ASSEMBLY</span>{% endif %}
+                        {% if user_governance_role == 'community' %}<span class="governance-badge">COSMIC COMMUNITY</span>{% endif %}
                     </div>
                 </div>
             </div>
@@ -924,6 +1199,12 @@
                         <a class="nav-link" data-section="wallet">
                             <i class="fas fa-wallet nav-icon"></i>
                             <span>Nebula Vault</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-section="governance">
+                            <i class="fas fa-landmark nav-icon"></i>
+                            <span>Cosmic Governance</span>
                         </a>
                     </li>
                 </ul>
@@ -1191,6 +1472,293 @@
                 </div>
             </section>
             
+            <!-- Governance Section -->
+            <section id="governance" class="content-section">
+                <div class="section-header">
+                    <h1 class="section-title">Cosmic Governance</h1>
+                    <p class="section-subtitle">Shape the future of Astral Draw together</p>
+                </div>
+                
+                <!-- Governance Structure -->
+                <div class="governance-card board-card">
+                    <h2 class="governance-title" style="color: var(--board-purple);">
+                        <i class="fas fa-crown"></i> The Celestial Board
+                    </h2>
+                    <p>The strategic leadership of Astral Draw. Board members set the vision and curate proposals for the community.</p>
+                    <div class="governance-permissions">
+                        <div class="permission-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Strategic vision and long-term planning</span>
+                        </div>
+                        <div class="permission-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Proposal curation and formalization</span>
+                        </div>
+                        <div class="permission-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Treasury management oversight</span>
+                        </div>
+                        <div class="permission-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Emergency decision-making powers</span>
+                        </div>
+                    </div>
+                    {% if user_governance_role == 'board' %}
+                    <div style="margin-top: 1rem;">
+                        <button class="action-btn btn-governance" onclick="openModal('createProposalModal')">
+                            <i class="fas fa-plus"></i> Create Proposal
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="governance-card subordinate-card">
+                    <h2 class="governance-title" style="color: var(--subordinate-blue);">
+                        <i class="fas fa-users"></i> The Stellar Assembly
+                    </h2>
+                    <p>The primary voting body of Astral Draw. Assembly members vote on proposals and represent community interests.</p>
+                    <div class="governance-permissions">
+                        <div class="permission-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Vote on all Board proposals</span>
+                        </div>
+                        <div class="permission-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Draft and submit proposals to the Board</span>
+                        </div>
+                        <div class="permission-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Direct communication with Board members</span>
+                        </div>
+                        <div class="permission-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Community advocacy and representation</span>
+                        </div>
+                    </div>
+                    {% if user_governance_role == 'subordinate' %}
+                    <div style="margin-top: 1rem;">
+                        <button class="action-btn btn-governance" onclick="openModal('createProposalModal')">
+                            <i class="fas fa-plus"></i> Draft Proposal
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="governance-card community-card">
+                    <h2 class="governance-title" style="color: var(--community-green);">
+                        <i class="fas fa-globe"></i> The Cosmic Community
+                    </h2>
+                    <p>The foundation of Astral Draw. All players can share ideas and participate in the ecosystem's growth.</p>
+                    <div class="governance-permissions">
+                        <div class="permission-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Post ideas and suggestions in General forum</span>
+                        </div>
+                        <div class="permission-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Read-only access to Board and Assembly discussions</span>
+                        </div>
+                        <div class="permission-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Participate in non-binding sentiment signaling</span>
+                        </div>
+                        <div class="permission-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Beneficial ownership through project investments</span>
+                        </div>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <button class="action-btn btn-governance" onclick="openModal('suggestionModal')">
+                            <i class="fas fa-lightbulb"></i> Share Idea
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Governance Discussion Topics -->
+                <div class="discussion-topic">
+                    <div class="topic-header" onclick="toggleTopic('project-topic')">
+                        <div class="topic-title">
+                            <i class="fas fa-project-diagram topic-icon"></i>
+                            Project Topic
+                        </div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="topic-content" id="project-topic">
+                        <div class="proposal-item">
+                            <div class="proposal-header">
+                                <div>
+                                    <div class="proposal-title">DeFi Protocol Integration</div>
+                                    <div class="proposal-author">Proposed by Board Member #3</div>
+                                </div>
+                                <span class="proposal-status status-pending">Voting Open</span>
+                            </div>
+                            <div class="proposal-description">
+                                Integrate a decentralized finance protocol to generate yield on the community treasury funds. This would provide additional revenue streams for all stakeholders.
+                            </div>
+                            <div class="proposal-actions">
+                                {% if user_governance_role == 'board' or user_governance_role == 'subordinate' %}
+                                <button class="action-btn btn-success" onclick="castVote('project-1', 'yes')">
+                                    <i class="fas fa-thumbs-up"></i> Vote Yes
+                                </button>
+                                <button class="action-btn btn-danger" onclick="castVote('project-1', 'no')">
+                                    <i class="fas fa-thumbs-down"></i> Vote No
+                                </button>
+                                {% endif %}
+                                <button class="action-btn btn-primary" onclick="viewProposalDetails('project-1')">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </button>
+                            </div>
+                            <div class="vote-results">
+                                <div class="vote-bar">
+                                    <div class="vote-fill vote-yes" style="width: 72%;"></div>
+                                </div>
+                                <div class="vote-count">72% Yes (36 votes)</div>
+                                <div class="vote-count">28% No (14 votes)</div>
+                            </div>
+                        </div>
+                        
+                        <div class="proposal-item">
+                            <div class="proposal-header">
+                                <div>
+                                    <div class="proposal-title">NFT Marketplace Development</div>
+                                    <div class="proposal-author">Proposed by Assembly Member #42</div>
+                                </div>
+                                <span class="proposal-status status-active">Under Review</span>
+                            </div>
+                            <div class="proposal-description">
+                                Create a dedicated NFT marketplace for Astral Draw collectibles and governance tokens. This would enhance the ecosystem and create new revenue opportunities.
+                            </div>
+                            <div class="proposal-actions">
+                                <button class="action-btn btn-primary" onclick="viewProposalDetails('project-2')">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </button>
+                                {% if user_governance_role == 'community' %}
+                                <button class="action-btn btn-governance" onclick="supportProposal('project-2')">
+                                    <i class="fas fa-heart"></i> Support
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="discussion-topic">
+                    <div class="topic-header" onclick="toggleTopic('lottery-topic')">
+                        <div class="topic-title">
+                            <i class="fas fa-dice topic-icon"></i>
+                            Lottery Topic
+                        </div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="topic-content" id="lottery-topic">
+                        <div class="proposal-item">
+                            <div class="proposal-header">
+                                <div>
+                                    <div class="proposal-title">Weekly Supernova Draws</div>
+                                    <div class="proposal-author">Proposed by Board Member #7</div>
+                                </div>
+                                <span class="proposal-status status-completed">Implemented</span>
+                            </div>
+                            <div class="proposal-description">
+                                Introduce weekly high-stakes "Supernova" draws alongside the regular convergences. These would feature larger prize pools and special NFT rewards.
+                            </div>
+                            <div class="proposal-actions">
+                                <button class="action-btn btn-primary" onclick="viewProposalDetails('lottery-1')">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="discussion-topic">
+                    <div class="topic-header" onclick="toggleTopic('prize-topic')">
+                        <div class="topic-title">
+                            <i class="fas fa-trophy topic-icon"></i>
+                            Prize Distribution
+                        </div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="topic-content" id="prize-topic">
+                        <div class="proposal-item">
+                            <div class="proposal-header">
+                                <div>
+                                    <div class="proposal-title">New Nebula Split Formula</div>
+                                    <div class="proposal-author">Proposed by Board Member #1</div>
+                                </div>
+                                <span class="proposal-status status-upcoming">Discussion Phase</span>
+                            </div>
+                            <div class="proposal-description">
+                                Adjust the prize distribution formula to allocate more funds to the community project treasury, ensuring long-term sustainability and growth.
+                            </div>
+                            <div class="proposal-actions">
+                                <button class="action-btn btn-primary" onclick="viewProposalDetails('prize-1')">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </button>
+                                {% if user_governance_role == 'community' %}
+                                <button class="action-btn btn-governance" onclick="supportProposal('prize-1')">
+                                    <i class="fas fa-heart"></i> Support
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="discussion-topic">
+                    <div class="topic-header" onclick="toggleTopic('general-topic')">
+                        <div class="topic-title">
+                            <i class="fas fa-comments topic-icon"></i>
+                            General Discussion
+                        </div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="topic-content active" id="general-topic">
+                        <div class="proposal-item">
+                            <div class="proposal-header">
+                                <div>
+                                    <div class="proposal-title">Mobile App Development</div>
+                                    <div class="proposal-author">Suggested by Cosmic Citizen</div>
+                                </div>
+                                <span class="proposal-status status-pending">Community Feedback</span>
+                            </div>
+                            <div class="proposal-description">
+                                Develop a dedicated mobile application for Astral Draw to improve accessibility and user experience. This would allow players to participate in convergences and governance from their mobile devices.
+                            </div>
+                            <div class="proposal-actions">
+                                <button class="action-btn btn-governance" onclick="supportIdea('mobile-app')">
+                                    <i class="fas fa-thumbs-up"></i> Support This Idea
+                                </button>
+                                <span style="margin-left: 1rem; opacity: 0.7;">
+                                    <i class="fas fa-users"></i> 124 supporters
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="proposal-item">
+                            <div class="proposal-header">
+                                <div>
+                                    <div class="proposal-title">Cross-Chain Integration</div>
+                                    <div class="proposal-author">Suggested by Cosmic Citizen</div>
+                                </div>
+                                <span class="proposal-status status-pending">Community Feedback</span>
+                            </div>
+                            <div class="proposal-description">
+                                Explore integration with other blockchain networks to expand the Astral Draw ecosystem and attract users from different communities.
+                            </div>
+                            <div class="proposal-actions">
+                                <button class="action-btn btn-governance" onclick="supportIdea('cross-chain')">
+                                    <i class="fas fa-thumbs-up"></i> Support This Idea
+                                </button>
+                                <span style="margin-left: 1rem; opacity: 0.7;">
+                                    <i class="fas fa-users"></i> 89 supporters
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
             <!-- Admin Draws Section -->
             <section id="admin-draws" class="content-section">
                 <div class="section-header">
@@ -1355,6 +1923,74 @@
         </main>
     </div>
     
+    <!-- Governance Modals -->
+    <div id="createProposalModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Create Governance Proposal</h2>
+                <button class="modal-close" onclick="closeModal('createProposalModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Proposal Title</label>
+                    <input type="text" class="form-input" placeholder="Enter proposal title">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Topic</label>
+                    <select class="form-input">
+                        <option value="project">Project Topic</option>
+                        <option value="lottery">Lottery Topic</option>
+                        <option value="prize">Prize Distribution</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Proposal Description</label>
+                    <textarea class="form-input" rows="5" placeholder="Describe your proposal in detail..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Expected Impact</label>
+                    <textarea class="form-input" rows="3" placeholder="What impact will this proposal have on the Astral Draw ecosystem?"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button class="action-btn btn-danger" onclick="closeModal('createProposalModal')">Cancel</button>
+                    <button class="action-btn btn-success">Submit Proposal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="suggestionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Share Your Idea</h2>
+                <button class="modal-close" onclick="closeModal('suggestionModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Idea Title</label>
+                    <input type="text" class="form-input" placeholder="What's your idea?">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select class="form-input">
+                        <option value="feature">New Feature</option>
+                        <option value="improvement">Improvement</option>
+                        <option value="project">Project Idea</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Detailed Description</label>
+                    <textarea class="form-input" rows="5" placeholder="Describe your idea in detail..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button class="action-btn btn-danger" onclick="closeModal('suggestionModal')">Cancel</button>
+                    <button class="action-btn btn-success">Submit Idea</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script>
         // Create background stars
         function createStars() {
@@ -1492,6 +2128,34 @@
             }
         }
         
+        // Governance functions
+        function toggleTopic(topicId) {
+            const topicContent = document.getElementById(topicId);
+            if (topicContent) {
+                topicContent.classList.toggle('active');
+            }
+        }
+        
+        function castVote(proposalId, vote) {
+            alert(`Vote ${vote.toUpperCase()} cast for proposal ${proposalId}. This would be recorded on the blockchain in a real implementation.`);
+            // In a real implementation, this would make an API call to record the vote
+        }
+        
+        function viewProposalDetails(proposalId) {
+            alert(`Showing detailed information for proposal ${proposalId}`);
+            // In a real implementation, this would open a modal with full proposal details
+        }
+        
+        function supportProposal(proposalId) {
+            alert(`Your support for proposal ${proposalId} has been recorded. This helps the Board understand community sentiment.`);
+            // In a real implementation, this would record community support for a proposal
+        }
+        
+        function supportIdea(ideaId) {
+            alert(`Thank you for supporting the "${ideaId}" idea! Community support helps prioritize which ideas move forward.`);
+            // In a real implementation, this would record community support for an idea
+        }
+        
         // Initialize dashboard
         document.addEventListener('DOMContentLoaded', function() {
             createStars();
@@ -1620,8 +2284,8 @@
         console.error('Error:', error);
         alert('An error occurred while processing the draw.');
         // Reset button
-        button.innerHTML = originalText;
-        button.disabled = false;
+            button.innerHTML = originalText;
+            button.disabled = false;
     });
 }
 

@@ -23,7 +23,7 @@ from dotenv import load_dotenv
 from core.models import UserWallet, Draw, ForgedKey, Alert
 from hiero.utils import create_new_account
 from hiero.ft import associate_token, transfer_tokens, fund_pool
-from hiero.nft import create_nft, mint_nft, associate_nft, transfer_nft
+from hiero.nft import create_nft, mint_nft, associate_nft
 from hiero.hcs import submit_message
 from core.main import generate_star_convergence_with_mapping
 from hiero.mirror_node import get_balance
