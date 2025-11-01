@@ -69,6 +69,81 @@ Ticket Price Distribution:
 
 ---
 
+## Blockchain Implementation
+Astral Draw is fully deployed and operational on Hedera Testnet, demonstrating our commitment to transparency and real-world blockchain integration.
+
+## 🎫 Governance NFTs (Live on Hedera)
+```
+Governance Tier	Token ID	Purpose	Status
+Celestial Board	0.0.7174407	Top-tier governance (10 members max)	✅ LIVE
+Stellar Assembly	0.0.7174419	Voting assembly (1,000 members max)	✅ LIVE
+What this means:
+```
+
+Real NFTs minted on Hedera for governance rights
+
+Transparent ownership and transfer records
+
+Provably fair voting power allocation
+
+Each NFT represents actual decision-making authority
+
+## 💬 Governance Discussions (Live HCS Topics)
+Discussion Area	Topic ID	Purpose	Real-Time Updates
+```
+The Launchpad	0.0.7174429	Project proposals & investments	✅ LIVE
+The Cosmic Clock	0.0.7174434	Lottery frequency & parameters	✅ LIVE
+The Nebula Split	0.0.7174439	Prize distribution formulas	✅ LIVE
+The Galactic Forum	0.0.7174440	General community discussions	✅ LIVE
+```
+What this means:
+
+Every proposal, vote, and discussion is immutably recorded
+
+Real-time transparency through Hedera Consensus Service
+
+Community can verify all governance actions
+
+Tamper-proof record of platform evolution
+
+## 🪙 Core Platform Tokens (Live on Hedera)
+Token	ID	Purpose	Status
+```
+ASTRA	0.0.6918197	Platform utility & rewards token	✅ LIVE
+Astral Draw	0.0.6907777	Main platform operations topic	✅ LIVE
+```
+What this means:
+
+Real economic activity on blockchain
+
+Transparent tokenomics and distribution
+
+Every lottery draw and prize distribution is recorded
+
+Verifiable platform statistics and metrics
+
+## 🔗 Verified Blockchain Transparency
+Live Actions on Hedera:
+✅ NFT Minting: Governance rights acquisition
+
+✅ Vote Casting: Every governance decision recorded
+
+✅ Proposal Creation: All community suggestions logged
+
+✅ Prize Distribution: Transparent winner selection
+
+✅ Token Transfers: Real economic activity
+
+## Verification Links:
+View Transactions: HashScan Testnet Explorer
+
+Verify NFTs: Search token IDs above
+
+Check Topics: Search topic IDs for real-time discussions
+
+Monitor Activity: All platform actions are publicly verifiable
+
+
 ## ⚡ Quick Start
 
 Clone the repository:

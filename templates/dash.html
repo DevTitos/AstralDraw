@@ -1403,29 +1403,513 @@
         <main class="main-content">
             <!-- Overview Section -->
             <section id="overview" class="content-section active">
-                <!-- Existing overview content -->
+                <div class="section-header">
+                    <h1 class="section-title">Quantum Overview</h1>
+                    <p class="section-subtitle">Welcome back, Cosmic Citizen. Your astral journey awaits.</p>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-key"></i></div>
+                        <div class="stat-value">{{ user_keys.count }}</div>
+                        <div class="stat-label">Active Star Keys</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-trophy"></i></div>
+                        <div class="stat-value">{{ user_wins.count }}</div>
+                        <div class="stat-label">Cosmic Victories</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-coins"></i></div>
+                        <div class="stat-value">{{ astra_bal }} ASTRA</div>
+                        <div class="stat-label">Nebula Balance</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-rocket"></i></div>
+                        <div class="stat-value">{{ active_draws.count }}</div>
+                        <div class="stat-label">Active Convergences</div>
+                    </div>
+                </div>
+                
+                <div class="hologram">
+                    <h3 style="margin-bottom: 1rem; color: var(--hologram-teal);">
+                        <i class="fas fa-project-diagram"></i> Cosmic Convergence Status
+                    </h3>
+                    <p>Next astral alignment: 
+                        <strong id="nextDrawDate">
+                            {% if next_draw and next_draw.draw_datetime %}
+                                {{ next_draw.draw_datetime|date:"Y-m-d\TH:i:s" }}
+                            {% else %}
+                                Calculating...
+                            {% endif %}
+                        </strong>
+                    </p>
+                    <p>Current prize pool: <strong style="color: var(--alien-green);">{{ next_draw.prize_pool|default:"0" }} ASTRA</strong></p>
+
+                    <!-- Countdown Timer -->
+                    <div id="countdownTimer" style="display: none;">
+                        <h4 style="margin: 1rem 0 0.5rem; color: var(--neon-cyan);">Time until next convergence:</h4>
+                        <div class="countdown-timer">
+                            <div class="timer-unit">
+                                <span class="timer-value" id="days">00</span>
+                                <span class="timer-label">Days</span>
+                            </div>
+                            <div class="timer-unit">
+                                <span class="timer-value" id="hours">00</span>
+                                <span class="timer-label">Hours</span>
+                            </div>
+                            <div class="timer-unit">
+                                <span class="timer-value" id="minutes">00</span>
+                                <span class="timer-label">Minutes</span>
+                            </div>
+                            <div class="timer-unit">
+                                <span class="timer-value" id="seconds">00</span>
+                                <span class="timer-label">Seconds</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 1rem;">
+                        <button class="action-btn btn-primary" onclick="showSection('draws')">
+                            <i class="fas fa-eye"></i> All Draws
+                        </button>
+                        <button class="action-btn btn-warning" onclick="verifyNFT( '{{next_draw.nft_id}}' )" style="margin-left: 0.5rem;">
+                            <i class="fas fa-search"></i> Verify Draw
+                        </button>
+                        <button class="action-btn btn-success" onclick="openModal('forgeKeyModal')">
+                                <i class="fas fa-key"></i> Forge Key
+                            </button>
+                    </div>
+                </div>
+                
+                <div class="quantum-console">
+                    <div class="console-line">
+                        <span class="console-prompt">quantum-dash></span>
+                        <span class="console-command">status --user {{ user.username }}</span>
+                    </div>
+                    <div class="console-line console-output">
+                        > User Status: ONLINE | Security: QUANTUM_ENCRYPTED
+                    </div>
+                    <div class="console-line console-output">
+                        > Wallet Sync: COMPLETE | Last Activity: {{ user.last_login|date:"Y-m-d H:i" }}
+                    </div>
+                    <div class="console-line console-output">
+                        > System Integrity: 100% | Threat Level: NOMINAL
+                    </div>
+                </div>
             </section>
             
             <!-- Star Keys Section -->
             <section id="star-keys" class="content-section">
-                <!-- Existing star keys content -->
+                <div class="section-header">
+                    <h1 class="section-title">Star Key Management</h1>
+                    <p class="section-subtitle">Forge and manage your cosmic entry tokens</p>
+                </div>
+                
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3 class="table-title">Your Star Keys</h3>
+                        <p>Active keys for upcoming convergences</p>
+                    </div>
+                    <div class="table-content">
+                        <div class="table-row header">
+                            <div>Serial Number</div>
+                            <div>Convergence</div>
+                            <div>Status</div>
+                            <div>Forged Date</div>
+                            <div>My Keys</div>
+                        </div>
+                        {% for key in user_keys %}
+                        <div class="table-row">
+                            <div style="font-family: monospace;">{{key.serial_number}}</div>
+                            <div>{{key.draw.title}} Convergence</div>
+                            <div>
+                                <span class="status-badge status-active">
+                                    {{key.draw.status}}
+                                </span>
+                            </div>
+                            <div>{{key.created_at}}</div>
+                            <div>
+                                <span class="status-badge status-active">
+                                    {{key.get_star_keys}}
+                                </span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <button class="action-btn btn-primary" onclick="openModal('forgeKeyModal')">
+                    <i class="fas fa-hammer"></i> Forge New Star Key
+                </button>
             </section>
             
             <!-- Draws Section -->
             <section id="draws" class="content-section">
-                <!-- Existing draws content -->
+                <div class="section-header">
+                    <h1 class="section-title">Astral Convergences</h1>
+                    <p class="section-subtitle">Participate in cosmic lottery events</p>
+                </div>
+                
+                <div class="dashboard-grid">
+                    {% for draw in all_draws %}
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-dice"></i></div>
+                        <div class="stat-value">{{ draw.prize_pool }} ASTRA</div>
+                        <div class="stat-label">{{ draw.title }} Convergence</div>
+                        <span class="status-badge status-{{ key.draw.status|lower }}">
+                            {{ draw.status }}
+                        </span>
+                        {% if draw.status == "ENDED" %}
+                        <div class="stat-label">{{ draw.get_star_keys }}</div>
+                        {% endif %}
+                        <div style="margin-top: 1rem;">
+                            <button class="action-btn btn-primary" onclick="viewDrawDetailss({{ draw.id }})">
+                                <i class="fas fa-eye"></i> View Details
+                            </button>
+                            {% if draw.status == "ACTIVE" %}
+                            <button class="action-btn btn-warning" onclick="openModal('forgeKeyModal')">
+                                <i class="fas fa-key"></i> Forge Key
+                            </button>
+                            {% endif %}
+                            <button class="action-btn btn-warning" onclick="verifyNFT( '{{draw.nft_id}}' )" style="margin-left: 0.5rem;">
+                            <i class="fas fa-search"></i> Verify Draw
+                        </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
             </section>
             
             <!-- Wallet Section -->
             <section id="wallet" class="content-section">
-                <!-- Existing wallet content -->
+                <div class="section-header">
+                    <h1 class="section-title">Nebula Vault</h1>
+                    <p class="section-subtitle">Manage your cosmic assets</p>
+                </div>
+                
+                <div class="hologram">
+                    <h3 style="margin-bottom: 1rem; color: var(--hologram-teal);">
+                        <i class="fas fa-wallet"></i> Wallet Information
+                    </h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <p><strong>Public Key:</strong></p>
+                            <p style="font-family: monospace; font-size: 0.8rem; word-break: break-all;">
+                                {{user_wallet.public_key}}
+                            </p>
+                        </div>
+                        <div>
+                            <p><strong>Account ID:</strong></p>
+                            <p style="font-family: monospace; font-size: 0.8rem;">
+                                {{user_wallet.recipient_id}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3 class="table-title">Transaction History</h3>
+                        <p>Recent cosmic transactions</p>
+                    </div>
+                    <div class="table-content">
+                        <!-- Transaction history would go here -->
+                    </div>
+                </div>
             </section>
             
             <!-- Governance Section -->
             <section id="governance" class="content-section">
-                <!-- Existing governance content -->
+                <div class="section-header">
+                    <h1 class="section-title">Cosmic Governance</h1>
+                    <p class="section-subtitle">Shape the future of Astral Draw together</p>
+                </div>
+                
+                <!-- Governance Structure -->
+                <div class="governance-card board-card">
+                    <h2 class="governance-title" style="color: var(--board-purple);">
+                        <i class="fas fa-crown"></i> The Celestial Board
+                    </h2>
+                    <p>The strategic leadership of Astral Draw. Board members set the vision and curate proposals for the community.</p>
+                    <div class="governance-permissions">
+                        <div class="permission-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Strategic vision and long-term planning</span>
+                        </div>
+                        <div class="permission-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Proposal curation and formalization</span>
+                        </div>
+                        <div class="permission-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Treasury management oversight</span>
+                        </div>
+                        <div class="permission-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Emergency decision-making powers</span>
+                        </div>
+                    </div>
+                    {% if user_governance_role == 'board' %}
+                    <div style="margin-top: 1rem;">
+                        <button class="action-btn btn-governance" onclick="openModal('createProposalModal')">
+                            <i class="fas fa-plus"></i> Create Proposal
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="governance-card subordinate-card">
+                    <h2 class="governance-title" style="color: var(--subordinate-blue);">
+                        <i class="fas fa-users"></i> The Stellar Assembly
+                    </h2>
+                    <p>The primary voting body of Astral Draw. Assembly members vote on proposals and represent community interests.</p>
+                    <div class="governance-permissions">
+                        <div class="permission-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Vote on all Board proposals</span>
+                        </div>
+                        <div class="permission-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Draft and submit proposals to the Board</span>
+                        </div>
+                        <div class="permission-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Direct communication with Board members</span>
+                        </div>
+                        <div class="permission-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Community advocacy and representation</span>
+                        </div>
+                    </div>
+                    {% if user_governance_role == 'subordinate' %}
+                    <div style="margin-top: 1rem;">
+                        <button class="action-btn btn-governance" onclick="openModal('createProposalModal')">
+                            <i class="fas fa-plus"></i> Draft Proposal
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="governance-card community-card">
+                    <h2 class="governance-title" style="color: var(--community-green);">
+                        <i class="fas fa-globe"></i> The Cosmic Community
+                    </h2>
+                    <p>The foundation of Astral Draw. All players can share ideas and participate in the ecosystem's growth.</p>
+                    <div class="governance-permissions">
+                        <div class="permission-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Post ideas and suggestions in General forum</span>
+                        </div>
+                        <div class="permission-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Read-only access to Board and Assembly discussions</span>
+                        </div>
+                        <div class="permission-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Participate in non-binding sentiment signaling</span>
+                        </div>
+                        <div class="permission-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Beneficial ownership through project investments</span>
+                        </div>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <button class="action-btn btn-governance" onclick="openModal('suggestionModal')">
+                            <i class="fas fa-lightbulb"></i> Share Idea
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Governance Discussion Topics -->
+                <div class="discussion-topic">
+                    <div class="topic-header" onclick="toggleTopic('project-topic')">
+                        <div class="topic-title">
+                            <i class="fas fa-project-diagram topic-icon"></i>
+                            Project Topic
+                        </div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="topic-content" id="project-topic">
+                        <div class="proposal-item">
+                            <div class="proposal-header">
+                                <div>
+                                    <div class="proposal-title">DeFi Protocol Integration</div>
+                                    <div class="proposal-author">Proposed by Board Member #3</div>
+                                </div>
+                                <span class="proposal-status status-pending">Voting Open</span>
+                            </div>
+                            <div class="proposal-description">
+                                Integrate a decentralized finance protocol to generate yield on the community treasury funds. This would provide additional revenue streams for all stakeholders.
+                            </div>
+                            <div class="proposal-actions">
+                                {% if user_governance_role == 'board' or user_governance_role == 'subordinate' %}
+                                <button class="action-btn btn-success" onclick="castVote('project-1', 'yes')">
+                                    <i class="fas fa-thumbs-up"></i> Vote Yes
+                                </button>
+                                <button class="action-btn btn-danger" onclick="castVote('project-1', 'no')">
+                                    <i class="fas fa-thumbs-down"></i> Vote No
+                                </button>
+                                {% endif %}
+                                <button class="action-btn btn-primary" onclick="viewProposalDetails('project-1')">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </button>
+                            </div>
+                            <div class="vote-results">
+                                <div class="vote-bar">
+                                    <div class="vote-fill vote-yes" style="width: 72%;"></div>
+                                </div>
+                                <div class="vote-count">72% Yes (36 votes)</div>
+                                <div class="vote-count">28% No (14 votes)</div>
+                            </div>
+                        </div>
+                        
+                        <div class="proposal-item">
+                            <div class="proposal-header">
+                                <div>
+                                    <div class="proposal-title">NFT Marketplace Development</div>
+                                    <div class="proposal-author">Proposed by Assembly Member #42</div>
+                                </div>
+                                <span class="proposal-status status-active">Under Review</span>
+                            </div>
+                            <div class="proposal-description">
+                                Create a dedicated NFT marketplace for Astral Draw collectibles and governance tokens. This would enhance the ecosystem and create new revenue opportunities.
+                            </div>
+                            <div class="proposal-actions">
+                                <button class="action-btn btn-primary" onclick="viewProposalDetails('project-2')">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </button>
+                                {% if user_governance_role == 'community' %}
+                                <button class="action-btn btn-governance" onclick="supportProposal('project-2')">
+                                    <i class="fas fa-heart"></i> Support
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="discussion-topic">
+                    <div class="topic-header" onclick="toggleTopic('lottery-topic')">
+                        <div class="topic-title">
+                            <i class="fas fa-dice topic-icon"></i>
+                            Lottery Topic
+                        </div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="topic-content" id="lottery-topic">
+                        <div class="proposal-item">
+                            <div class="proposal-header">
+                                <div>
+                                    <div class="proposal-title">Weekly Supernova Draws</div>
+                                    <div class="proposal-author">Proposed by Board Member #7</div>
+                                </div>
+                                <span class="proposal-status status-completed">Implemented</span>
+                            </div>
+                            <div class="proposal-description">
+                                Introduce weekly high-stakes "Supernova" draws alongside the regular convergences. These would feature larger prize pools and special NFT rewards.
+                            </div>
+                            <div class="proposal-actions">
+                                <button class="action-btn btn-primary" onclick="viewProposalDetails('lottery-1')">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="discussion-topic">
+                    <div class="topic-header" onclick="toggleTopic('prize-topic')">
+                        <div class="topic-title">
+                            <i class="fas fa-trophy topic-icon"></i>
+                            Prize Distribution
+                        </div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="topic-content" id="prize-topic">
+                        <div class="proposal-item">
+                            <div class="proposal-header">
+                                <div>
+                                    <div class="proposal-title">New Nebula Split Formula</div>
+                                    <div class="proposal-author">Proposed by Board Member #1</div>
+                                </div>
+                                <span class="proposal-status status-upcoming">Discussion Phase</span>
+                            </div>
+                            <div class="proposal-description">
+                                Adjust the prize distribution formula to allocate more funds to the community project treasury, ensuring long-term sustainability and growth.
+                            </div>
+                            <div class="proposal-actions">
+                                <button class="action-btn btn-primary" onclick="viewProposalDetails('prize-1')">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </button>
+                                {% if user_governance_role == 'community' %}
+                                <button class="action-btn btn-governance" onclick="supportProposal('prize-1')">
+                                    <i class="fas fa-heart"></i> Support
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="discussion-topic">
+                    <div class="topic-header" onclick="toggleTopic('general-topic')">
+                        <div class="topic-title">
+                            <i class="fas fa-comments topic-icon"></i>
+                            General Discussion
+                        </div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="topic-content active" id="general-topic">
+                        <div class="proposal-item">
+                            <div class="proposal-header">
+                                <div>
+                                    <div class="proposal-title">Mobile App Development</div>
+                                    <div class="proposal-author">Suggested by Cosmic Citizen</div>
+                                </div>
+                                <span class="proposal-status status-pending">Community Feedback</span>
+                            </div>
+                            <div class="proposal-description">
+                                Develop a dedicated mobile application for Astral Draw to improve accessibility and user experience. This would allow players to participate in convergences and governance from their mobile devices.
+                            </div>
+                            <div class="proposal-actions">
+                                <button class="action-btn btn-governance" onclick="supportIdea('mobile-app')">
+                                    <i class="fas fa-thumbs-up"></i> Support This Idea
+                                </button>
+                                <span style="margin-left: 1rem; opacity: 0.7;">
+                                    <i class="fas fa-users"></i> 124 supporters
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="proposal-item">
+                            <div class="proposal-header">
+                                <div>
+                                    <div class="proposal-title">Cross-Chain Integration</div>
+                                    <div class="proposal-author">Suggested by Cosmic Citizen</div>
+                                </div>
+                                <span class="proposal-status status-pending">Community Feedback</span>
+                            </div>
+                            <div class="proposal-description">
+                                Explore integration with other blockchain networks to expand the Astral Draw ecosystem and attract users from different communities.
+                            </div>
+                            <div class="proposal-actions">
+                                <button class="action-btn btn-governance" onclick="supportIdea('cross-chain')">
+                                    <i class="fas fa-thumbs-up"></i> Support This Idea
+                                </button>
+                                <span style="margin-left: 1rem; opacity: 0.7;">
+                                    <i class="fas fa-users"></i> 89 supporters
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </section>
-            
+
+
             <!-- NFT Marketplace Section -->
             <section id="marketplace" class="content-section">
                 <div class="section-header">
@@ -1649,21 +2133,164 @@
             
             <!-- Admin Draws Section -->
             <section id="admin-draws" class="content-section">
-                <!-- Existing admin draws content -->
+                <div class="section-header">
+                    <h1 class="section-title">Quantum Draw Management</h1>
+                    <p class="section-subtitle">Administer cosmic convergence events</p>
+                </div>
+                
+                <button class="action-btn btn-primary" onclick="openModal('createDrawModal')">
+                    <i class="fas fa-plus"></i> Create New Convergence
+                </button>
+                <br>
+                <br>
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3 class="table-title">All Convergences</h3>
+                        <p>Manage draw parameters and outcomes</p>
+                    </div>
+                    <div class="table-content">
+                        <div class="table-row header">
+                            <div>Convergence</div>
+                            <div>Prize Pool</div>
+                            <div>Status</div>
+                            <div>Draw Date</div>
+                            <div>Participants</div>
+                            <div>Actions</div>
+                        </div>
+                        {% for draw in all_draws %}
+                        <!-- Example Draw 2 -->
+                        <div class="table-row">
+                            <div>
+                                <strong>{{draw.title}} Alignment</strong>
+                                <div style="font-size: 0.8rem; opacity: 0.7; margin-top: 0.2rem;">
+                                    Symbol: {{draw.symbol}} NBL-
+                                </div>
+                            </div>
+                            <div>
+                                <span style="color: var(--alien-green); font-weight: 600;">{{draw.prize_pool}} ASTRA</span>
+                            </div>
+                            <div>
+                                {% if draw.status == "UPCOMING" %}
+                                <span class="status-badge status-upcoming">Upcoming</span>
+                                {% elif draw.status == "upcoming" %}
+                                <span class="status-badge status-upcoming">Upcoming</span>
+                                {% elif draw.status == "ACTIVE" %}
+                                <span class="status-badge status-active">Active</span>
+                                {% elif draw.status == "active" %}
+                                <span class="status-badge status-active">Active</span>
+                                {% elif draw.status == "COMPLETED" %}
+                                <span class="status-badge btn-success">Completed</span>
+                                {% elif draw.status == "ENDED" %}
+                                <span class="status-badge status-completed">Completed</span>
+                                {% else %}
+                                <span class="status-badge status-cancelled">Cancelled</span>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <div>{{draw.draw_datetime.date}}</div>
+                                <div style="font-size: 0.8rem; opacity: 0.7;">{{draw.draw_datetime.time}}</div>
+                            </div>
+                            <div>
+                                <span style="color: var(--neon-cyan);">{{draw.total_tickets_sold}}</span>
+                            </div>
+                            <div>
+                                <button class="action-btn btn-primary" onclick="viewDraw('{{ draw.id }}')">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                                {% if draw.status == "UPCOMING" or "ACTIVE" %}
+                                    <i class="fas fa-edit"></i>                                <button class="action-btn btn-warning" onclick="editDraw('quantum-3')">
+ Edit
+                                </button>
+                                <button class="action-btn btn-danger" onclick="cancelDraw('quantum-3')">
+                                    <i class="fas fa-times"></i> Cancel
+                                </button>
+                                {% endif %}
+                                
+                                <button class="action-btn btn-warning" onclick="processDraw({{ draw.id }})">
+                                    <i class="fas fa-rocket"></i> Process
+                                </button>
+                                
+                                {% if draw.status == "COMPLETED" %}
+                                <button class="action-btn btn-warning" onclick="exportDrawData('stellar-5')">
+                                    <i class="fas fa-download"></i> Export
+                                </button>
+                                {% endif %}
+                                {% if draw.status == "CANCELLED" %}
+                                <button class="action-btn btn-danger" onclick="deleteDraw('cosmic-2')">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
             </section>
             
             <section id="analytics" class="content-section">
-                <!-- Existing analytics content -->
+                <div class="section-header">
+                    <h1 class="section-title">Cosmic Analytics</h1>
+                    <p class="section-subtitle">Quantum insights into platform performance</p>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-users"></i></div>
+                        <div class="stat-value">{{ cosmic_users }}</div>
+                        <div class="stat-label">Cosmic Citizens</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-key"></i></div>
+                        <div class="stat-value">{{ keys_forged }}</div>
+                        <div class="stat-label">Star Keys Forged</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-trophy"></i></div>
+                        <div class="stat-value">{{ total_prizes }} ASTRA</div>
+                        <div class="stat-label">Total Prizes</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                        <div class="stat-value">98.7%</div>
+                        <div class="stat-label">System Uptime</div>
+                    </div>
+                </div>
             </section>
 
             <!-- Support Section -->
             <section id="support" class="content-section">
-                <!-- Existing support content -->
+                <div class="section-header">
+                    <h1 class="section-title">Quantum Support</h1>
+                    <p class="section-subtitle">Get help with your cosmic journey</p>
+                </div>
+                
+                <div class="hologram">
+                    <h3 style="margin-bottom: 1rem; color: var(--hologram-teal);">
+                        <i class="fas fa-life-ring"></i> Support Resources
+                    </h3>
+                    <p>Need assistance with your Astral Draw experience? We're here to help!</p>
+                </div>
             </section>
 
             <!-- Users Section -->
             <section id="users" class="content-section">
-                <!-- Existing users content -->
+                <div class="section-header">
+                    <h1 class="section-title">User Governance</h1>
+                    <p class="section-subtitle">Manage cosmic citizen accounts</p>
+                </div>
+                
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3 class="table-title">User Management</h3>
+                        <p>Administer user accounts and permissions</p>
+                    </div>
+                    <div class="table-content">
+                        <!-- User management content would go here -->
+                    </div>
+                </div>
             </section>
         </main>
     </div>
@@ -2151,6 +2778,11 @@
             alert('Key details would be shown here for: ' + keyId);
         }
         
+        //function viewDraw(drawId) {
+        //    console.log('Viewing draw:', drawId);
+        //    alert('Draw details would be shown here for: ' + drawId);
+        //}
+        
         function participateDraw(drawId) {
             console.log('Participating in draw:', drawId);
             alert('Participation modal would open for: ' + drawId);
@@ -2169,76 +2801,75 @@
 
     <script>
         function processDraw(drawId) {
-            if (!confirm('Are you sure you want to process this draw? This action cannot be undone.')) {
-                return;
+    if (!confirm('Are you sure you want to process this draw? This action cannot be undone.')) {
+        return;
+    }
+    
+    // Show loading state
+    const button = event.target;
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    button.disabled = true;
+    
+    // Get CSRF token for Django
+    const csrftoken = getCookie('csrftoken');
+    
+    fetch(`/api/draws/${drawId}/process/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (data.winner) {
+                alert(`Draw processed successfully! Winner: ${data.winner.username} (Ticket: ${data.winner.serial_number}) - Prize: $${data.winner.prize_amount}`);
+            } else {
+                alert('Draw processed successfully! No winner found.');
             }
-            
-            // Show loading state
-            const button = event.target;
-            const originalText = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-            button.disabled = true;
-            
-            // Get CSRF token for Django
-            const csrftoken = getCookie('csrftoken');
-            
-            fetch(`/api/draws/${drawId}/process/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken
-                },
-                credentials: 'same-origin'
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    if (data.winner) {
-                        alert(`Draw processed successfully! Winner: ${data.winner.username} (Ticket: ${data.winner.serial_number}) - Prize: $${data.winner.prize_amount}`);
-                    } else {
-                        alert('Draw processed successfully! No winner found.');
-                    }
-                    // Reload the page to reflect changes
-                    location.reload();
-                } else {
-                    alert('Error: ' + data.error);
-                    // Reset button
-                    button.innerHTML = originalText;
-                    button.disabled = false;
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while processing the draw.');
-                // Reset button
-                button.innerHTML = originalText;
-                button.disabled = false;
-            });
+            // Reload the page to reflect changes
+            location.reload();
+        } else {
+            alert('Error: ' + data.error);
+            // Reset button
+            button.innerHTML = originalText;
+            button.disabled = false;
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while processing the draw.');
+        // Reset button
+            button.innerHTML = originalText;
+            button.disabled = false;
+    });
+}
 
-        // Helper function to get CSRF token
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
+// Helper function to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
             }
-            return cookieValue;
         }
+    }
+    return cookieValue;
+} 
 
-        function verifyPool(tokenId) {
-            window.open(`https://hashscan.io/testnet/token/${tokenId}`, '_blank');
-        }
-        
-        function verifyNFT(tokenId) {
-            window.open(`https://hashscan.io/testnet/token/${tokenId}`, '_blank');
-        }
+function verifyPool(tokenId) {
+    window.open(`https://hashscan.io/testnet/token/${tokenId}`, '_blank');
+}
+function verifyNFT(tokenId) {
+    window.open(`https://hashscan.io/testnet/token/${tokenId}`, '_blank');
+}
     </script>
 </body>
 </html>
