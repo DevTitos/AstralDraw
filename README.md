@@ -13,7 +13,7 @@
 - **Pitch Deck:** [Astral Draw Presentation PDF](https://yourlinktopitchdeck.com)  
 - **Hackathon Certification:** [Certification Link](https://drive.google.com/file/d/1eX8qYF11P2WMPhzK4EZ2ZMIOdi6Gvh1e/view)  
 - **Video Demo (7 min):** [Demo Link](https://yourlinktovideo.com)
-- **Hosted Project URL:** [Demo Link](https://yourlinktovideo.com)
+- **Hosted Project URL:** [Demo Link](http://astraldraw.onrender.com/)
 
 ---
 
