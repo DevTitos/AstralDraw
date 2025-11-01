@@ -896,6 +896,227 @@
             background: rgba(255, 42, 109, 0.2);
             color: var(--warning-red);
         }
+
+        /* Modal Enhancements */
+.modal-content {
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.nft-selection-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.nft-option {
+    border: 2px solid rgba(0, 255, 255, 0.3);
+    border-radius: 10px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(10, 10, 31, 0.6);
+}
+
+.nft-option.active {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+}
+
+.nft-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.nft-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.nft-badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.board-badge {
+    background: var(--board-purple);
+    color: white;
+}
+
+.assembly-badge {
+    background: var(--subordinate-blue);
+    color: white;
+}
+
+.hedera-info {
+    margin-top: 1rem;
+    padding: 0.8rem;
+    background: rgba(0, 255, 255, 0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+.hedera-badge {
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.availability {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+.topic-selection {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+.topic-option {
+    border: 2px solid rgba(0, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    background: rgba(10, 10, 31, 0.6);
+}
+
+.topic-option.active {
+    border-color: var(--neon-cyan);
+    background: rgba(0, 255, 255, 0.1);
+}
+
+.topic-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(0, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--neon-cyan);
+}
+
+.hedera-topic {
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    opacity: 0.8;
+}
+
+.verification-links {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.verification-link {
+    background: rgba(0, 255, 255, 0.1);
+    border: 1px solid var(--neon-cyan);
+    color: var(--neon-cyan);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.verification-link:hover {
+    background: rgba(0, 255, 255, 0.2);
+}
+
+/* Progress Steps */
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.step {
+    text-align: center;
+    flex: 1;
+    position: relative;
+    z-index: 2;
+}
+
+.step-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.step.active .step-icon {
+    background: var(--neon-cyan);
+    color: var(--cosmic-black);
+}
+
+.step-label {
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+.progress-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    position: relative;
+    margin: -30px 20px 30px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--neon-cyan);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .nft-selection-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .verification-links {
+        flex-direction: column;
+    }
+    
+    .progress-steps {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+}
         
         .modal-body {
             padding: 2rem;
@@ -2296,40 +2517,125 @@
     </div>
     
     <!-- Governance Modals -->
-    <div id="createProposalModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Create Governance Proposal</h2>
-                <button class="modal-close" onclick="closeModal('createProposalModal')">&times;</button>
+    <!-- Create Proposal Modal -->
+<div id="createProposalModal" class="modal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('createProposalModal')">&times;</button>
+        <h2 class="modal-title">
+            <i class="fas fa-edit"></i> Create Governance Proposal
+        </h2>
+
+        <div class="user-governance-status">
+            <div class="governance-badge" id="userGovernanceTier">
+                <i class="fas fa-crown"></i>
+                Celestial Board Member
             </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label">Proposal Title</label>
-                    <input type="text" class="form-input" placeholder="Enter proposal title">
+            <div class="voting-power">
+                Voting Power: <strong>10x</strong>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Select Discussion Topic</label>
+            <div class="topic-selection">
+                <div class="topic-option active" data-topic="project" data-topic-id="0.0.7174429">
+                    <div class="topic-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div class="topic-info">
+                        <h4>The Launchpad</h4>
+                        <p>Project proposals and investments</p>
+                        <div class="hedera-topic">
+                            Topic: <code>0.0.7174429</code>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Topic</label>
-                    <select class="form-input">
-                        <option value="project">Project Topic</option>
-                        <option value="lottery">Lottery Topic</option>
-                        <option value="prize">Prize Distribution</option>
-                    </select>
+
+                <div class="topic-option" data-topic="lottery" data-topic-id="0.0.7174434">
+                    <div class="topic-icon">
+                        <i class="fas fa-dice"></i>
+                    </div>
+                    <div class="topic-info">
+                        <h4>The Cosmic Clock</h4>
+                        <p>Lottery frequency and parameters</p>
+                        <div class="hedera-topic">
+                            Topic: <code>0.0.7174434</code>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Proposal Description</label>
-                    <textarea class="form-input" rows="5" placeholder="Describe your proposal in detail..."></textarea>
+
+                <div class="topic-option" data-topic="prize" data-topic-id="0.0.7174439">
+                    <div class="topic-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="topic-info">
+                        <h4>The Nebula Split</h4>
+                        <p>Prize distribution formulas</p>
+                        <div class="hedera-topic">
+                            Topic: <code>0.0.7174439</code>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Expected Impact</label>
-                    <textarea class="form-input" rows="3" placeholder="What impact will this proposal have on the Astral Draw ecosystem?"></textarea>
-                </div>
-                <div class="form-actions">
-                    <button class="action-btn btn-danger" onclick="closeModal('createProposalModal')">Cancel</button>
-                    <button class="action-btn btn-success">Submit Proposal</button>
+
+                <div class="topic-option" data-topic="general" data-topic-id="0.0.7174440">
+                    <div class="topic-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="topic-info">
+                        <h4>The Galactic Forum</h4>
+                        <p>General platform discussions</p>
+                        <div class="hedera-topic">
+                            Topic: <code>0.0.7174440</code>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <div class="form-group">
+            <label class="form-label">Proposal Title</label>
+            <input type="text" class="form-input" id="proposalTitle" placeholder="Enter a clear and concise title...">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Detailed Description</label>
+            <textarea class="form-input" id="proposalDescription" rows="6" placeholder="Describe your proposal in detail. Include the problem, solution, and expected impact..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Expected Impact</label>
+            <textarea class="form-input" id="proposalImpact" rows="3" placeholder="How will this proposal benefit the Astral Draw ecosystem?"></textarea>
+        </div>
+
+        <div class="hedera-submission-info">
+            <h4><i class="fas fa-broadcast-tower"></i> Blockchain Recording</h4>
+            <p>This proposal will be permanently recorded on Hedera Consensus Service for complete transparency.</p>
+            <div class="submission-details">
+                <div class="detail">
+                    <strong>Topic ID:</strong>
+                    <code id="selectedTopicId">0.0.7174429</code>
+                </div>
+                <div class="detail">
+                    <strong>Your NFT:</strong>
+                    <span id="userNFTId">0.0.7174407#15</span>
+                </div>
+                <div class="detail">
+                    <strong>Voting Power:</strong>
+                    <span id="userVotingPower">10x</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button class="modal-btn btn-secondary" onclick="closeModal('createProposalModal')">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+            <button class="modal-btn btn-primary" onclick="submitProposalToHedera()">
+                <i class="fas fa-paper-plane"></i> Submit to Blockchain
+            </button>
+        </div>
     </div>
+</div>
     
     <div id="suggestionModal" class="modal">
         <div class="modal-content">
@@ -2363,47 +2669,509 @@
         </div>
     </div>
     
-    <!-- NFT Purchase Modal -->
-    <div id="purchaseNFTModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Purchase Governance NFT</h2>
-                <button class="modal-close" onclick="closeModal('purchaseNFTModal')">&times;</button>
+    <!-- Purchase NFT Modal -->
+<div id="purchaseNFTModal" class="modal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('purchaseNFTModal')">&times;</button>
+        <h2 class="modal-title">
+            <i class="fas fa-crown"></i> Acquire Governance NFT
+        </h2>
+        
+        <div class="modal-alert" id="nftPurchaseAlert" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="alertMessage"></span>
+        </div>
+
+        <div class="nft-selection-grid">
+            <!-- Celestial Board NFT -->
+            <div class="nft-option active" data-tier="board" data-price="10000">
+                <div class="nft-header">
+                    <div class="nft-icon" style="background: linear-gradient(135deg, var(--board-purple), var(--neon-magenta));">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div class="nft-badge board-badge">Board</div>
+                </div>
+                <h3 class="nft-name">Celestial Board NFT</h3>
+                <div class="nft-price">10,000 ASTRA</div>
+                <div class="nft-details">
+                    <div class="detail-item">
+                        <i class="fas fa-users"></i>
+                        <span>10 Members Maximum</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-vote-yea"></i>
+                        <span>10x Voting Power</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-bolt"></i>
+                        <span>Strategic Decision Making</span>
+                    </div>
+                </div>
+                <div class="hedera-info">
+                    <div class="hedera-badge">
+                        <i class="fas fa-link"></i>
+                        Hedera Token: <code>0.0.7174407</code>
+                    </div>
+                </div>
+                <div class="availability">
+                    <i class="fas fa-circle" style="color: var(--alien-green);"></i>
+                    <span id="board-availability">3/10 Slots Available</span>
+                </div>
             </div>
-            <div class="modal-body">
-                <div id="nftPurchaseDetails">
-                    <!-- Dynamic content will be inserted here -->
+
+            <!-- Stellar Assembly NFT -->
+            <div class="nft-option" data-tier="subordinate" data-price="1000">
+                <div class="nft-header">
+                    <div class="nft-icon" style="background: linear-gradient(135deg, var(--subordinate-blue), var(--quantum-blue));">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="nft-badge assembly-badge">Assembly</div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Payment Method</label>
-                    <select class="form-input" id="paymentMethod">
-                        <option value="astra">ASTRA Balance ({{ astra_bal }} available)</option>
-                        <option value="hbar">HBAR</option>
-                        <option value="card">Credit/Debit Card</option>
-                    </select>
+                <h3 class="nft-name">Stellar Assembly NFT</h3>
+                <div class="nft-price">1,000 ASTRA</div>
+                <div class="nft-details">
+                    <div class="detail-item">
+                        <i class="fas fa-users"></i>
+                        <span>1,000 Members Maximum</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-vote-yea"></i>
+                        <span>2x Voting Power</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-comments"></i>
+                        <span>Proposal Drafting Rights</span>
+                    </div>
                 </div>
-                <div class="form-actions">
-                    <button class="action-btn btn-danger" onclick="closeModal('purchaseNFTModal')">Cancel</button>
-                    <button class="action-btn btn-success" onclick="confirmPurchase()">Confirm Purchase</button>
+                <div class="hedera-info">
+                    <div class="hedera-badge">
+                        <i class="fas fa-link"></i>
+                        Hedera Token: <code>0.0.7174419</code>
+                    </div>
+                </div>
+                <div class="availability">
+                    <i class="fas fa-circle" style="color: var(--alien-green);"></i>
+                    <span id="assembly-availability">247/1000 Slots Available</span>
                 </div>
             </div>
         </div>
+
+        <div class="purchase-details">
+            <div class="detail-row">
+                <span>Selected Tier:</span>
+                <strong id="selectedTierName">Celestial Board</strong>
+            </div>
+            <div class="detail-row">
+                <span>Your Balance:</span>
+                <strong style="color: var(--alien-green);" id="userBalance">1,500 ASTRA</strong>
+            </div>
+            <div class="detail-row">
+                <span>Cost:</span>
+                <strong id="purchaseCost">10,000 ASTRA</strong>
+            </div>
+            <div class="detail-row total">
+                <span>Remaining After Purchase:</span>
+                <strong id="remainingBalance" style="color: var(--warning-red);">-8,500 ASTRA</strong>
+            </div>
+        </div>
+
+        <div class="hedera-transaction-info">
+            <h4><i class="fas fa-shield-alt"></i> Blockchain Verification</h4>
+            <p>This NFT will be minted on Hedera Testnet and recorded on the immutable ledger.</p>
+            <div class="verification-links">
+                <a href="https://hashscan.io/testnet/token/0.0.7174407" target="_blank" class="verification-link">
+                    <i class="fas fa-external-link-alt"></i>
+                    Verify Board Token
+                </a>
+                <a href="https://hashscan.io/testnet/token/0.0.7174419" target="_blank" class="verification-link">
+                    <i class="fas fa-external-link-alt"></i>
+                    Verify Assembly Token
+                </a>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button class="modal-btn btn-secondary" onclick="closeModal('purchaseNFTModal')">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+            <button class="modal-btn btn-primary" id="confirmPurchaseBtn" onclick="confirmNFTPurchase()">
+                <i class="fas fa-shopping-cart"></i> Purchase & Mint NFT
+            </button>
+        </div>
     </div>
-    
+</div>
+
     <!-- NFT Details Modal -->
-    <div id="nftDetailsModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">NFT Details</h2>
-                <button class="modal-close" onclick="closeModal('nftDetailsModal')">&times;</button>
+<div id="nftDetailsModal" class="modal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('nftDetailsModal')">&times;</button>
+        
+        <div class="nft-header">
+            <div class="nft-visual">
+                <div class="nft-avatar" id="nftAvatar">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <div class="nft-badge" id="nftBadge">Board</div>
             </div>
-            <div class="modal-body">
-                <div id="nftDetailsContent">
-                    <!-- Dynamic content will be inserted here -->
+            <div class="nft-info">
+                <h2 id="nftName">Celestial Board NFT</h2>
+                <div class="nft-id">ID: <code id="nftFullId">0.0.7174407#15</code></div>
+                <div class="nft-rank">Rank: <strong id="nftRank">#5 - The Innovator</strong></div>
+            </div>
+        </div>
+
+        <div class="nft-stats">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-vote-yea"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value" id="votingPower">10x</div>
+                    <div class="stat-label">Voting Power</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-calendar"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value" id="acquisitionDate">2024-01-15</div>
+                    <div class="stat-label">Acquired</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value" id="votesCast">47</div>
+                    <div class="stat-label">Votes Cast</div>
                 </div>
             </div>
         </div>
+
+        <div class="nft-details-section">
+            <h3><i class="fas fa-info-circle"></i> NFT Details</h3>
+            <div class="details-grid">
+                <div class="detail-item">
+                    <strong>Token ID:</strong>
+                    <code>0.0.7174407</code>
+                </div>
+                <div class="detail-item">
+                    <strong>Serial Number:</strong>
+                    <span id="serialNumber">15</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Governance Tier:</strong>
+                    <span id="governanceTier">Celestial Board</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Specialty:</strong>
+                    <span id="nftSpecialty">Technological Innovation</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Status:</strong>
+                    <span class="status-active" id="nftStatus">Active</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Last Vote:</strong>
+                    <span id="lastVoteDate">2024-01-18</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="hedera-verification">
+            <h3><i class="fas fa-shield-alt"></i> Blockchain Verification</h3>
+            <div class="verification-links">
+                <a href="https://hashscan.io/testnet/token/0.0.7174407" target="_blank" class="verification-link">
+                    <i class="fas fa-external-link-alt"></i>
+                    View Token on HashScan
+                </a>
+                <a href="https://hashscan.io/testnet/token/0.0.7174407?serial=15" target="_blank" class="verification-link">
+                    <i class="fas fa-search"></i>
+                    Verify This NFT
+                </a>
+                <a href="https://hashscan.io/testnet/topic/0.0.7174429" target="_blank" class="verification-link">
+                    <i class="fas fa-broadcast-tower"></i>
+                    View Governance Topics
+                </a>
+            </div>
+        </div>
+
+        <div class="nft-permissions">
+            <h3><i class="fas fa-tasks"></i> Governance Permissions</h3>
+            <ul class="permissions-list">
+                <li><i class="fas fa-check"></i> Strategic decision-making power</li>
+                <li><i class="fas fa-check"></i> Proposal curation and formalization</li>
+                <li><i class="fas fa-check"></i> Treasury management oversight</li>
+                <li><i class="fas fa-check"></i> Emergency protocol activation</li>
+                <li><i class="fas fa-check"></i> 10x voting power on all proposals</li>
+            </ul>
+        </div>
+
+        <div class="form-actions">
+            <button class="modal-btn btn-secondary" onclick="closeModal('nftDetailsModal')">
+                <i class="fas fa-times"></i> Close
+            </button>
+            <button class="modal-btn btn-warning" onclick="listNFTForSale()">
+                <i class="fas fa-tag"></i> List for Sale
+            </button>
+            <button class="modal-btn btn-primary" onclick="viewOnHashScan()">
+                <i class="fas fa-external-link-alt"></i> View on Explorer
+            </button>
+        </div>
     </div>
+</div>
+
+    <!-- Cast Vote Modal -->
+<div id="castVoteModal" class="modal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('castVoteModal')">&times;</button>
+        <h2 class="modal-title">
+            <i class="fas fa-vote-yea"></i> Cast Your Vote
+        </h2>
+
+        <div class="proposal-header">
+            <h3 id="voteProposalTitle">DeFi Protocol Integration</h3>
+            <div class="proposal-topic">
+                <i class="fas fa-project-diagram"></i>
+                The Launchpad • Topic: <code>0.0.7174429</code>
+            </div>
+        </div>
+
+        <div class="voting-power-display">
+            <div class="power-card">
+                <div class="power-icon">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <div class="power-info">
+                    <div class="power-label">Your Voting Power</div>
+                    <div class="power-value">10x</div>
+                    <div class="power-source">Celestial Board NFT</div>
+                </div>
+            </div>
+            <div class="power-card">
+                <div class="power-icon">
+                    <i class="fas fa-fingerprint"></i>
+                </div>
+                <div class="power-info">
+                    <div class="power-label">NFT ID</div>
+                    <div class="power-value" style="font-size: 0.8rem;">0.0.7174407#15</div>
+                    <div class="power-source">Hedera Verified</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="vote-options">
+            <div class="vote-option" data-vote="yes">
+                <div class="vote-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="vote-content">
+                    <h4>Vote YES</h4>
+                    <p>Approve this proposal and move forward with implementation</p>
+                    <div class="vote-impact">
+                        <strong>Impact:</strong> 10 votes counted towards approval
+                    </div>
+                </div>
+            </div>
+
+            <div class="vote-option" data-vote="no">
+                <div class="vote-icon">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="vote-content">
+                    <h4>Vote NO</h4>
+                    <p>Reject this proposal and maintain current operations</p>
+                    <div class="vote-impact">
+                        <strong>Impact:</strong> 10 votes counted towards rejection
+                    </div>
+                </div>
+            </div>
+
+            <div class="vote-option" data-vote="abstain">
+                <div class="vote-icon">
+                    <i class="fas fa-minus-circle"></i>
+                </div>
+                <div class="vote-content">
+                    <h4>Abstain</h4>
+                    <p>Decline to vote on this proposal</p>
+                    <div class="vote-impact">
+                        <strong>Impact:</strong> No votes counted
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="current-results">
+            <h4>Current Voting Results</h4>
+            <div class="results-grid">
+                <div class="result-item yes">
+                    <div class="result-label">Yes Votes</div>
+                    <div class="result-bar">
+                        <div class="result-fill" style="width: 65%;"></div>
+                    </div>
+                    <div class="result-value">65% (130 votes)</div>
+                </div>
+                <div class="result-item no">
+                    <div class="result-label">No Votes</div>
+                    <div class="result-bar">
+                        <div class="result-fill" style="width: 35%;"></div>
+                    </div>
+                    <div class="result-value">35% (70 votes)</div>
+                </div>
+            </div>
+            <div class="approval-status">
+                <i class="fas fa-info-circle"></i>
+                Needs 60% approval • Currently: <strong style="color: var(--alien-green);">65%</strong>
+            </div>
+        </div>
+
+        <div class="hedera-vote-info">
+            <h4><i class="fas fa-shield-alt"></i> Blockchain Verification</h4>
+            <p>Your vote will be permanently recorded on Hedera Consensus Service for complete transparency.</p>
+            <div class="verification-details">
+                <div class="detail">
+                    <strong>Topic:</strong> The Launchpad (<code>0.0.7174429</code>)
+                </div>
+                <div class="detail">
+                    <strong>Your NFT:</strong> <code>0.0.7174407#15</code>
+                </div>
+                <div class="detail">
+                    <strong>Voting Power:</strong> 10x
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button class="modal-btn btn-secondary" onclick="closeModal('castVoteModal')">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+            <button class="modal-btn btn-primary" id="confirmVoteBtn" onclick="submitVoteToHedera()" disabled>
+                <i class="fas fa-vote-yea"></i> Cast Vote on Blockchain
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Transaction Status Modal -->
+<div id="transactionModal" class="modal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('transactionModal')">&times;</button>
+        
+        <div class="transaction-header">
+            <div class="transaction-icon">
+                <i class="fas fa-cube" id="transactionMainIcon"></i>
+            </div>
+            <h2 id="transactionTitle">Processing Transaction</h2>
+        </div>
+
+        <div class="transaction-progress">
+            <div class="progress-steps">
+                <div class="step active" id="step1">
+                    <div class="step-icon">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <div class="step-label">Submitting</div>
+                </div>
+                <div class="step" id="step2">
+                    <div class="step-icon">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <div class="step-label">Hedera Consensus</div>
+                </div>
+                <div class="step" id="step3">
+                    <div class="step-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="step-label">Confirmed</div>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="transaction-details">
+            <div class="detail-card">
+                <h4><i class="fas fa-info-circle"></i> Transaction Details</h4>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <strong>Type:</strong>
+                        <span id="txType">NFT Purchase</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Hedera Token:</strong>
+                        <code id="txTokenId">0.0.7174407</code>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Topic:</strong>
+                        <code id="txTopicId">0.0.7174429</code>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Timestamp:</strong>
+                        <span id="txTimestamp">Just now</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hedera-status">
+            <h4><i class="fas fa-broadcast-tower"></i> Hedera Network Status</h4>
+            <div class="status-indicators">
+                <div class="status-item">
+                    <i class="fas fa-circle" style="color: var(--alien-green);"></i>
+                    <span>Testnet: Operational</span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-bolt" style="color: var(--alien-green);"></i>
+                    <span>Consensus: Active</span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-shield-alt" style="color: var(--alien-green);"></i>
+                    <span>Security: Verified</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="transaction-output" id="transactionOutput" style="display: none;">
+            <h4><i class="fas fa-file-alt"></i> Transaction Result</h4>
+            <div class="output-content" id="outputContent">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+        </div>
+
+        <div class="verification-links" id="verificationLinks" style="display: none;">
+            <h4><i class="fas fa-external-link-alt"></i> Verify on Explorer</h4>
+            <div class="links-grid">
+                <a href="#" target="_blank" class="verification-link" id="txHashScanLink">
+                    <i class="fas fa-search"></i>
+                    View on HashScan
+                </a>
+                <a href="#" target="_blank" class="verification-link" id="txTokenLink">
+                    <i class="fas fa-coins"></i>
+                    Verify Token
+                </a>
+                <a href="#" target="_blank" class="verification-link" id="txTopicLink">
+                    <i class="fas fa-broadcast-tower"></i>
+                    Check Topic
+                </a>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button class="modal-btn btn-secondary" onclick="closeModal('transactionModal')" id="cancelBtn" style="display: none;">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+            <button class="modal-btn btn-primary" onclick="closeModal('transactionModal')" id="doneBtn" style="display: none;">
+                <i class="fas fa-check"></i> Done
+            </button>
+            <button class="modal-btn btn-warning" onclick="retryTransaction()" id="retryBtn" style="display: none;">
+                <i class="fas fa-redo"></i> Retry
+            </button>
+        </div>
+    </div>
+</div>
     
     <script>
         // Create background stars

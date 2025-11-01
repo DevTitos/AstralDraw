@@ -10,7 +10,7 @@
 
 ## 📌 Pitch Deck & Certification
 
-- **Pitch Deck:** [Astral Draw Presentation PDF](https://yourlinktopitchdeck.com)  
+- **Pitch Deck:** [Astral Draw Presentation PDF](https://docs.google.com/presentation/d/1TsejiDqd_2KM4VB618AZykWy5KsYwVRn_laHQLmVUtU/edit?usp=sharing)  
 - **Hackathon Certification:** [Certification Link](https://drive.google.com/file/d/1eX8qYF11P2WMPhzK4EZ2ZMIOdi6Gvh1e/view)  
 - **Video Demo (7 min):** [Demo Link](https://yourlinktovideo.com)
 - **Hosted Project URL:** [Demo Link](http://astraldraw.onrender.com/)
@@ -249,10 +249,10 @@ astral-draw/
 
 ## 🤝 Connect With Us
 
-- **Website:** [astraldraw.com](https://astraldraw.com)  
+- **Website:** [astraldraw.com](https://astraldraw.onrender.com/)  
 - **Twitter:** [@AstralDraw](https://twitter.com/AstralDraw)  
 - **Telegram:** [t.me/astraldraw](https://t.me/astraldraw)  
-- **GitHub:** [github.com/astraldraw](https://github.com/astraldraw)  
+- **GitHub:** [github.com/astraldraw](https://github.com/DevTitos/AstralDraw)  
 
 ---
 
