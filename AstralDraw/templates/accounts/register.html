@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Registration - Astral Draw</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --cosmic-black: #050510;
+            --deep-space: #0a0a1f;
+            --neon-cyan: #0ff;
+            --neon-magenta: #f0f;
+            --alien-green: #0f6;
+            --star-white: #e6e6ff;
+            --nebula-purple: #6040c0;
+            --warning-red: #ff2a6d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Exo 2', 'Chakra Petch', sans-serif;
+        }
+        
+        body {
+            background: var(--cosmic-black);
+            color: var(--star-white);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(96, 64, 192, 0.15) 0%, transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(0, 255, 255, 0.1) 0%, transparent 25%),
+                radial-gradient(circle at 50% 80%, rgba(240, 0, 240, 0.1) 0%, transparent 25%);
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 5s infinite ease-in-out;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+        
+        .register-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .register-box {
+            background: linear-gradient(to bottom, rgba(10, 10, 31, 0.95), rgba(5, 5, 16, 0.95));
+            border: 1px solid var(--neon-magenta);
+            border-radius: 20px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 0 50px rgba(240, 0, 240, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--nebula-purple));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            animation: pulse 4s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 10px var(--neon-cyan); }
+            100% { transform: scale(1.05); box-shadow: 0 0 20px var(--neon-magenta); }
+        }
+        
+        .logo-text {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--neon-cyan), var(--neon-magenta));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        
+        .register-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--neon-magenta);
+        }
+        
+        .register-subtitle {
+            text-align: center;
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .form-input {
+            width: 100%;
+            background: rgba(15, 15, 35, 0.8);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 10px;
+            padding: 1rem;
+            color: var(--star-white);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            box-shadow: 0 0 15px var(--neon-cyan);
+            border-color: var(--neon-magenta);
+        }
+        
+        .name-fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .password-requirements {
+            background: rgba(15, 15, 35, 0.6);
+            border: 1px solid var(--nebula-purple);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .requirement {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .requirement i {
+            font-size: 0.8rem;
+        }
+        
+        .requirement.valid {
+            color: var(--alien-green);
+        }
+        
+        .requirement.invalid {
+            color: var(--warning-red);
+        }
+        
+        .register-btn {
+            width: 100%;
+            background: linear-gradient(to right, var(--neon-cyan), var(--neon-magenta));
+            color: var(--cosmic-black);
+            border: none;
+            padding: 1rem;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        .register-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 255, 255, 0.4);
+        }
+        
+        .register-links {
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .register-links a {
+            color: var(--neon-cyan);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .register-links a:hover {
+            color: var(--neon-magenta);
+        }
+        
+        .messages {
+            margin-bottom: 1rem;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .alert-success {
+            background: rgba(0, 255, 102, 0.2);
+            border: 1px solid var(--alien-green);
+            color: var(--alien-green);
+        }
+        
+        .alert-warning {
+            background: rgba(255, 42, 109, 0.2);
+            border: 1px solid var(--warning-red);
+            color: var(--warning-red);
+        }
+        
+        .back-home {
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .back-home a {
+            color: var(--neon-cyan);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .register-container {
+                padding: 1rem;
+            }
+            
+            .register-box {
+                padding: 2rem;
+            }
+            
+            .name-fields {
+                grid-template-columns: 1fr;
+            }
+            
+            .logo {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logo-text {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="register-container">
+        <div class="register-box">
+            <div class="logo">
+                <div class="logo-icon">✸</div>
+                <div class="logo-text">ASTRAL DRAW</div>
+            </div>
+            
+            <h1 class="register-title">Cosmic Registration</h1>
+            <p class="register-subtitle">Forge your identity to join the Astral Convergence</p>
+            
+            <!-- Django Messages -->
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <form method="POST" action="{% url 'register' %}">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label class="form-label">Stellar Address (Email)</label>
+                    <input type="email" class="form-input" name="email" placeholder="Enter your cosmic email" required>
+                </div>
+                
+                <div class="name-fields">
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <input type="text" class="form-input" name="first_name" placeholder="Your first name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-input" name="last_name" placeholder="Your last name" required>
+                    </div>
+                </div>
+                
+                <div class="password-requirements">
+                    <div class="requirement invalid" id="length-req">
+                        <i class="fas fa-circle"></i> At least 8 characters
+                    </div>
+                    <div class="requirement invalid" id="number-req">
+                        <i class="fas fa-circle"></i> Contains a number
+                    </div>
+                    <div class="requirement invalid" id="special-req">
+                        <i class="fas fa-circle"></i> Special character
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Quantum Signature (Password)</label>
+                    <input type="password" class="form-input" id="password" name="password" placeholder="Create your encryption key" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Confirm Signature</label>
+                    <input type="password" class="form-input" id="password1" name="password1" placeholder="Re-enter your quantum signature" required>
+                </div>
+                
+                <button type="submit" class="register-btn">
+                    <i class="fas fa-user-astronaut"></i> Initiate Identity
+                </button>
+            </form>
+            
+            <div class="register-links">
+                <p>Already have an identity? <a href="{% url 'login' %}">Access existing portal</a></p>
+            </div>
+            
+            <div class="back-home">
+                <a href="{% url 'landing' %}">
+                    <i class="fas fa-arrow-left"></i> Return to Cosmic Home
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create background stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const starsCount = 100;
+            
+            for (let i = 0; i < starsCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                const size = Math.random() * 3;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Password validation
+        function validatePassword() {
+            const password = document.getElementById('password').value;
+            const lengthReq = document.getElementById('length-req');
+            const numberReq = document.getElementById('number-req');
+            const specialReq = document.getElementById('special-req');
+            
+            // Check length
+            if (password.length >= 8) {
+                lengthReq.classList.remove('invalid');
+                lengthReq.classList.add('valid');
+                lengthReq.innerHTML = '<i class="fas fa-check"></i> At least 8 characters';
+            } else {
+                lengthReq.classList.remove('valid');
+                lengthReq.classList.add('invalid');
+                lengthReq.innerHTML = '<i class="fas fa-circle"></i> At least 8 characters';
+            }
+            
+            // Check for number
+            if (/\d/.test(password)) {
+                numberReq.classList.remove('invalid');
+                numberReq.classList.add('valid');
+                numberReq.innerHTML = '<i class="fas fa-check"></i> Contains a number';
+            } else {
+                numberReq.classList.remove('valid');
+                numberReq.classList.add('invalid');
+                numberReq.innerHTML = '<i class="fas fa-circle"></i> Contains a number';
+            }
+            
+            // Check for special character
+            if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+                specialReq.classList.remove('invalid');
+                specialReq.classList.add('valid');
+                specialReq.innerHTML = '<i class="fas fa-check"></i> Special character';
+            } else {
+                specialReq.classList.remove('valid');
+                specialReq.classList.add('invalid');
+                specialReq.innerHTML = '<i class="fas fa-circle"></i> Special character';
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            
+            // Add password validation
+            const passwordInput = document.getElementById('password');
+            if (passwordInput) {
+                passwordInput.addEventListener('input', validatePassword);
+            }
+        });
+    </script>
+</body>
+</html>

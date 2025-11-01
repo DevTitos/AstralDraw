@@ -1,0 +1,1869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astral Draw - Cosmic Lottery Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --cosmic-black: #050510;
+            --deep-space: #0a0a1f;
+            --neon-cyan: #0ff;
+            --neon-magenta: #f0f;
+            --alien-green: #0f6;
+            --star-white: #e6e6ff;
+            --nebula-purple: #6040c0;
+            --warning-red: #ff2a6d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Exo 2', 'Chakra Petch', sans-serif;
+        }
+        
+        body {
+            background: var(--cosmic-black);
+            color: var(--star-white);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(96, 64, 192, 0.15) 0%, transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(0, 255, 255, 0.1) 0%, transparent 25%),
+                radial-gradient(circle at 50% 80%, rgba(240, 0, 240, 0.1) 0%, transparent 25%);
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 5s infinite ease-in-out;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        /* Header & Navigation */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(5, 5, 16, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        header.scrolled {
+            padding: 1rem 0;
+            background: rgba(5, 5, 16, 0.95);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-left: 2rem;
+            cursor: pointer;
+        }
+        
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--nebula-purple));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            animation: pulse 4s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 10px var(--neon-cyan); }
+            100% { transform: scale(1.05); box-shadow: 0 0 20px var(--neon-magenta); }
+        }
+        
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--neon-cyan), var(--neon-magenta));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: var(--star-white);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+        
+        nav a:hover {
+            color: var(--neon-cyan);
+            background: rgba(0, 255, 255, 0.1);
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-right: 2rem;
+        }
+        
+        .auth-btn {
+            background: transparent;
+            border: 1px solid var(--neon-cyan);
+            color: var(--star-white);
+            padding: 0.7rem 1.5rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .auth-btn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 15px var(--neon-cyan);
+        }
+        
+        .auth-btn.register {
+            background: linear-gradient(to right, var(--neon-cyan), var(--neon-magenta));
+            color: var(--cosmic-black);
+            font-weight: 700;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--neon-cyan);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 8rem 0 4rem;
+        }
+        
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        
+        .hero-text h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, var(--neon-cyan), var(--neon-magenta), var(--alien-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+        }
+        
+        .hero-text p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .cta-btn {
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-btn.primary {
+            background: linear-gradient(to right, var(--neon-cyan), var(--neon-magenta));
+            color: var(--cosmic-black);
+            border: none;
+        }
+        
+        .cta-btn.secondary {
+            background: transparent;
+            border: 2px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+        }
+        
+        .cta-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 255, 255, 0.4);
+        }
+        
+        .hero-visual {
+            position: relative;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .cosmic-sphere {
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, var(--nebula-purple), transparent 70%);
+            position: relative;
+            animation: rotate 20s infinite linear;
+            box-shadow: 
+                0 0 100px rgba(96, 64, 192, 0.5),
+                inset 0 0 50px rgba(0, 255, 255, 0.2);
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .floating-glyph {
+            position: absolute;
+            font-size: 3rem;
+            animation: float 6s infinite ease-in-out;
+            text-shadow: 0 0 10px var(--neon-cyan);
+        }
+        
+        .glyph-1 { top: 10%; left: 20%; animation-delay: 0s; }
+        .glyph-2 { top: 20%; right: 10%; animation-delay: 1s; }
+        .glyph-3 { bottom: 20%; left: 10%; animation-delay: 2s; }
+        .glyph-4 { bottom: 10%; right: 20%; animation-delay: 3s; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+        
+        /* Sections */
+        section {
+            padding: 6rem 0;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--neon-cyan);
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 4rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        
+        /* Grand Prize Section */
+        .grand-prize {
+            background: rgba(10, 10, 31, 0.5);
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+        
+        .prize-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        
+        .prize-visual {
+            text-align: center;
+        }
+        
+        .prize-amount {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--alien-green);
+            text-shadow: 0 0 20px rgba(0, 255, 102, 0.5);
+            margin-bottom: 1rem;
+        }
+        
+        .prize-label {
+            font-size: 1.5rem;
+            opacity: 0.9;
+        }
+        
+        .prize-info {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+        
+        .prize-features {
+            list-style: none;
+        }
+        
+        .prize-features li {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .prize-features i {
+            color: var(--alien-green);
+            font-size: 1.2rem;
+        }
+        
+        /* Previous Draws */
+        .previous-draws {
+            background: rgba(5, 5, 16, 0.7);
+        }
+        
+        .draws-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .draw-card {
+            background: linear-gradient(to bottom, rgba(10, 10, 31, 0.8), rgba(5, 5, 16, 0.8));
+            border: 1px solid var(--nebula-purple);
+            border-radius: 15px;
+            padding: 2rem;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+        
+        .draw-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(96, 64, 192, 0.4);
+        }
+        
+        .draw-id {
+            font-size: 1.2rem;
+            color: var(--neon-cyan);
+            margin-bottom: 1rem;
+        }
+        
+        .draw-winner {
+            font-family: monospace;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .draw-prize {
+            font-size: 1.5rem;
+            color: var(--alien-green);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .draw-date {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        /* Why Us Section */
+        .why-us {
+            background: rgba(10, 10, 31, 0.5);
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: var(--neon-cyan);
+        }
+        
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--neon-magenta);
+        }
+        
+        .feature-desc {
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        
+        /* About Section */
+        .about {
+            background: rgba(5, 5, 16, 0.7);
+        }
+        
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        
+        .about-text {
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+        
+        .about-text p {
+            margin-bottom: 1.5rem;
+        }
+        
+        .about-visual {
+            text-align: center;
+        }
+        
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .tech-item {
+            text-align: center;
+        }
+        
+        .tech-icon {
+            font-size: 2.5rem;
+            color: var(--neon-cyan);
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Convergence Simulation Section */
+        .convergence-section {
+            background: rgba(10, 10, 31, 0.5);
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+        
+        .simulation-container {
+            position: relative;
+            height: 500px;
+            margin: 2rem 0;
+            overflow: hidden;
+            border-radius: 15px;
+            background: rgba(5, 5, 16, 0.7);
+            border: 1px solid var(--nebula-purple);
+        }
+        
+        .convergence-canvas {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .convergence-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .convergent-point {
+            background: rgba(15, 15, 35, 0.6);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+        
+        .point-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--neon-magenta);
+            margin: 1rem 0;
+        }
+        
+        .point-label {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        .stars-data {
+            background: rgba(15, 15, 35, 0.6);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 1px solid rgba(0, 255, 102, 0.3);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .stars-list {
+            list-style: none;
+        }
+        
+        .star-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .star-item:last-child {
+            border-bottom: none;
+        }
+        
+        .star-name {
+            font-weight: 600;
+            color: var(--neon-cyan);
+        }
+        
+        .star-direction {
+            font-family: monospace;
+            opacity: 0.8;
+        }
+        
+        .star-number {
+            background: var(--alien-green);
+            color: var(--cosmic-black);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .control-btn {
+            background: linear-gradient(to right, var(--neon-cyan), var(--neon-magenta));
+            color: var(--cosmic-black);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
+        }
+        
+        .control-btn.secondary {
+            background: transparent;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+        }
+        
+        .sound-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .sound-btn {
+            background: transparent;
+            border: 1px solid var(--neon-magenta);
+            color: var(--neon-magenta);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .sound-btn:hover {
+            background: rgba(240, 0, 240, 0.1);
+        }
+        
+        .sound-btn.active {
+            background: var(--neon-magenta);
+            color: var(--cosmic-black);
+        }
+        
+        /* Announcement Display */
+        .announcement {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(5, 5, 16, 0.9);
+            border: 1px solid var(--alien-green);
+            border-radius: 10px;
+            padding: 1rem 2rem;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 0 20px rgba(0, 255, 102, 0.3);
+        }
+        
+        .announcement.show {
+            display: flex;
+            animation: slideUp 0.5s ease;
+        }
+        
+        @keyframes slideUp {
+            from { bottom: -100px; opacity: 0; }
+            to { bottom: 2rem; opacity: 1; }
+        }
+        
+        .announcement-icon {
+            font-size: 1.5rem;
+            color: var(--alien-green);
+        }
+        
+        .announcement-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .announcement-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--alien-green);
+            margin: 0 0.5rem;
+        }
+        
+        /* Footer */
+        footer {
+            background: rgba(5, 5, 16, 0.9);
+            padding: 4rem 0 2rem;
+            border-top: 1px solid rgba(240, 0, 240, 0.3);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: var(--neon-cyan);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-column a {
+            color: var(--star-white);
+            text-decoration: none;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-column a:hover {
+            opacity: 1;
+            color: var(--neon-cyan);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 5, 16, 0.95);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: linear-gradient(to bottom, rgba(10, 10, 31, 0.95), rgba(5, 5, 16, 0.95));
+            border: 1px solid var(--neon-cyan);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            padding: 2.5rem;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            color: var(--star-white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .modal-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--neon-cyan);
+            text-align: center;
+        }
+        
+        .modal-input-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .modal-input {
+            width: 100%;
+            background: rgba(15, 15, 35, 0.8);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 8px;
+            padding: 1rem;
+            color: var(--star-white);
+            font-size: 1rem;
+        }
+        
+        .modal-input:focus {
+            outline: none;
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+        
+        .modal-btn {
+            width: 100%;
+            background: linear-gradient(to right, var(--neon-cyan), var(--neon-magenta));
+            color: var(--cosmic-black);
+            border: none;
+            padding: 1rem;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        .modal-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 255, 255, 0.4);
+        }
+        
+        .modal-text {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .modal-text a {
+            color: var(--neon-cyan);
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .modal-alert {
+            background: rgba(255, 42, 109, 0.2);
+            border: 1px solid var(--warning-red);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: var(--star-white);
+        }
+        
+        /* Mobile Navigation */
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 5, 16, 0.95);
+            z-index: 1500;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .mobile-nav.active {
+            display: flex;
+        }
+        
+        .mobile-nav ul {
+            list-style: none;
+            text-align: center;
+        }
+        
+        .mobile-nav li {
+            margin: 2rem 0;
+        }
+        
+        .mobile-nav a {
+            color: var(--star-white);
+            text-decoration: none;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-nav a:hover {
+            color: var(--neon-cyan);
+        }
+        
+        .mobile-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: transparent;
+            border: none;
+            color: var(--neon-cyan);
+            font-size: 2rem;
+            cursor: pointer;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .hero-content, .prize-container, .about-content, .convergence-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .hero-text h1 {
+                font-size: 2.8rem;
+            }
+            
+            .simulation-container {
+                height: 400px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            nav {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .hero-text h1 {
+                font-size: 2.2rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .prize-amount {
+                font-size: 3rem;
+            }
+            
+            .simulation-container {
+                height: 300px;
+            }
+            
+            .convergence-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <!-- Announcement Display -->
+    <div class="announcement" id="announcement">
+        <div class="announcement-icon"><i class="fas fa-broadcast-tower"></i></div>
+        <div class="announcement-text">Star convergence mapped to number:</div>
+        <div class="announcement-number" id="announcementNumber">0</div>
+    </div>
+    
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav" id="mobileNav">
+        <button class="mobile-close" id="mobileClose"><i class="fas fa-times"></i></button>
+        <ul>
+            <li><a href="#home" class="mobile-nav-link">Home</a></li>
+            <li><a href="#convergence" class="mobile-nav-link">Convergence</a></li>
+            <li><a href="#grand-prize" class="mobile-nav-link">Grand Prize</a></li>
+            <li><a href="#previous-draws" class="mobile-nav-link">Previous Draws</a></li>
+            <li><a href="#why-us" class="mobile-nav-link">Why Us</a></li>
+            <li><a href="#about" class="mobile-nav-link">About</a></li>
+            <li><button class="auth-btn" onclick="openModal('loginModal')">Login</button></li>
+            <li><button class="auth-btn register" onclick="openModal('registerModal')">Register</button></li>
+        </ul>
+    </div>
+    
+    <div class="container">
+        <header id="mainHeader">
+            <div class="logo" onclick="scrollToTop()">
+                <div class="logo-icon">✸</div>
+                <div class="logo-text">ASTRAL DRAW</div>
+            </div>
+            
+            <nav>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#convergence">Convergence</a></li>
+                    <li><a href="#grand-prize">Grand Prize</a></li>
+                    <li><a href="#previous-draws">Previous Draws</a></li>
+                    <li><a href="#why-us">Why Us</a></li>
+                    <li><a href="#about">About</a></li>
+                </ul>
+            </nav>
+            
+            <div class="auth-buttons">
+                <button class="auth-btn" onclick="openModal('loginModal')">Login</button>
+                <button class="auth-btn register" onclick="openModal('registerModal')">Register</button>
+            </div>
+            
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </header>
+        
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Experience the Cosmic Lottery of the Future</h1>
+                    <p>Astral Draw is a next-generation NFT-based lottery platform built on Hedera Hashgraph. Forge Star Keys, participate in Astral Convergences, and win from the Nebula Vault.</p>
+                    <div class="cta-buttons">
+                        <button class="cta-btn primary" onclick="openModal('registerModal')">Begin Cosmic Journey</button>
+                        <button class="cta-btn secondary" onclick="scrollToSection('convergence')">Witness Convergence</button>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="cosmic-sphere"></div>
+                    <div class="floating-glyph glyph-1">⟟</div>
+                    <div class="floating-glyph glyph-2">⍙</div>
+                    <div class="floating-glyph glyph-3">⟊</div>
+                    <div class="floating-glyph glyph-4">⊑</div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="convergence" class="convergence-section">
+            <h2 class="section-title">Star Convergence Simulation</h2>
+            <p class="section-subtitle">Witness the cosmic alignment of stars as they converge toward a single point in space. Each star's position maps to a unique number based on its proximity to the convergence point.</p>
+            
+            <div class="simulation-container">
+                <canvas class="convergence-canvas" id="convergenceCanvas"></canvas>
+            </div>
+            
+            <div class="convergence-info">
+                <div class="convergent-point">
+                    <div class="point-label">Convergent Point</div>
+                    <div class="point-value" id="convergentPoint">0.00°</div>
+                    <div class="point-label">Stars are converging toward this point</div>
+                </div>
+                
+                <div class="stars-data">
+                    <h3 style="margin-bottom: 1rem; color: var(--alien-green);">Star Data</h3>
+                    <ul class="stars-list" id="starsList">
+                        <!-- Star data will be populated by JavaScript -->
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="control-btn" id="simulateBtn">
+                    <i class="fas fa-play"></i> Simulate Convergence
+                </button>
+                <button class="control-btn secondary" id="resetBtn">
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+            </div>
+            
+            <div class="sound-controls">
+                <span>Sound Effects:</span>
+                <button class="sound-btn active" id="soundOnBtn"><i class="fas fa-volume-up"></i> On</button>
+                <button class="sound-btn" id="soundOffBtn"><i class="fas fa-volume-mute"></i> Off</button>
+            </div>
+        </section>
+        
+        <section id="grand-prize" class="grand-prize">
+            <h2 class="section-title">Nebula Vault Grand Prize</h2>
+            <p class="section-subtitle">The current Astral Convergence features our largest prize pool to date. Forge your Star Key now for a chance to win!</p>
+            
+            <div class="prize-container">
+                <div class="prize-visual">
+                    <div class="prize-amount">42,000 ASTRA</div>
+                    <div class="prize-label">Nebula-7 Convergence</div>
+                </div>
+                <div class="prize-details">
+                    <p class="prize-info">The Nebula Vault grows with each Star Key forged. When the Cosmic Alignment occurs, one lucky participant will receive the entire prize pool, with Stellar Echoes awarded to additional winners.</p>
+                    
+                    <ul class="prize-features">
+                        <li><i class="fas fa-check"></i> <span>Fully transparent on Hedera Consensus Service</span></li>
+                        <li><i class="fas fa-check"></i> <span>Provably fair randomness from cosmic entropy</span></li>
+                        <li><i class="fas fa-check"></i> <span>Instant prize distribution to winners</span></li>
+                        <li><i class="fas fa-check"></i> <span>No hidden fees or charges</span></li>
+                    </ul>
+                    
+                    <button class="cta-btn primary" onclick="openModal('registerModal')">Forge Star Key Now</button>
+                </div>
+            </div>
+        </section>
+        
+        <section id="previous-draws" class="previous-draws">
+            <h2 class="section-title">Previous Cosmic Alignments</h2>
+            <p class="section-subtitle">Witness the history of cosmic fortune. These are our most recent Nebula Vault emissions to lucky participants.</p>
+            
+            <div class="draws-container">
+                <div class="draw-card">
+                    <div class="draw-id">Nebula-6 Convergence</div>
+                    <div class="draw-winner">0x8a3d...e7c2</div>
+                    <div class="draw-prize">8,400 ASTRA</div>
+                    <div class="draw-date">Stardate: 2265.09.21</div>
+                </div>
+                
+                <div class="draw-card">
+                    <div class="draw-id">Nebula-5 Convergence</div>
+                    <div class="draw-winner">0x5f2a...9d14</div>
+                    <div class="draw-prize">7,200 ASTRA</div>
+                    <div class="draw-date">Stardate: 2265.09.14</div>
+                </div>
+                
+                <div class="draw-card">
+                    <div class="draw-id">Nebula-4 Convergence</div>
+                    <div class="draw-winner">0x3c71...b862</div>
+                    <div class="draw-prize">9,100 ASTRA</div>
+                    <div class="draw-date">Stardate: 2265.09.07</div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="why-us" class="why-us">
+            <h2 class="section-title">Why Choose Astral Draw?</h2>
+            <p class="section-subtitle">We've reimagined the lottery experience for the cosmic age. Here's what sets us apart from traditional platforms.</p>
+            
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Quantum Security</h3>
+                    <p class="feature-desc">Built on Hedera Hashgraph with military-grade encryption. Your assets and data are protected by the most advanced security protocols.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3 class="feature-title">Complete Transparency</h3>
+                    <p class="feature-desc">Every transaction, draw, and winner is recorded on the immutable Hedera Consensus Service for full verifiability.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="feature-title">Lightning Fast</h3>
+                    <p class="feature-desc">Hedera's unique consensus algorithm ensures near-instant transactions and draw resolutions with minimal energy consumption.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe-americas"></i>
+                    </div>
+                    <h3 class="feature-title">Global Access</h3>
+                    <p class="feature-desc">Participate from anywhere in the galaxy. Astral Draw is accessible to cosmic citizens across all star systems.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="about" class="about">
+            <h2 class="section-title">About Astral Draw</h2>
+            
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Astral Draw emerged from the need for a transparent, fair, and engaging lottery system in the post-human era. Traditional lotteries were plagued by opacity, centralization, and trust issues.</p>
+                    
+                    <p>Our platform leverages Hedera Hashgraph's revolutionary consensus algorithm to create a lottery experience that is provably fair, completely transparent, and incredibly efficient.</p>
+                    
+                    <p>Each Star Key is a unique NFT that grants entry to an Astral Convergence. When the Cosmic Alignment occurs, winners are selected through verifiable randomness derived from Hedera's consensus timestamps.</p>
+                    
+                    <p>Join thousands of cosmic citizens who have already experienced the future of lottery with Astral Draw. Forge your Star Key today and become part of the convergence!</p>
+                </div>
+                
+                <div class="about-visual">
+                    <div class="cosmic-sphere" style="width: 300px; height: 300px;"></div>
+                    
+                    <div class="tech-stack">
+                        <div class="tech-item">
+                            <div class="tech-icon"><i class="fab fa-html5"></i></div>
+                            <div>Hedera</div>
+                        </div>
+                        <div class="tech-item">
+                            <div class="tech-icon"><i class="fas fa-code"></i></div>
+                            <div>HTS</div>
+                        </div>
+                        <div class="tech-item">
+                            <div class="tech-icon"><i class="fas fa-cube"></i></div>
+                            <div>NFT</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <footer>
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Astral Draw</h3>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#convergence">Convergence</a></li>
+                        <li><a href="#grand-prize">Grand Prize</a></li>
+                        <li><a href="#previous-draws">Previous Draws</a></li>
+                        <li><a href="#why-us">Why Us</a></li>
+                        <li><a href="#about">About</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Platform</h3>
+                    <ul>
+                        <li><a href="#">How It Works</a></li>
+                        <li><a href="#">Star Keys</a></li>
+                        <li><a href="#">Nebula Vault</a></li>
+                        <li><a href="#">Cosmic Alignment</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                        <li><a href="#">Responsible Gaming</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Connect</h3>
+                    <ul>
+                        <li><a href="#">Twitter</a></li>
+                        <li><a href="#">Discord</a></li>
+                        <li><a href="#">Telegram</a></li>
+                        <li><a href="#">GitHub</a></li>
+                        <li><a href="#">Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>Astral Draw v1.0 | Built on Hedera Hashgraph | Entropy anchored to Hedera Consensus Service</p>
+                <p>© 2265 Astral Draw. All rights reserved across the cosmos.</p>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('loginModal')">&times;</button>
+            <h2 class="modal-title"><i class="fas fa-sign-in-alt"></i> Quantum Login</h2>
+            
+            <div class="modal-input-group">
+                <label class="modal-label">Stellar Address</label>
+                <input type="text" class="modal-input" placeholder="0x...">
+            </div>
+            
+            <div class="modal-input-group">
+                <label class="modal-label">Encryption Key</label>
+                <input type="password" class="modal-input" placeholder="Enter your key">
+            </div>
+            
+            <button class="modal-btn" onclick="login()">Access Portal</button>
+            
+            <p class="modal-text">New to the convergence? <a onclick="switchToRegister()">Forge a new identity</a></p>
+        </div>
+    </div>
+    
+    <!-- Register Modal -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('registerModal')">&times;</button>
+            <h2 class="modal-title"><i class="fas fa-user-astronaut"></i> Cosmic Registration</h2>
+            
+            <div class="modal-alert">
+                <i class="fas fa-exclamation-triangle"></i> Ensure you securely store your credentials
+            </div>
+            
+            <div class="modal-input-group">
+                <label class="modal-label">Choose Cosmic Identity</label>
+                <input type="text" class="modal-input" placeholder="Enter your username">
+            </div>
+            
+            <div class="modal-input-group">
+                <label class="modal-label">Quantum Signature</label>
+                <input type="password" class="modal-input" placeholder="Create encryption key">
+            </div>
+            
+            <div class="modal-input-group">
+                <label class="modal-label">Confirm Signature</label>
+                <input type="password" class="modal-input" placeholder="Re-enter your key">
+            </div>
+            
+            <button class="modal-btn" onclick="register()">Initiate Identity</button>
+            
+            <p class="modal-text">Already have an identity? <a onclick="switchToLogin()">Access existing portal</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Create background stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const starsCount = 150;
+            
+            for (let i = 0; i < starsCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                const size = Math.random() * 3;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Sound management with realistic robot voice
+        class SoundManager {
+            constructor() {
+                this.sounds = {};
+                this.enabled = true;
+                this.audioContext = null;
+                
+                this.init();
+            }
+            
+            init() {
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    this.createSounds();
+                } catch (e) {
+                    console.log("Web Audio API not supported");
+                }
+            }
+            
+            createSounds() {
+                // Create sci-fi sounds using Web Audio API
+                this.sounds.converge = this.createBeepSound(220, 440, 0.3);
+                this.sounds.number = this.createNumberSound();
+                this.sounds.ambient = this.createAmbientSound();
+                
+                // Start ambient sound
+                if (this.sounds.ambient) {
+                    this.sounds.ambient.loop = true;
+                    this.sounds.ambient.start();
+                }
+            }
+            
+            createBeepSound(freq1, freq2, duration) {
+                if (!this.audioContext) return null;
+                
+                return () => {
+                    const oscillator = this.audioContext.createOscillator();
+                    const gainNode = this.audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(this.audioContext.destination);
+                    
+                    oscillator.frequency.setValueAtTime(freq1, this.audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(freq2, this.audioContext.currentTime + duration);
+                    
+                    gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+                    
+                    oscillator.start();
+                    oscillator.stop(this.audioContext.currentTime + duration);
+                };
+            }
+            
+            createNumberSound() {
+                if (!this.audioContext) return null;
+                
+                return (number) => {
+                    const baseFreq = 110 + (number * 20);
+                    const oscillator = this.audioContext.createOscillator();
+                    const gainNode = this.audioContext.createGain();
+                    
+                    oscillator.type = 'sine';
+                    oscillator.connect(gainNode);
+                    gainNode.connect(this.audioContext.destination);
+                    
+                    oscillator.frequency.setValueAtTime(baseFreq, this.audioContext.currentTime);
+                    
+                    gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.3, this.audioContext.currentTime + 0.1);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.5);
+                    
+                    oscillator.start();
+                    oscillator.stop(this.audioContext.currentTime + 0.5);
+                    
+                    // Create a realistic robot voice announcement
+                    this.speakNumber(number);
+                };
+            }
+            
+            createAmbientSound() {
+                if (!this.audioContext) return null;
+                
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(60, this.audioContext.currentTime);
+                
+                gainNode.gain.setValueAtTime(0.02, this.audioContext.currentTime);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+                
+                return oscillator;
+            }
+            
+            speakNumber(number) {
+                if (!this.enabled) return;
+                
+                // Use SpeechSynthesis API for number announcement with robot voice effect
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance();
+                    utterance.text = number.toString();
+                    utterance.rate = 0.7;
+                    utterance.pitch = 0.8; // Lower pitch for robot effect
+                    utterance.volume = 0.9;
+                    
+                    // Try to use a robotic sounding voice
+                    const voices = speechSynthesis.getVoices();
+                    let robotVoice = voices.find(voice => 
+                        voice.name.includes('Microsoft David') || voice.name.includes('Google UK English Male')
+                    );
+                    
+                    if (!robotVoice) {
+                        robotVoice = voices.find(voice => voice.lang.includes('en'));
+                    }
+                    
+                    if (robotVoice) {
+                        utterance.voice = robotVoice;
+                    }
+                    
+                    // Add a slight delay for dramatic effect
+                    setTimeout(() => {
+                        speechSynthesis.speak(utterance);
+                    }, 300);
+                }
+            }
+            
+            playSound(soundName, param) {
+                if (!this.enabled || !this.sounds[soundName]) return;
+                
+                if (param !== undefined) {
+                    this.sounds[soundName](param);
+                } else {
+                    this.sounds[soundName]();
+                }
+            }
+            
+            toggleSound() {
+                this.enabled = !this.enabled;
+                
+                if (this.enabled && this.audioContext && this.audioContext.state === 'suspended') {
+                    this.audioContext.resume();
+                }
+                
+                return this.enabled;
+            }
+        }
+        
+        // Star convergence simulation
+        class StarConvergence {
+            constructor(canvasId, soundManager) {
+                this.canvas = document.getElementById(canvasId);
+                this.ctx = this.canvas.getContext('2d');
+                this.soundManager = soundManager;
+                this.starNames = [
+                    "Aldebaran", "Theta² Tauri", "Gamma Tauri",
+                    "Delta¹ Tauri", "Epsilon Tauri", "Hyadum I"
+                ];
+                this.stars = [];
+                this.convergentPoint = 0;
+                this.animationId = null;
+                this.isAnimating = false;
+                this.announcedStars = new Set();
+                
+                this.resizeCanvas();
+                window.addEventListener('resize', () => this.resizeCanvas());
+            }
+            
+            resizeCanvas() {
+                this.canvas.width = this.canvas.offsetWidth;
+                this.canvas.height = this.canvas.offsetHeight;
+                this.centerX = this.canvas.width / 2;
+                this.centerY = this.canvas.height / 2;
+                this.radius = Math.min(this.centerX, this.centerY) * 0.8;
+                
+                if (this.stars.length > 0) {
+                    this.draw();
+                }
+            }
+            
+            generateConvergence() {
+                // Generate convergent point (0-360 degrees)
+                this.convergentPoint = Math.random() * 360;
+                this.announcedStars.clear();
+                
+                this.stars = [];
+                
+                for (let i = 0; i < this.starNames.length; i++) {
+                    // Random direction around convergent point
+                    let direction = (this.convergentPoint + (Math.random() * 20 - 10)) % 360;
+                    if (direction < 0) direction += 360;
+                    
+                    // Distance from convergent point (0-10 roughly)
+                    let distance = Math.abs(direction - this.convergentPoint);
+                    if (distance > 180) distance = 360 - distance;
+                    
+                    // Map to 0-9 range (0 = exactly at convergent point, 9 = farthest)
+                    let mappedNumber = Math.round((distance / 10) * 9);
+                    mappedNumber = Math.max(0, Math.min(9, mappedNumber));
+                    
+                    this.stars.push({
+                        name: this.starNames[i],
+                        direction: direction,
+                        mappedNumber: mappedNumber,
+                        currentAngle: direction, // For animation
+                        currentRadius: this.radius * 0.9, // Start at outer edge
+                        color: this.getStarColor(i),
+                        announced: false
+                    });
+                }
+                
+                // Update UI
+                document.getElementById('convergentPoint').textContent = this.convergentPoint.toFixed(2) + '°';
+                this.updateStarsList();
+            }
+            
+            getStarColor(index) {
+                const colors = [
+                    '#FF2A6D', '#05D9E8', '#D1F7FF', 
+                    '#FFEE88', '#00FF9F', '#BF5AF2'
+                ];
+                return colors[index % colors.length];
+            }
+            
+            updateStarsList() {
+                const starsList = document.getElementById('starsList');
+                starsList.innerHTML = '';
+                
+                this.stars.forEach(star => {
+                    const li = document.createElement('li');
+                    li.className = 'star-item';
+                    li.innerHTML = `
+                        <span class="star-name">${star.name}</span>
+                        <span class="star-direction">${star.direction.toFixed(2)}°</span>
+                        <span class="star-number">${star.mappedNumber}</span>
+                    `;
+                    starsList.appendChild(li);
+                });
+            }
+            
+            draw() {
+                // Clear canvas
+                this.ctx.fillStyle = 'rgba(5, 5, 16, 0.3)';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Draw convergent point
+                this.ctx.beginPath();
+                this.ctx.arc(this.centerX, this.centerY, 8, 0, Math.PI * 2);
+                this.ctx.fillStyle = 'rgba(240, 0, 240, 0.8)';
+                this.ctx.fill();
+                this.ctx.strokeStyle = '#FFFFFF';
+                this.ctx.lineWidth = 2;
+                this.ctx.stroke();
+                
+                // Draw convergence circle
+                this.ctx.beginPath();
+                this.ctx.arc(this.centerX, this.centerY, this.radius * 0.2, 0, Math.PI * 2);
+                this.ctx.strokeStyle = 'rgba(0, 255, 255, 0.3)';
+                this.ctx.setLineDash([5, 5]);
+                this.ctx.lineWidth = 1;
+                this.ctx.stroke();
+                this.ctx.setLineDash([]);
+                
+                // Draw stars
+                this.stars.forEach(star => {
+                    const angle = star.currentAngle * Math.PI / 180;
+                    const x = this.centerX + Math.cos(angle) * star.currentRadius;
+                    const y = this.centerY + Math.sin(angle) * star.currentRadius;
+                    
+                    // Draw star
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, 6, 0, Math.PI * 2);
+                    this.ctx.fillStyle = star.color;
+                    this.ctx.fill();
+                    
+                    // Draw star glow
+                    const gradient = this.ctx.createRadialGradient(x, y, 0, x, y, 15);
+                    gradient.addColorStop(0, star.color);
+                    gradient.addColorStop(1, 'transparent');
+                    
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, 15, 0, Math.PI * 2);
+                    this.ctx.fillStyle = gradient;
+                    this.ctx.fill();
+                    
+                    // Draw star name
+                    this.ctx.fillStyle = '#FFFFFF';
+                    this.ctx.font = '12px Exo 2';
+                    this.ctx.textAlign = 'center';
+                    this.ctx.fillText(star.name, x, y - 15);
+                    
+                    // Draw direction line
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(this.centerX, this.centerY);
+                    this.ctx.lineTo(x, y);
+                    this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+                    this.ctx.lineWidth = 1;
+                    this.ctx.stroke();
+                });
+                
+                // Draw convergent point label
+                this.ctx.fillStyle = 'rgba(240, 0, 240, 0.9)';
+                this.ctx.font = '14px Exo 2';
+                this.ctx.textAlign = 'center';
+                this.ctx.fillText('Convergent Point', this.centerX, this.centerY - 25);
+            }
+            
+            animate() {
+                if (!this.isAnimating) return;
+                
+                let allConverged = true;
+                
+                this.stars.forEach((star, index) => {
+                    // Calculate target angle (convergent point)
+                    let targetAngle = this.convergentPoint;
+                    
+                    // Calculate shortest path to target angle
+                    let diff = targetAngle - star.currentAngle;
+                    if (diff > 180) diff -= 360;
+                    if (diff < -180) diff += 360;
+                    
+                    // Move star toward convergent point
+                    star.currentAngle += diff * 0.02;
+                    
+                    // Normalize angle
+                    if (star.currentAngle >= 360) star.currentAngle -= 360;
+                    if (star.currentAngle < 0) star.currentAngle += 360;
+                    
+                    // Move star inward
+                    if (star.currentRadius > this.radius * 0.2) {
+                        star.currentRadius -= 0.5;
+                        allConverged = false;
+                    }
+                    
+                    // Check if star has converged
+                    if (Math.abs(diff) > 1 || star.currentRadius > this.radius * 0.2) {
+                        allConverged = false;
+                    }
+                    
+                    // Announce number when star gets close to convergence
+                    if (!star.announced && star.currentRadius < this.radius * 0.3) {
+                        star.announced = true;
+                        this.announceNumber(star.name, star.mappedNumber);
+                    }
+                });
+                
+                this.draw();
+                
+                if (!allConverged) {
+                    this.animationId = requestAnimationFrame(() => this.animate());
+                } else {
+                    this.isAnimating = false;
+                    document.getElementById('simulateBtn').innerHTML = '<i class="fas fa-play"></i> Simulate Convergence';
+                }
+            }
+            
+            announceNumber(starName, number) {
+                // Play sound
+                this.soundManager.playSound('number', number);
+                
+                // Show visual announcement
+                const announcement = document.getElementById('announcement');
+                const numberElement = document.getElementById('announcementNumber');
+                
+                numberElement.textContent = number;
+                announcement.classList.add('show');
+                
+                // Hide announcement after 3 seconds
+                setTimeout(() => {
+                    announcement.classList.remove('show');
+                }, 3000);
+            }
+            
+            startAnimation() {
+                if (this.isAnimating) {
+                    this.stopAnimation();
+                    return;
+                }
+                
+                this.isAnimating = true;
+                document.getElementById('simulateBtn').innerHTML = '<i class="fas fa-pause"></i> Pause';
+                this.animate();
+            }
+            
+            stopAnimation() {
+                this.isAnimating = false;
+                if (this.animationId) {
+                    cancelAnimationFrame(this.animationId);
+                }
+                document.getElementById('simulateBtn').innerHTML = '<i class="fas fa-play"></i> Simulate Convergence';
+            }
+            
+            reset() {
+                this.stopAnimation();
+                this.generateConvergence();
+                this.draw();
+            }
+        }
+        
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        function switchToRegister() {
+            closeModal('loginModal');
+            openModal('registerModal');
+        }
+        
+        function switchToLogin() {
+            closeModal('registerModal');
+            openModal('loginModal');
+        }
+        
+        // Login and register functions
+        function login() {
+            alert('Quantum signature verified. Accessing Astral Dashboard...');
+            closeModal('loginModal');
+        }
+        
+        function register() {
+            alert('Cosmic identity initiated. Welcome to the convergence!');
+            closeModal('registerModal');
+        }
+        
+        // Scroll functions
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                window.scrollTo({
+                    top: section.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+        
+        // Initialize the simulation and page
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            
+            // Initialize sound manager and simulation
+            const soundManager = new SoundManager();
+            const simulation = new StarConvergence('convergenceCanvas', soundManager);
+            simulation.generateConvergence();
+            simulation.draw();
+            
+            // Event listeners for buttons
+            document.getElementById('simulateBtn').addEventListener('click', function() {
+                simulation.startAnimation();
+            });
+            
+            document.getElementById('resetBtn').addEventListener('click', function() {
+                simulation.reset();
+            });
+            
+            // Sound control buttons
+            document.getElementById('soundOnBtn').addEventListener('click', function() {
+                const enabled = soundManager.toggleSound();
+                this.classList.toggle('active', enabled);
+                document.getElementById('soundOffBtn').classList.toggle('active', !enabled);
+            });
+            
+            document.getElementById('soundOffBtn').addEventListener('click', function() {
+                const enabled = soundManager.toggleSound();
+                this.classList.toggle('active', !enabled);
+                document.getElementById('soundOnBtn').classList.toggle('active', enabled);
+            });
+            
+            // Mobile menu functionality
+            document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+                document.getElementById('mobileNav').classList.add('active');
+            });
+            
+            document.getElementById('mobileClose').addEventListener('click', function() {
+                document.getElementById('mobileNav').classList.remove('active');
+            });
+            
+            // Close mobile menu when clicking on a link
+            document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                link.addEventListener('click', function() {
+                    document.getElementById('mobileNav').classList.remove('active');
+                });
+            });
+            
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('nav a').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    event.target.style.display = 'none';
+                }
+            });
+            
+            // Header scroll effect
+            window.addEventListener('scroll', function() {
+                const header = document.getElementById('mainHeader');
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+            
+            // Wait for voices to be loaded for speech synthesis
+            if ('speechSynthesis' in window) {
+                speechSynthesis.onvoiceschanged = function() {
+                    // Voices are now loaded
+                };
+            }
+        });
+    </script>
+</body>
+</html>
