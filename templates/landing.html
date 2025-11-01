@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Astral Draw - Cosmic Lottery Platform</title>
+    <title>Astral Draw - Community-Owned Cosmic Lottery</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -15,6 +15,10 @@
             --star-white: #e6e6ff;
             --nebula-purple: #6040c0;
             --warning-red: #ff2a6d;
+            --governance-gold: #ffcc00;
+            --board-purple: #9b59b6;
+            --subordinate-blue: #3498db;
+            --community-green: #2ecc71;
         }
         
         * {
@@ -182,7 +186,7 @@
             margin-right: 1rem;
         }
         
-        /* Hero Section */
+        /* Hero Section - UPDATED */
         .hero {
             min-height: 100vh;
             display: flex;
@@ -213,6 +217,21 @@
             opacity: 0.9;
             line-height: 1.6;
         }
+
+        /* NEW: Win-Win Badge */
+        .win-win-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0, 255, 102, 0.1);
+            border: 1px solid var(--alien-green);
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--alien-green);
+        }
         
         .cta-buttons {
             display: flex;
@@ -241,6 +260,12 @@
             background: transparent;
             border: 2px solid var(--neon-cyan);
             color: var(--neon-cyan);
+        }
+
+        .cta-btn.governance {
+            background: linear-gradient(to right, var(--governance-gold), var(--plasma-orange));
+            color: var(--cosmic-black);
+            border: none;
         }
         
         .cta-btn:hover {
@@ -291,6 +316,280 @@
             50% { transform: translateY(-20px) rotate(10deg); }
         }
         
+        /* NEW: Revolutionary Features Section */
+        .revolutionary-features {
+            background: rgba(10, 10, 31, 0.5);
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+            padding: 4rem 0;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card-revolutionary {
+            background: linear-gradient(135deg, rgba(10, 10, 31, 0.8), rgba(5, 5, 16, 0.8));
+            border: 1px solid;
+            border-radius: 15px;
+            padding: 2rem;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card-revolutionary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+        }
+
+        .feature-card-revolutionary:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.3);
+        }
+
+        .feature-icon-rev {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .feature-title-rev {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--neon-cyan);
+        }
+
+        .feature-desc-rev {
+            opacity: 0.9;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-governance {
+            background: var(--governance-gold);
+            color: var(--cosmic-black);
+        }
+
+        .badge-investment {
+            background: var(--alien-green);
+            color: var(--cosmic-black);
+        }
+
+        .badge-community {
+            background: var(--subordinate-blue);
+            color: white;
+        }
+
+        /* NEW: Governance Structure Section */
+        .governance-structure {
+            background: rgba(5, 5, 16, 0.7);
+            padding: 4rem 0;
+        }
+
+        .governance-tiers {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .governance-tier {
+            background: linear-gradient(135deg, rgba(10, 10, 31, 0.8), rgba(5, 5, 16, 0.8));
+            border: 1px solid;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .governance-tier::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .tier-board {
+            border-color: var(--board-purple);
+        }
+
+        .tier-board::before {
+            background: linear-gradient(90deg, var(--board-purple), var(--neon-magenta));
+        }
+
+        .tier-assembly {
+            border-color: var(--subordinate-blue);
+        }
+
+        .tier-assembly::before {
+            background: linear-gradient(90deg, var(--subordinate-blue), var(--quantum-blue));
+        }
+
+        .tier-community {
+            border-color: var(--community-green);
+        }
+
+        .tier-community::before {
+            background: linear-gradient(90deg, var(--community-green), var(--alien-green));
+        }
+
+        .tier-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .tier-board .tier-icon { color: var(--board-purple); }
+        .tier-assembly .tier-icon { color: var(--subordinate-blue); }
+        .tier-community .tier-icon { color: var(--community-green); }
+
+        .tier-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .tier-board .tier-title { color: var(--board-purple); }
+        .tier-assembly .tier-title { color: var(--subordinate-blue); }
+        .tier-community .tier-title { color: var(--community-green); }
+
+        .tier-members {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .tier-permissions {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+
+        .tier-permissions li {
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tier-permissions i {
+            color: var(--alien-green);
+            font-size: 0.9rem;
+            min-width: 20px;
+        }
+
+        .tier-action {
+            background: transparent;
+            border: 1px solid;
+            color: inherit;
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .tier-board .tier-action { 
+            border-color: var(--board-purple);
+            color: var(--board-purple);
+        }
+
+        .tier-assembly .tier-action { 
+            border-color: var(--subordinate-blue);
+            color: var(--subordinate-blue);
+        }
+
+        .tier-community .tier-action { 
+            border-color: var(--community-green);
+            color: var(--community-green);
+        }
+
+        .tier-action:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* NEW: Economic Model Section */
+        .economic-model {
+            background: rgba(10, 10, 31, 0.5);
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+            padding: 4rem 0;
+        }
+
+        .model-visual {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .model-item {
+            background: rgba(15, 15, 35, 0.6);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .model-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 255, 255, 0.2);
+        }
+
+        .model-percentage {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .model-amount {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--alien-green);
+            margin-bottom: 1rem;
+        }
+
+        .model-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .model-description {
+            max-width: 800px;
+            margin: 2rem auto;
+            text-align: center;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            opacity: 0.9;
+        }
+
         /* Sections */
         section {
             padding: 4rem 0;
@@ -313,7 +612,7 @@
             padding: 0 1rem;
         }
         
-        /* Grand Prize Section */
+        /* Grand Prize Section - UPDATED */
         .grand-prize {
             background: rgba(10, 10, 31, 0.5);
             border-top: 1px solid rgba(0, 255, 255, 0.2);
@@ -418,7 +717,7 @@
             opacity: 0.7;
         }
         
-        /* Why Us Section */
+        /* Why Us Section - UPDATED */
         .why-us {
             background: rgba(10, 10, 31, 0.5);
             border-top: 1px solid rgba(0, 255, 255, 0.2);
@@ -764,119 +1063,6 @@
             opacity: 0.7;
         }
         
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(5, 5, 16, 0.95);
-            backdrop-filter: blur(5px);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            padding: 1rem;
-        }
-        
-        .modal-content {
-            background: linear-gradient(to bottom, rgba(10, 10, 31, 0.95), rgba(5, 5, 16, 0.95));
-            border: 1px solid var(--neon-cyan);
-            border-radius: 15px;
-            width: 100%;
-            max-width: 500px;
-            padding: 2rem;
-            box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
-            position: relative;
-        }
-        
-        .modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: transparent;
-            border: none;
-            color: var(--star-white);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-        
-        .modal-title {
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-            color: var(--neon-cyan);
-            text-align: center;
-        }
-        
-        .modal-input-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .modal-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-        
-        .modal-input {
-            width: 100%;
-            background: rgba(15, 15, 35, 0.8);
-            border: 1px solid var(--neon-cyan);
-            border-radius: 8px;
-            padding: 1rem;
-            color: var(--star-white);
-            font-size: 1rem;
-        }
-        
-        .modal-input:focus {
-            outline: none;
-            box-shadow: 0 0 10px var(--neon-cyan);
-        }
-        
-        .modal-btn {
-            width: 100%;
-            background: linear-gradient(to right, var(--neon-cyan), var(--neon-magenta));
-            color: var(--cosmic-black);
-            border: none;
-            padding: 1rem;
-            border-radius: 30px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 1rem;
-        }
-        
-        .modal-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 255, 255, 0.4);
-        }
-        
-        .modal-text {
-            text-align: center;
-            margin-top: 1.5rem;
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-        
-        .modal-text a {
-            color: var(--neon-cyan);
-            text-decoration: none;
-            cursor: pointer;
-        }
-        
-        .modal-alert {
-            background: rgba(255, 42, 109, 0.2);
-            border: 1px solid var(--warning-red);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            color: var(--star-white);
-        }
-        
         /* Mobile Navigation */
         .mobile-nav {
             position: fixed;
@@ -1012,6 +1198,10 @@
                 width: 100%;
                 max-width: 300px;
             }
+
+            .features-grid, .governance-tiers, .model-visual {
+                grid-template-columns: 1fr;
+            }
         }
         
         @media (max-width: 480px) {
@@ -1057,10 +1247,6 @@
             .simulation-container {
                 height: 250px;
             }
-            
-            .modal-content {
-                padding: 1.5rem;
-            }
         }
     </style>
 </head>
@@ -1079,11 +1265,12 @@
         <button class="mobile-close" id="mobileClose"><i class="fas fa-times"></i></button>
         <ul>
             <li><a href="#home" class="mobile-nav-link">Home</a></li>
+            <li><a href="#revolutionary" class="mobile-nav-link">Revolution</a></li>
+            <li><a href="#governance" class="mobile-nav-link">Governance</a></li>
+            <li><a href="#economics" class="mobile-nav-link">Economics</a></li>
             <li><a href="#convergence" class="mobile-nav-link">Convergence</a></li>
             <li><a href="#grand-prize" class="mobile-nav-link">Grand Prize</a></li>
-            <li><a href="#previous-draws" class="mobile-nav-link">Previous Draws</a></li>
             <li><a href="#why-us" class="mobile-nav-link">Why Us</a></li>
-            <li><a href="#about" class="mobile-nav-link">About</a></li>
             <li><a href="{% url 'login' %}"><button class="auth-btn">Login</button></a></li>
             <li><a href="{% url 'register' %}"><button class="auth-btn register">Register</button></a></li>
         </ul>
@@ -1099,10 +1286,12 @@
             <nav>
                 <ul>
                     <li><a href="#home">Home</a></li>
+                    <li><a href="#revolutionary">Revolution</a></li>
+                    <li><a href="#governance">Governance</a></li>
+                    <li><a href="#economics">Economics</a></li>
                     <li><a href="#convergence">Convergence</a></li>
                     <li><a href="#grand-prize">Grand Prize</a></li>
                     <li><a href="#why-us">Why Us</a></li>
-                    <li><a href="#about">About</a></li>
                 </ul>
             </nav>
             
@@ -1116,13 +1305,19 @@
             </button>
         </header>
         
+        <!-- UPDATED Hero Section -->
         <section id="home" class="hero">
             <div class="hero-content">
                 <div class="hero-text">
-                    <h1>Experience the Cosmic Lottery of the Future</h1>
-                    <p>Astral Draw is a next-generation NFT-based lottery platform built on Hedera Hashgraph. Forge Star Keys, participate in Astral Convergences, and win from the Nebula Vault.</p>
+                    <div class="win-win-badge">
+                        <i class="fas fa-handshake"></i>
+                        EVERYONE WINS - GUARANTEED
+                    </div>
+                    <h1>The World's First Community-Owned Lottery</h1>
+                    <p>Astral Draw revolutionizes gambling by transforming it into sustainable wealth generation. Whether you win the jackpot or not, you become a shareholder in community projects and earn ongoing dividends.</p>
                     <div class="cta-buttons">
-                        <button class="cta-btn primary" onclick="openModal('registerModal')">Begin Cosmic Journey</button>
+                        <button class="cta-btn primary" onclick="location.href='{% url 'register' %}'">Begin Cosmic Journey</button>
+                        <button class="cta-btn governance" onclick="scrollToSection('governance')">Join Governance</button>
                         <button class="cta-btn secondary" onclick="scrollToSection('convergence')">Witness Convergence</button>
                     </div>
                 </div>
@@ -1135,7 +1330,135 @@
                 </div>
             </div>
         </section>
+
+        <!-- NEW: Revolutionary Features Section -->
+        <section id="revolutionary" class="revolutionary-features">
+            <h2 class="section-title">The Lottery Revolution is Here</h2>
+            <p class="section-subtitle">We've transformed the zero-sum game of traditional lottery into a sustainable wealth-generation ecosystem where everyone benefits.</p>
+            
+            <div class="features-grid">
+                <div class="feature-card-revolutionary">
+                    <div class="feature-icon-rev">
+                        <i class="fas fa-users-crown" style="color: var(--board-purple);"></i>
+                        <span class="feature-badge badge-governance">Governance</span>
+                    </div>
+                    <h3 class="feature-title-rev">Community-Owned Platform</h3>
+                    <p class="feature-desc-rev">You're not just a player - you're an owner. Our tiered NFT governance system gives you real voting power over platform decisions, projects, and prize distribution.</p>
+                    <button class="tier-action" onclick="scrollToSection('governance')" style="border-color: var(--board-purple); color: var(--board-purple);">Explore Governance</button>
+                </div>
+                
+                <div class="feature-card-revolutionary">
+                    <div class="feature-icon-rev">
+                        <i class="fas fa-chart-line" style="color: var(--alien-green);"></i>
+                        <span class="feature-badge badge-investment">Investment</span>
+                    </div>
+                    <h3 class="feature-title-rev">Guaranteed Returns</h3>
+                    <p class="feature-desc-rev">Even if you don't win the jackpot, 30% of your ticket price is invested in community-vetted projects. You receive shares and earn dividends from project profits.</p>
+                    <button class="tier-action" onclick="scrollToSection('economics')" style="border-color: var(--alien-green); color: var(--alien-green);">View Economics</button>
+                </div>
+                
+                <div class="feature-card-revolutionary">
+                    <div class="feature-icon-rev">
+                        <i class="fas fa-project-diagram" style="color: var(--subordinate-blue);"></i>
+                        <span class="feature-badge badge-community">Community</span>
+                    </div>
+                    <h3 class="feature-title-rev">Project Incubator</h3>
+                    <p class="feature-desc-rev">The community treasury funds innovative projects proposed and voted on by governance token holders. Successful projects generate returns for all stakeholders.</p>
+                    <button class="tier-action" onclick="location.href='{% url 'login' %}'" style="border-color: var(--subordinate-blue); color: var(--subordinate-blue);">Join Community</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW: Governance Structure Section -->
+        <section id="governance" class="governance-structure">
+            <h2 class="section-title">Cosmic Governance System</h2>
+            <p class="section-subtitle">Our tiered NFT governance ensures democratic decision-making while maintaining efficient operations. Acquire governance NFTs to increase your influence.</p>
+            
+            <div class="governance-tiers">
+                <div class="governance-tier tier-board">
+                    <div class="tier-icon"><i class="fas fa-crown"></i></div>
+                    <h3 class="tier-title">Celestial Board</h3>
+                    <div class="tier-members">10 Members Maximum</div>
+                    <ul class="tier-permissions">
+                        <li><i class="fas fa-check"></i> Strategic vision and planning</li>
+                        <li><i class="fas fa-check"></i> Proposal curation</li>
+                        <li><i class="fas fa-check"></i> Treasury oversight</li>
+                        <li><i class="fas fa-check"></i> Emergency decision-making</li>
+                    </ul>
+                    <button class="tier-action" onclick="location.href='{% url 'register' %}'">Acquire Board NFT</button>
+                </div>
+                
+                <div class="governance-tier tier-assembly">
+                    <div class="tier-icon"><i class="fas fa-users"></i></div>
+                    <h3 class="tier-title">Stellar Assembly</h3>
+                    <div class="tier-members">1,000 Members Maximum</div>
+                    <ul class="tier-permissions">
+                        <li><i class="fas fa-check"></i> Vote on all proposals</li>
+                        <li><i class="fas fa-check"></i> Draft and submit proposals</li>
+                        <li><i class="fas fa-check"></i> Direct Board communication</li>
+                        <li><i class="fas fa-check"></i> Community representation</li>
+                    </ul>
+                    <button class="tier-action" onclick="location.href='{% url 'register' %}'">Join Assembly</button>
+                </div>
+                
+                <div class="governance-tier tier-community">
+                    <div class="tier-icon"><i class="fas fa-globe"></i></div>
+                    <h3 class="tier-title">Cosmic Community</h3>
+                    <div class="tier-members">Unlimited Members</div>
+                    <ul class="tier-permissions">
+                        <li><i class="fas fa-check"></i> Share ideas and suggestions</li>
+                        <li><i class="fas fa-check"></i> View governance discussions</li>
+                        <li><i class="fas fa-check"></i> Participate in sentiment checks</li>
+                        <li><i class="fas fa-check"></i> Receive project dividends</li>
+                    </ul>
+                    <button class="tier-action" onclick="location.href='{% url 'register' %}'">Join Community</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW: Economic Model Section -->
+        <section id="economics" class="economic-model">
+            <h2 class="section-title">Win-Win Economic Model</h2>
+            <p class="section-subtitle">Every ticket purchase contributes to both immediate prizes and long-term wealth generation for the entire community.</p>
+            
+            <div class="model-visual">
+                <div class="model-item">
+                    <div class="model-percentage">50%</div>
+                    <div class="model-amount">JACKPOT POOL</div>
+                    <div class="model-label">Immediate winners receive life-changing prizes</div>
+                </div>
+                
+                <div class="model-item">
+                    <div class="model-percentage">30%</div>
+                    <div class="model-amount">PROJECT TREASURY</div>
+                    <div class="model-label">Invested in community-vetted projects</div>
+                </div>
+                
+                <div class="model-item">
+                    <div class="model-percentage">10%</div>
+                    <div class="model-amount">OPERATIONS</div>
+                    <div class="model-label">Platform maintenance and development</div>
+                </div>
+                
+                <div class="model-item">
+                    <div class="model-percentage">10%</div>
+                    <div class="model-amount">NFT REWARDS</div>
+                    <div class="model-label">Distributed to governance participants</div>
+                </div>
+            </div>
+            
+            <div class="model-description">
+                <p><strong>The Astral Draw Difference:</strong> Traditional lotteries take 100% of losers' money. We transform 30% of every ticket into community investments that generate ongoing returns for all participants through project dividends and token buybacks.</p>
+            </div>
+            
+            <div class="controls">
+                <button class="control-btn" onclick="location.href='{% url 'register' %}'">
+                    <i class="fas fa-rocket"></i> Start Earning Today
+                </button>
+            </div>
+        </section>
         
+        <!-- Existing Convergence Section -->
         <section id="convergence" class="convergence-section">
             <h2 class="section-title">Star Convergence Simulation</h2>
             <p class="section-subtitle">Witness the cosmic alignment of stars as they converge toward a single point in space. Each star's position maps to a unique number based on its proximity to the convergence point.</p>
@@ -1175,9 +1498,10 @@
             </div>
         </section>
         
+        <!-- UPDATED Grand Prize Section -->
         <section id="grand-prize" class="grand-prize">
-            <h2 class="section-title">Nebula Vault Grand Prize</h2>
-            <p class="section-subtitle">The current Astral Convergence features our largest prize pool to date. Forge your Star Key now for a chance to win!</p>
+            <h2 class="section-title">Nebula Vault Grand Prize + Community Benefits</h2>
+            <p class="section-subtitle">Win massive jackpots while building long-term wealth through community project investments.</p>
             
             <div class="prize-container">
                 <div class="prize-visual">
@@ -1186,26 +1510,30 @@
                     <div class="prize-label">{{active.title}} Convergence</div>
                     {% else %}
                     <div class="prize-amount">1,000,000 ASTRA</div>
-                    <div class="prize-label">Nebula- Convergence</div>
+                    <div class="prize-label">Nebula Convergence</div>
                     {% endif %}
                 </div>
                 <div class="prize-details">
-                    <p class="prize-info">The Nebula Vault grows with each Star Key forged. When the Cosmic Alignment occurs, one lucky participant will receive the entire prize pool, with Stellar Echoes awarded to additional winners.</p>
+                    <p class="prize-info">The Nebula Vault grows with each Star Key forged. When the Cosmic Alignment occurs, one lucky participant will receive the entire prize pool, while ALL participants receive project shares and future dividends.</p>
                     
                     <ul class="prize-features">
-                        <li><i class="fas fa-check"></i> <span>Fully transparent on Hedera Consensus Service</span></li>
-                        <li><i class="fas fa-check"></i> <span>Provably fair randomness from cosmic entropy</span></li>
-                        <li><i class="fas fa-check"></i> <span>Instant prize distribution to winners</span></li>
-                        <li><i class="fas fa-check"></i> <span>No hidden fees or charges</span></li>
+                        <li><i class="fas fa-check"></i> <span><strong>Jackpot Winners:</strong> Life-changing immediate prizes</span></li>
+                        <li><i class="fas fa-check"></i> <span><strong>All Participants:</strong> Project shares & dividend rights</span></li>
+                        <li><i class="fas fa-check"></i> <span><strong>Governance NFTs:</strong> Decision-making power & rewards</span></li>
+                        <li><i class="fas fa-check"></i> <span><strong>Community Treasury:</strong> Funds innovative projects voted by you</span></li>
                     </ul>
-                    <a href="{% url 'login' %}">
-                        <button class="cta-btn primary">Forge Star Key Now</button>
-                    </a>
                     
+                    <div class="cta-buttons">
+                        <a href="{% url 'login' %}">
+                            <button class="cta-btn primary">Forge Star Key Now</button>
+                        </a>
+                        <button class="cta-btn governance" onclick="scrollToSection('governance')">Explore Governance NFTs</button>
+                    </div>
                 </div>
             </div>
         </section>
         
+        <!-- Previous Draws Section -->
         <section id="previous-draws" class="previous-draws">
             <h2 class="section-title">Previous Cosmic Alignments</h2>
             <p class="section-subtitle">Witness the history of cosmic fortune. These are our most recent Nebula Vault emissions to lucky participants.</p>
@@ -1222,57 +1550,59 @@
             </div>
         </section>
         
+        <!-- UPDATED Why Us Section -->
         <section id="why-us" class="why-us">
-            <h2 class="section-title">Why Choose Astral Draw?</h2>
-            <p class="section-subtitle">We've reimagined the lottery experience for the cosmic age. Here's what sets us apart from traditional platforms.</p>
+            <h2 class="section-title">Why Astral Draw is Revolutionary</h2>
+            <p class="section-subtitle">We've completely reimagined what a lottery can be - transforming it from a zero-sum game into a wealth-generation ecosystem.</p>
             
             <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <h3 class="feature-title">Everyone Wins</h3>
+                    <p class="feature-desc">Traditional lotteries: 99% lose everything. Astral Draw: 100% receive value through jackpots, project shares, or governance rights.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-landmark"></i>
+                    </div>
+                    <h3 class="feature-title">Community Owned</h3>
+                    <p class="feature-desc">You're not a customer - you're an owner. Our NFT governance system gives you real decision-making power over the platform.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="feature-title">Sustainable Wealth</h3>
+                    <p class="feature-desc">30% of every ticket is invested in community projects, generating ongoing dividends and token buybacks for all participants.</p>
+                </div>
+                
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-shield-alt"></i>
                     </div>
                     <h3 class="feature-title">Quantum Security</h3>
-                    <p class="feature-desc">Built on Hedera Hashgraph with military-grade encryption. Your assets and data are protected by the most advanced security protocols.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-eye"></i>
-                    </div>
-                    <h3 class="feature-title">Complete Transparency</h3>
-                    <p class="feature-desc">Every transaction, draw, and winner is recorded on the immutable Hedera Consensus Service for full verifiability.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <h3 class="feature-title">Lightning Fast</h3>
-                    <p class="feature-desc">Hedera's unique consensus algorithm ensures near-instant transactions and draw resolutions with minimal energy consumption.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-globe-americas"></i>
-                    </div>
-                    <h3 class="feature-title">Global Access</h3>
-                    <p class="feature-desc">Participate from anywhere in the galaxy. Astral Draw is accessible to cosmic citizens across all star systems.</p>
+                    <p class="feature-desc">Built on Hedera Hashgraph with military-grade encryption and complete transparency through blockchain verification.</p>
                 </div>
             </div>
         </section>
         
+        <!-- About Section -->
         <section id="about" class="about">
             <h2 class="section-title">About Astral Draw</h2>
             
             <div class="about-content">
                 <div class="about-text">
-                    <p>Astral Draw emerged from the need for a transparent, fair, and engaging lottery system in the post-human era. Traditional lotteries were plagued by opacity, centralization, and trust issues.</p>
+                    <p>Astral Draw emerged from the realization that traditional lotteries are fundamentally broken - they're extractive systems where the house always wins and players almost always lose.</p>
                     
-                    <p>Our platform leverages Hedera Hashgraph's revolutionary consensus algorithm to create a lottery experience that is provably fair, completely transparent, and incredibly efficient.</p>
+                    <p>We built a revolutionary model where gambling transforms into community investment. Every ticket purchase contributes to both immediate prizes and long-term wealth generation through community-vetted projects.</p>
                     
-                    <p>Each Star Key is a unique NFT that grants entry to an Astral Convergence. When the Cosmic Alignment occurs, winners are selected through verifiable randomness derived from Hedera's consensus timestamps.</p>
+                    <p>Our tiered governance NFT system ensures democratic decision-making while maintaining efficient operations. Whether you're a casual player or dedicated community member, you have a voice and ownership stake in the platform's future.</p>
                     
-                    <p>Join thousands of cosmic citizens who have already experienced the future of lottery with Astral Draw. Forge your Star Key today and become part of the convergence!</p>
+                    <p>Join thousands of cosmic citizens who have already experienced the future of community-owned gaming with Astral Draw. Forge your Star Key today and become part of the convergence!</p>
                 </div>
                 
                 <div class="about-visual">
@@ -1302,11 +1632,11 @@
                     <h3>Astral Draw</h3>
                     <ul>
                         <li><a href="#home">Home</a></li>
+                        <li><a href="#revolutionary">Revolution</a></li>
+                        <li><a href="#governance">Governance</a></li>
+                        <li><a href="#economics">Economics</a></li>
                         <li><a href="#convergence">Convergence</a></li>
                         <li><a href="#grand-prize">Grand Prize</a></li>
-                        <li><a href="#previous-draws">Previous Draws</a></li>
-                        <li><a href="#why-us">Why Us</a></li>
-                        <li><a href="#about">About</a></li>
                     </ul>
                 </div>
                 
@@ -1315,8 +1645,9 @@
                     <ul>
                         <li><a href="#">How It Works</a></li>
                         <li><a href="#">Star Keys</a></li>
-                        <li><a href="#">Nebula Vault</a></li>
-                        <li><a href="#">Cosmic Alignment</a></li>
+                        <li><a href="#">Governance NFTs</a></li>
+                        <li><a href="#">Project Investments</a></li>
+                        <li><a href="#">Community Projects</a></li>
                         <li><a href="#">FAQ</a></li>
                     </ul>
                 </div>
@@ -1344,65 +1675,12 @@
             </div>
             
             <div class="footer-bottom">
-                <p>Astral Draw v1.0 | Built on Hedera Hashgraph | Entropy anchored to Hedera Consensus Service</p>
-                <p>© 2265 Astral Draw. All rights reserved across the cosmos.</p>
+                <p>Astral Draw v2.0 | The World's First Community-Owned Lottery | Built on Hedera Hashgraph</p>
+                <p>© 2024 Astral Draw. All rights reserved across the cosmos.</p>
             </div>
         </footer>
     </div>
-    
-    <!-- Login Modal 
-    <div class="modal" id="loginModal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal('loginModal')">&times;</button>
-            <h2 class="modal-title"><i class="fas fa-sign-in-alt"></i> Quantum Login</h2>
-            
-            <div class="modal-input-group">
-                <label class="modal-label">Stellar Address</label>
-                <input type="text" class="modal-input" placeholder="0x...">
-            </div>
-            
-            <div class="modal-input-group">
-                <label class="modal-label">Encryption Key</label>
-                <input type="password" class="modal-input" placeholder="Enter your key">
-            </div>
-            
-            <button class="modal-btn" onclick="login()">Access Portal</button>
-            
-            <p class="modal-text">New to the convergence? <a onclick="switchToRegister()">Forge a new identity</a></p>
-        </div>
-    </div>
-    -->
-    <!-- Register Modal 
-    <div class="modal" id="registerModal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal('registerModal')">&times;</button>
-            <h2 class="modal-title"><i class="fas fa-user-astronaut"></i> Cosmic Registration</h2>
-            
-            <div class="modal-alert">
-                <i class="fas fa-exclamation-triangle"></i> Ensure you securely store your credentials
-            </div>
-            
-            <div class="modal-input-group">
-                <label class="modal-label">Choose Cosmic Identity</label>
-                <input type="text" class="modal-input" placeholder="Enter your username">
-            </div>
-            
-            <div class="modal-input-group">
-                <label class="modal-label">Quantum Signature</label>
-                <input type="password" class="modal-input" placeholder="Create encryption key">
-            </div>
-            
-            <div class="modal-input-group">
-                <label class="modal-label">Confirm Signature</label>
-                <input type="password" class="modal-input" placeholder="Re-enter your key">
-            </div>
-            
-            <button class="modal-btn" onclick="register()">Initiate Identity</button>
-            
-            <p class="modal-text">Already have an identity? <a onclick="switchToLogin()">Access existing portal</a></p>
-        </div>
-    </div>
-    -->
+
     <script>
         // Create background stars
         function createStars() {
@@ -1826,36 +2104,6 @@
             }
         }
         
-        // Modal functions
-        //function openModal(modalId) {
-        //    document.getElementById(modalId).style.display = 'flex';
-        //}
-        //
-        //function closeModal(modalId) {
-        //    document.getElementById(modalId).style.display = 'none';
-        //}
-        //
-        //function switchToRegister() {
-        //    closeModal('loginModal');
-        //    openModal('registerModal');
-        //}
-        //
-        //function switchToLogin() {
-        //    closeModal('registerModal');
-        //    openModal('loginModal');
-        //}
-        //
-        //// Login and register functions
-        //function login() {
-        //    alert('Quantum signature verified. Accessing Astral Dashboard...');
-        //    closeModal('loginModal');
-        //}
-        //
-        //function register() {
-        //    alert('Cosmic identity initiated. Welcome to the convergence!');
-        //    closeModal('registerModal');
-        //}
-        
         // Scroll functions
         function scrollToSection(sectionId) {
             const section = document.getElementById(sectionId);
@@ -1937,13 +2185,6 @@
                         });
                     }
                 });
-            });
-            
-            // Close modal when clicking outside
-            window.addEventListener('click', function(event) {
-                if (event.target.classList.contains('modal')) {
-                    event.target.style.display = 'none';
-                }
             });
             
             // Header scroll effect

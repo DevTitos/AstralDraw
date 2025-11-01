@@ -73,8 +73,8 @@ Ticket Price Distribution:
 Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/astral-draw.git
-cd astral-draw
+git clone https://github.com/DevTitos/AstralDraw.git
+cd AstralDraw
 ```
 
 ### 1️⃣ Setup Python Environment
@@ -104,7 +104,7 @@ python manage.py migrate
 
 ### 3️⃣ Run Development Server
 ```bash
-python manage.py runserver
+python3 manage.py runserver
 ```
 
 Open [http://localhost:8000](http://localhost:8000) to access the platform.
@@ -115,10 +115,10 @@ Open [http://localhost:8000](http://localhost:8000) to access the platform.
 
 ```
 astral-draw/
-├── astral_draw/        # Django main app
+├── AstralDraw/        # Django main app
 ├── projects/           # Community project management
-├── governance/         # NFT governance and voting
-├── lottery/            # Lottery ticket & draw logic
+├── hiero/         # HCS, FT, NFT, governance and mirror node
+├── core/            # Lottery ticket & draw logic
 ├── static/             # CSS, JS, images
 ├── templates/          # HTML templates
 ├── requirements.txt
