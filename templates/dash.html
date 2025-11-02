@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600&family=Chakra+Petch:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        /* All CSS styles from previous implementation */
         :root {
             --cosmic-black: #050510;
             --deep-space: #0a0a1f;
@@ -81,7 +80,6 @@
             z-index: -1;
         }
         
-        /* Dashboard Layout */
         .dashboard {
             display: grid;
             grid-template-columns: 280px 1fr;
@@ -92,7 +90,6 @@
             min-height: 100vh;
         }
         
-        /* Header Styles */
         .header {
             grid-area: header;
             background: rgba(5, 5, 16, 0.8);
@@ -140,19 +137,6 @@
             position: relative;
         }
         
-        .user-avatar::after {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
-            z-index: -1;
-            animation: pulse 2s infinite;
-        }
-        
         .user-details h3 {
             font-size: 1.1rem;
             margin-bottom: 0.2rem;
@@ -173,36 +157,6 @@
             font-size: 0.7rem;
             font-weight: bold;
             margin-left: 1rem;
-        }
-        
-        .governance-badge {
-            background: linear-gradient(45deg, var(--governance-gold), var(--plasma-orange));
-            color: black;
-            padding: 0.2rem 0.8rem;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            margin-left: 0.5rem;
-        }
-        
-        .board-badge {
-            background: linear-gradient(45deg, var(--board-purple), var(--neon-magenta));
-            color: white;
-            padding: 0.2rem 0.8rem;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            margin-left: 0.5rem;
-        }
-        
-        .subordinate-badge {
-            background: linear-gradient(45deg, var(--subordinate-blue), var(--quantum-blue));
-            color: white;
-            padding: 0.2rem 0.8rem;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            margin-left: 0.5rem;
         }
         
         .header-controls {
@@ -227,7 +181,6 @@
             box-shadow: 0 0 15px var(--neon-cyan);
         }
         
-        /* Sidebar Styles */
         .sidebar {
             grid-area: sidebar;
             background: rgba(5, 5, 16, 0.9);
@@ -236,22 +189,6 @@
             padding: 2rem 0;
             position: relative;
             overflow-y: auto;
-        }
-        
-        .sidebar::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 2px;
-            height: 100%;
-            background: linear-gradient(to bottom, transparent, var(--neon-cyan), transparent);
-            animation: glow 2s ease-in-out infinite alternate;
-        }
-        
-        @keyframes glow {
-            0% { opacity: 0.3; }
-            100% { opacity: 0.7; }
         }
         
         .logo {
@@ -271,7 +208,6 @@
             align-items: center;
             justify-content: center;
             font-size: 1.1rem;
-            animation: pulse 4s infinite alternate;
         }
         
         .logo-text {
@@ -322,52 +258,12 @@
             color: var(--neon-cyan);
         }
         
-        .nav-link::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 0;
-            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
-            transition: width 0.3s ease;
-        }
-        
-        .nav-link:hover::before {
-            width: 100%;
-        }
-        
         .nav-icon {
             font-size: 1.2rem;
             width: 20px;
             text-align: center;
         }
         
-        .admin-only {
-            border-left: 3px solid var(--plasma-orange);
-        }
-        
-        .admin-only .nav-icon {
-            color: var(--plasma-orange);
-        }
-        
-        .governance-only {
-            border-left: 3px solid var(--governance-gold);
-        }
-        
-        .governance-only .nav-icon {
-            color: var(--governance-gold);
-        }
-        
-        .marketplace-only {
-            border-left: 3px solid var(--marketplace-pink);
-        }
-        
-        .marketplace-only .nav-icon {
-            color: var(--marketplace-pink);
-        }
-        
-        /* Main Content Styles */
         .main-content {
             grid-area: main;
             padding: 2rem;
@@ -406,7 +302,6 @@
             font-size: clamp(0.9rem, 2vw, 1.1rem);
         }
         
-        /* Dashboard Grid */
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -457,126 +352,77 @@
             letter-spacing: 1px;
         }
         
-        /* Governance Cards */
-        .governance-card {
-            background: linear-gradient(135deg, rgba(10, 10, 31, 0.8), rgba(5, 5, 16, 0.8));
-            border: 1px solid;
+        /* New Governance Styles */
+        .governance-tabs {
+            background: rgba(10, 10, 31, 0.8);
             border-radius: 15px;
-            padding: 1.5rem;
-            backdrop-filter: blur(10px);
-            position: relative;
+            border: 1px solid rgba(0, 255, 255, 0.2);
             overflow: hidden;
-            margin-bottom: 1.5rem;
-        }
-        
-        .board-card {
-            border-color: var(--board-purple);
-        }
-        
-        .board-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--board-purple), var(--neon-magenta));
-        }
-        
-        .subordinate-card {
-            border-color: var(--subordinate-blue);
-        }
-        
-        .subordinate-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--subordinate-blue), var(--quantum-blue));
-        }
-        
-        .community-card {
-            border-color: var(--community-green);
-        }
-        
-        .community-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--community-green), var(--alien-green));
-        }
-        
-        .governance-title {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .governance-title i {
-            color: inherit;
-        }
-        
-        .governance-permissions {
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .permission-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
-        
-        .permission-item i {
-            color: var(--alien-green);
-        }
-        
-        /* NFT Marketplace */
-        .marketplace-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
             margin-bottom: 2rem;
         }
-        
-        .nft-card {
-            background: linear-gradient(135deg, rgba(10, 10, 31, 0.8), rgba(5, 5, 16, 0.8));
+
+        .tab-nav {
+            display: flex;
+            background: rgba(5, 5, 16, 0.9);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--star-white);
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .tab-btn.active {
+            background: rgba(0, 255, 255, 0.1);
+            color: var(--neon-cyan);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--neon-cyan);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 2rem;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .proposals-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .proposal-card {
+            background: rgba(15, 15, 35, 0.8);
             border: 1px solid rgba(0, 255, 255, 0.3);
-            border-radius: 15px;
-            overflow: hidden;
+            border-radius: 10px;
+            padding: 1.5rem;
             transition: all 0.3s ease;
             position: relative;
         }
-        
-        .nft-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 255, 255, 0.2);
+
+        .proposal-card:hover {
             border-color: var(--neon-cyan);
+            transform: translateY(-2px);
         }
-        
-        .nft-image {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(135deg, var(--nebula-purple), var(--neon-magenta));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .nft-badge {
+
+        .proposal-badge {
             position: absolute;
             top: 1rem;
             right: 1rem;
@@ -585,62 +431,572 @@
             font-size: 0.7rem;
             font-weight: 600;
             text-transform: uppercase;
-        }
-        
-        .board-badge-nft {
-            background: var(--board-purple);
+            background: var(--warning-red);
             color: white;
         }
-        
-        .subordinate-badge-nft {
-            background: var(--subordinate-blue);
-            color: white;
+
+        .proposal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
         }
-        
-        .nft-info {
-            padding: 1.5rem;
+
+        .proposal-meta {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
         }
-        
-        .nft-title {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
+
+        .proposal-category {
+            background: rgba(0, 255, 255, 0.1);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: var(--neon-cyan);
+        }
+
+        .proposal-id {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .proposal-time {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-        }
-        
-        .nft-description {
-            opacity: 0.7;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-            line-height: 1.4;
-        }
-        
-        .nft-details {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 1.5rem;
-            font-size: 0.9rem;
-        }
-        
-        .nft-price {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--alien-green);
-            margin-bottom: 1rem;
-        }
-        
-        .nft-availability {
             font-size: 0.8rem;
             opacity: 0.7;
+        }
+
+        .proposal-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--star-white);
+        }
+
+        .proposal-description {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
+        .proposal-stats {
+            display: flex;
+            gap: 2rem;
             margin-bottom: 1rem;
         }
-        
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--neon-cyan);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            text-transform: uppercase;
+        }
+
+        .vote-progress {
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+            display: flex;
+        }
+
+        .progress-fill.yes {
+            background: var(--alien-green);
+        }
+
+        .progress-fill.no {
+            background: var(--warning-red);
+        }
+
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .proposal-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .vote-btn {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            min-width: 120px;
+        }
+
+        .vote-btn.yes {
+            background: rgba(0, 255, 102, 0.1);
+            color: var(--alien-green);
+            border: 1px solid var(--alien-green);
+        }
+
+        .vote-btn.yes:hover {
+            background: rgba(0, 255, 102, 0.2);
+        }
+
+        .vote-btn.no {
+            background: rgba(255, 42, 109, 0.1);
+            color: var(--warning-red);
+            border: 1px solid var(--warning-red);
+        }
+
+        .vote-btn.no:hover {
+            background: rgba(255, 42, 109, 0.2);
+        }
+
+        .vote-info {
+            flex: 1;
+            text-align: center;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* NFT Marketplace Styles */
+        .nft-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .nft-card {
+            background: linear-gradient(135deg, rgba(10, 10, 31, 0.8), rgba(5, 5, 16, 0.8));
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .nft-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--neon-cyan);
+            box-shadow: 0 10px 25px rgba(0, 255, 255, 0.2);
+        }
+
+        .nft-header {
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .nft-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1rem;
+        }
+
+        .nft-icon.celestial {
+            background: linear-gradient(135deg, var(--board-purple), var(--neon-magenta));
+        }
+
+        .nft-icon.stellar {
+            background: linear-gradient(135deg, var(--subordinate-blue), var(--quantum-blue));
+        }
+
+        .nft-icon.cosmic {
+            background: linear-gradient(135deg, var(--community-green), var(--alien-green));
+        }
+
+        .nft-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-celestial {
+            background: var(--board-purple);
+            color: white;
+        }
+
+        .badge-stellar {
+            background: var(--subordinate-blue);
+            color: white;
+        }
+
+        .badge-cosmic {
+            background: var(--community-green);
+            color: white;
+        }
+
+        .nft-content {
+            padding: 1.5rem;
+        }
+
+        .nft-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--alien-green);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .nft-details {
+            display: grid;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .nft-detail {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nft-detail:last-child {
+            border-bottom: none;
+        }
+
         .nft-actions {
             display: flex;
             gap: 0.5rem;
         }
-        
+
+        .btn-full {
+            flex: 1;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 5, 16, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(10, 10, 31, 0.95), rgba(5, 5, 16, 0.95));
+            border: 1px solid var(--neon-cyan);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 2rem 2rem 1rem;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--neon-cyan);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            color: var(--star-white);
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 42, 109, 0.2);
+            color: var(--warning-red);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-input {
+            width: 100%;
+            background: rgba(15, 15, 35, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            color: var(--star-white);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .action-btn {
+            background: transparent;
+            border: 1px solid;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+        }
+
+        .btn-primary:hover {
+            background: rgba(0, 255, 255, 0.1);
+        }
+
+        .btn-success {
+            border-color: var(--alien-green);
+            color: var(--alien-green);
+        }
+
+        .btn-success:hover {
+            background: rgba(0, 255, 102, 0.1);
+        }
+
+        .btn-danger {
+            border-color: var(--warning-red);
+            color: var(--warning-red);
+        }
+
+        .btn-danger:hover {
+            background: rgba(255, 42, 109, 0.1);
+        }
+
+        .btn-secondary {
+            border-color: rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Alert Styles */
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .alert-success {
+            background: rgba(0, 255, 102, 0.1);
+            border: 1px solid var(--alien-green);
+            color: var(--alien-green);
+        }
+
+        .alert-error {
+            background: rgba(255, 42, 109, 0.1);
+            border: 1px solid var(--warning-red);
+            color: var(--warning-red);
+        }
+
+        .alert-warning {
+            background: rgba(255, 204, 0, 0.1);
+            border: 1px solid var(--governance-gold);
+            color: var(--governance-gold);
+        }
+
+        /* Data Tables */
+        .data-table {
+            background: rgba(10, 10, 31, 0.6);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .table-header {
+            background: rgba(0, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .table-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .table-content {
+            padding: 0;
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            align-items: center;
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        .table-row.header {
+            background: rgba(0, 255, 255, 0.05);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: rgba(0, 255, 102, 0.2);
+            color: var(--alien-green);
+            border: 1px solid var(--alien-green);
+        }
+
+        .status-completed {
+            background: rgba(0, 204, 255, 0.2);
+            color: var(--quantum-blue);
+            border: 1px solid var(--quantum-blue);
+        }
+
+        .status-cancelled {
+            background: rgba(255, 42, 109, 0.2);
+            color: var(--warning-red);
+            border: 1px solid var(--warning-red);
+        }
+
+        .vote-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .vote-badge.yes {
+            background: rgba(0, 255, 102, 0.2);
+            color: var(--alien-green);
+            border: 1px solid var(--alien-green);
+        }
+
+        .vote-badge.no {
+            background: rgba(255, 42, 109, 0.2);
+            color: var(--warning-red);
+            border: 1px solid var(--warning-red);
+        }
+
+        /* Loading States */
+        .loading-placeholder {
+            text-align: center;
+            padding: 3rem;
+            opacity: 0.5;
+        }
+
+        .loading-placeholder i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--neon-cyan);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
         /* Countdown Timer */
         .countdown-timer {
             display: flex;
@@ -671,100 +1027,7 @@
             opacity: 0.7;
             margin-top: 0.5rem;
         }
-        
-        /* Data Tables */
-        .data-table {
-            background: rgba(10, 10, 31, 0.6);
-            border: 1px solid rgba(0, 255, 255, 0.2);
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 2rem;
-        }
-        
-        .table-header {
-            background: rgba(0, 255, 255, 0.1);
-            padding: 1.5rem;
-            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
-        }
-        
-        .table-title {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .table-content {
-            padding: 0;
-        }
-        
-        .table-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            align-items: center;
-        }
-        
-        .table-row:last-child {
-            border-bottom: none;
-        }
-        
-        .table-row.header {
-            background: rgba(0, 255, 255, 0.05);
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-        }
-        
-        .status-badge {
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-        
-        .status-active {
-            background: rgba(0, 255, 102, 0.2);
-            color: var(--alien-green);
-            border: 1px solid var(--alien-green);
-        }
-        
-        .status-pending {
-            background: rgba(255, 204, 0, 0.2);
-            color: #ffcc00;
-            border: 1px solid #ffcc00;
-        }
-        
-        .status-completed {
-            background: rgba(0, 204, 255, 0.2);
-            color: var(--quantum-blue);
-            border: 1px solid var(--quantum-blue);
-        }
-        
-        .status-upcoming {
-            background: rgba(0, 204, 255, 0.2);
-            color: var(--quantum-blue);
-            border: 1px solid var(--quantum-blue);
-        }
 
-        .status-cancelled {
-            background: rgba(255, 42, 109, 0.2);
-            color: var(--warning-red);
-            border: 1px solid var(--warning-red);
-        }
-        
-        .status-sold-out {
-            background: rgba(255, 42, 109, 0.2);
-            color: var(--warning-red);
-            border: 1px solid var(--warning-red);
-        }
-        
-        .status-available {
-            background: rgba(0, 255, 102, 0.2);
-            color: var(--alien-green);
-            border: 1px solid var(--alien-green);
-        }
-        
         /* Action Buttons */
         .action-btn {
             background: transparent;
@@ -816,312 +1079,7 @@
             background: rgba(0, 255, 102, 0.1);
             box-shadow: 0 0 10px var(--alien-green);
         }
-        
-        .btn-governance {
-            border-color: var(--governance-gold);
-            color: var(--governance-gold);
-        }
-        
-        .btn-governance:hover {
-            background: rgba(255, 204, 0, 0.1);
-            box-shadow: 0 0 10px var(--governance-gold);
-        }
-        
-        .btn-marketplace {
-            border-color: var(--marketplace-pink);
-            color: var(--marketplace-pink);
-        }
-        
-        .btn-marketplace:hover {
-            background: rgba(232, 67, 147, 0.1);
-            box-shadow: 0 0 10px var(--marketplace-pink);
-        }
-        
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(5, 5, 16, 0.95);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .modal-content {
-            background: linear-gradient(135deg, rgba(10, 10, 31, 0.95), rgba(5, 5, 16, 0.95));
-            border: 1px solid var(--neon-cyan);
-            border-radius: 20px;
-            width: 90%;
-            max-width: 600px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
-            position: relative;
-        }
-        
-        .modal-header {
-            padding: 2rem 2rem 1rem;
-            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
-        }
-        
-        .modal-title {
-            font-size: 1.5rem;
-            color: var(--neon-cyan);
-        }
-        
-        .modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: transparent;
-            border: none;
-            color: var(--star-white);
-            font-size: 1.5rem;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-        
-        .modal-close:hover {
-            background: rgba(255, 42, 109, 0.2);
-            color: var(--warning-red);
-        }
 
-        /* Modal Enhancements */
-.modal-content {
-    max-width: 600px;
-    max-height: 90vh;
-    overflow-y: auto;
-}
-
-.nft-selection-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
-
-.nft-option {
-    border: 2px solid rgba(0, 255, 255, 0.3);
-    border-radius: 10px;
-    padding: 1.5rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background: rgba(10, 10, 31, 0.6);
-}
-
-.nft-option.active {
-    border-color: var(--neon-cyan);
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-}
-
-.nft-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1rem;
-}
-
-.nft-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-}
-
-.nft-badge {
-    padding: 0.3rem 0.8rem;
-    border-radius: 15px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-.board-badge {
-    background: var(--board-purple);
-    color: white;
-}
-
-.assembly-badge {
-    background: var(--subordinate-blue);
-    color: white;
-}
-
-.hedera-info {
-    margin-top: 1rem;
-    padding: 0.8rem;
-    background: rgba(0, 255, 255, 0.1);
-    border-radius: 8px;
-    border: 1px solid rgba(0, 255, 255, 0.3);
-}
-
-.hedera-badge {
-    font-size: 0.8rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.availability {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 1rem;
-    font-size: 0.9rem;
-}
-
-.topic-selection {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
-}
-
-.topic-option {
-    border: 2px solid rgba(0, 255, 255, 0.2);
-    border-radius: 10px;
-    padding: 1.5rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    gap: 1rem;
-    align-items: flex-start;
-    background: rgba(10, 10, 31, 0.6);
-}
-
-.topic-option.active {
-    border-color: var(--neon-cyan);
-    background: rgba(0, 255, 255, 0.1);
-}
-
-.topic-icon {
-    width: 50px;
-    height: 50px;
-    background: rgba(0, 255, 255, 0.1);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    color: var(--neon-cyan);
-}
-
-.hedera-topic {
-    font-size: 0.8rem;
-    margin-top: 0.5rem;
-    opacity: 0.8;
-}
-
-.verification-links {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    margin-top: 1rem;
-}
-
-.verification-link {
-    background: rgba(0, 255, 255, 0.1);
-    border: 1px solid var(--neon-cyan);
-    color: var(--neon-cyan);
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    text-decoration: none;
-    font-size: 0.8rem;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.verification-link:hover {
-    background: rgba(0, 255, 255, 0.2);
-}
-
-/* Progress Steps */
-.progress-steps {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-    position: relative;
-}
-
-.step {
-    text-align: center;
-    flex: 1;
-    position: relative;
-    z-index: 2;
-}
-
-.step-icon {
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 0.5rem;
-    transition: all 0.3s ease;
-}
-
-.step.active .step-icon {
-    background: var(--neon-cyan);
-    color: var(--cosmic-black);
-}
-
-.step-label {
-    font-size: 0.8rem;
-    opacity: 0.7;
-}
-
-.progress-bar {
-    height: 4px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 2px;
-    position: relative;
-    margin: -30px 20px 30px;
-}
-
-.progress-fill {
-    height: 100%;
-    background: var(--neon-cyan);
-    border-radius: 2px;
-    transition: width 0.3s ease;
-    width: 0%;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .nft-selection-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .verification-links {
-        flex-direction: column;
-    }
-    
-    .progress-steps {
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-}
-        
-        .modal-body {
-            padding: 2rem;
-        }
-        
         .form-group {
             margin-bottom: 1.5rem;
         }
@@ -1215,132 +1173,7 @@
             opacity: 0.7;
         }
         
-        /* Governance Discussion */
-        .discussion-topic {
-            background: rgba(10, 10, 31, 0.6);
-            border: 1px solid rgba(0, 255, 255, 0.2);
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-            overflow: hidden;
-        }
-        
-        .topic-header {
-            background: rgba(0, 255, 255, 0.1);
-            padding: 1.5rem;
-            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .topic-title {
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .topic-icon {
-            font-size: 1.2rem;
-        }
-        
-        .topic-content {
-            padding: 1.5rem;
-            display: none;
-        }
-        
-        .topic-content.active {
-            display: block;
-        }
-        
-        .proposal-item {
-            background: rgba(15, 15, 35, 0.8);
-            border: 1px solid rgba(0, 255, 255, 0.2);
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .proposal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-        }
-        
-        .proposal-title {
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .proposal-author {
-            font-size: 0.9rem;
-            opacity: 0.7;
-        }
-        
-        .proposal-status {
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-        
-        .proposal-description {
-            margin-bottom: 1rem;
-            line-height: 1.5;
-        }
-        
-        .proposal-actions {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        
-        .vote-results {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .vote-bar {
-            flex-grow: 1;
-            height: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        
-        .vote-fill {
-            height: 100%;
-            border-radius: 5px;
-        }
-        
-        .vote-yes {
-            background: var(--alien-green);
-        }
-        
-        .vote-no {
-            background: var(--warning-red);
-        }
-        
-        .vote-count {
-            font-size: 0.8rem;
-            opacity: 0.7;
-        }
-        
-        /* Mobile Menu */
-        .mobile-menu-btn {
-            display: none;
-            background: transparent;
-            border: none;
-            color: var(--neon-cyan);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-        
+
         /* Responsive Design */
         @media (max-width: 1024px) {
             .dashboard {
@@ -1368,42 +1201,36 @@
             .mobile-menu-btn {
                 display: block;
             }
-            
-            .header-controls {
-                gap: 0.5rem;
-            }
-            
-            .control-btn {
-                padding: 0.4rem 0.8rem;
-                font-size: 0.8rem;
-            }
         }
-        
+
         @media (max-width: 768px) {
             .dashboard-grid {
                 grid-template-columns: 1fr;
             }
             
-            .marketplace-grid {
+            .nft-grid {
                 grid-template-columns: 1fr;
             }
             
-            .table-row {
-                grid-template-columns: 1fr;
-                gap: 0.5rem;
-                text-align: center;
+            .tab-nav {
+                flex-direction: column;
+            }
+            
+            .proposal-actions {
+                flex-direction: column;
+            }
+            
+            .vote-btn {
+                min-width: auto;
             }
             
             .header {
                 padding: 0 1rem;
-                flex-wrap: wrap;
-                gap: 1rem;
             }
             
             .main-content {
                 padding: 1rem;
             }
-            
             .countdown-timer {
                 gap: 0.5rem;
             }
@@ -1428,68 +1255,13 @@
             .control-btn i {
                 margin-right: 0;
             }
-            
-            .proposal-header {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-            
-            .vote-results {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-            
-            .nft-actions {
-                flex-direction: column;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 1rem;
-                height: auto;
-            }
-            
-            .header-controls {
-                width: 100%;
-                justify-content: space-between;
-                margin-top: 1rem;
-            }
-            
-            .user-info {
-                width: 100%;
-                justify-content: space-between;
-            }
-            
-            .main-content {
-                padding: 0.5rem;
-            }
-            
-            .stat-card {
-                padding: 1rem;
-            }
-            
-            .section-header {
-                margin-bottom: 1rem;
-            }
-            
-            .timer-unit {
-                min-width: 60px;
-                padding: 0.5rem;
-            }
-            
-            .timer-value {
-                font-size: 1.2rem;
-            }
         }
     </style>
 </head>
 <body>
     <div class="stars" id="stars"></div>
     <div class="grid-lines"></div>
-    
+
     <!-- Include Modals -->
     {% include 'dashboard_modals.html' %}
     {% include 'draw_modals.html' %}
@@ -1506,9 +1278,6 @@
                     <div class="role">
                         {{ user_wallet.recipient_id|default:"Cosmic Citizen" }}
                         {% if user.is_staff %}<span class="admin-badge">QUANTUM ADMIN</span>{% endif %}
-                        {% if user_governance_role == 'board' %}<span class="board-badge">CELESTIAL BOARD</span>{% endif %}
-                        {% if user_governance_role == 'subordinate' %}<span class="subordinate-badge">STELLAR ASSEMBLY</span>{% endif %}
-                        {% if user_governance_role == 'community' %}<span class="governance-badge">COSMIC COMMUNITY</span>{% endif %}
                     </div>
                 </div>
             </div>
@@ -1518,7 +1287,7 @@
                     <i class="fas fa-bell"></i> <span>Alerts</span>
                 </button>
                 <button class="control-btn" onclick="openModal('purchaseAstraModal')">
-                    <i class="fas fa-cash"></i> <span>Buy Astra</span>
+                    <i class="fas fa-coins"></i> <span>Buy Astra</span>
                 </button>
                 <button class="control-btn" onclick="openModal('settingsModal')">
                     <i class="fas fa-cog"></i> <span>Settings</span>
@@ -1532,7 +1301,6 @@
             </div>
         </header>
         
-        <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="logo">
                 <div class="logo-icon">✸</div>
@@ -1572,12 +1340,6 @@
                             <span>Cosmic Governance</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link marketplace-only" data-section="marketplace">
-                            <i class="fas fa-store nav-icon"></i>
-                            <span>NFT Marketplace</span>
-                        </a>
-                    </li>
                 </ul>
             </nav>
             
@@ -1586,41 +1348,22 @@
                 <div class="nav-title">Quantum Administration</div>
                 <ul class="nav-items">
                     <li class="nav-item">
-                        <a href="#admin-draws" class="nav-link admin-only" onclick="showSection('admin-draws')">
+                        <a class="nav-link" data-section="admin-draws">
                             <i class="fas fa-cogs nav-icon"></i>
                             <span>Draw Management</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#analytics" class="nav-link admin-only" onclick="showSection('analytics')">
-                            <i class="fas fa-cogs nav-icon"></i>
+                        <a class="nav-link" data-section="analytics">
+                            <i class="fas fa-chart-line nav-icon"></i>
                             <span>Cosmic Analytics</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#users" class="nav-link admin-only" onclick="showSection('users')">
-                            <i class="fas fa-users nav-icon"></i>
-                            <span>User Governance</span>
                         </a>
                     </li>
                 </ul>
             </nav>
             {% endif %}
-            
-            <nav class="nav-section">
-                <div class="nav-title">System</div>
-                <ul class="nav-items">
-                    <li class="nav-item">
-                        <a href="#support" class="nav-link" onclick="showSection('support')">
-                            <i class="fas fa-life-ring nav-icon"></i>
-                            <span>Quantum Support</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
         </aside>
         
-        <!-- Main Content -->
         <main class="main-content">
             <!-- Overview Section -->
             <section id="overview" class="content-section active">
@@ -1654,7 +1397,7 @@
                         <div class="stat-label">Active Convergences</div>
                     </div>
                 </div>
-                
+
                 <div class="hologram">
                     <h3 style="margin-bottom: 1rem; color: var(--hologram-teal);">
                         <i class="fas fa-project-diagram"></i> Cosmic Convergence Status
@@ -1722,7 +1465,117 @@
                     </div>
                 </div>
             </section>
-            
+
+            <!-- Star Keys, Draws, Wallet sections... -->
+
+            <!-- New Governance Section -->
+            <section id="governance" class="content-section">
+                <div class="section-header">
+                    <h1 class="section-title">Cosmic Governance</h1>
+                    <p class="section-subtitle">Participate in Astral Draw decision-making with governance NFTs</p>
+                </div>
+
+                <!-- Governance Overview -->
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-vote-yea"></i></div>
+                        <div class="stat-value" id="activeProposals">0</div>
+                        <div class="stat-label">Active Proposals</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-users"></i></div>
+                        <div class="stat-value" id="totalVoters">0</div>
+                        <div class="stat-label">Total Voters</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-crown"></i></div>
+                        <div class="stat-value" id="userVotingPower">0x</div>
+                        <div class="stat-label">Your Voting Power</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="stat-value" id="userVotes">0</div>
+                        <div class="stat-label">Your Votes</div>
+                    </div>
+                </div>
+
+                <!-- Governance Tabs -->
+                <div class="governance-tabs">
+                    <div class="tab-nav">
+                        <button class="tab-btn active" data-tab="proposals">Active Proposals</button>
+                        <button class="tab-btn" data-tab="nfts">Governance NFTs</button>
+                        <button class="tab-btn" data-tab="my-votes">My Activity</button>
+                    </div>
+                    
+                    <!-- Proposals Tab -->
+                    <div class="tab-content active" id="proposals-tab">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h3>Active Governance Proposals</h3>
+                            <div>
+                                <button class="action-btn btn-primary" onclick="openCreateProposalModal()" id="createProposalBtn">
+                                    <i class="fas fa-plus"></i> Create Proposal
+                                </button>
+                                <button class="action-btn btn-secondary" onclick="loadProposals()">
+                                    <i class="fas fa-sync-alt"></i> Refresh
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div id="proposalsContainer" class="proposals-grid">
+                            <div class="loading-placeholder">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <p>Loading proposals...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NFTs Tab -->
+                    <div class="tab-content" id="nfts-tab">
+                        <div style="margin-bottom: 1.5rem;">
+                            <h3>Governance NFTs</h3>
+                            <p>Acquire NFTs to participate in governance</p>
+                        </div>
+                        
+                        <div class="nft-grid" id="nftMarketplace">
+                            <div class="loading-placeholder">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <p>Loading NFTs...</p>
+                            </div>
+                        </div>
+
+                        <div class="data-table">
+                            <div class="table-header">
+                                <h3 class="table-title">Your Governance NFTs</h3>
+                                <p>NFTs that grant you governance rights</p>
+                            </div>
+                            <div class="table-content" id="userNFTsTable">
+                                <div class="table-row" style="text-align: center; padding: 2rem; opacity: 0.5;">
+                                    <div>No governance NFTs owned</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- My Activity Tab -->
+                    <div class="tab-content" id="my-votes-tab">
+                        <div style="margin-bottom: 1.5rem;">
+                            <h3>Your Governance Activity</h3>
+                            <p>Your voting history and participation</p>
+                        </div>
+                        
+                        <div id="userActivityContent">
+                            <div class="loading-placeholder">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <p>Loading your activity...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Star Keys Section -->
             <section id="star-keys" class="content-section">
                 <div class="section-header">
@@ -1767,7 +1620,7 @@
                     <i class="fas fa-hammer"></i> Forge New Star Key
                 </button>
             </section>
-            
+
             <!-- Draws Section -->
             <section id="draws" class="content-section">
                 <div class="section-header">
@@ -1804,7 +1657,7 @@
                     {% endfor %}
                 </div>
             </section>
-            
+
             <!-- Wallet Section -->
             <section id="wallet" class="content-section">
                 <div class="section-header">
@@ -1842,678 +1695,7 @@
                     </div>
                 </div>
             </section>
-            
-            <!-- Enhanced Governance Section -->
-<section id="governance" class="content-section">
-    <div class="section-header">
-        <h1 class="section-title">Cosmic Governance</h1>
-        <p class="section-subtitle">Shape the future of Astral Draw through decentralized decision-making</p>
-    </div>
-    
-    <!-- Governance Overview Cards -->
-    <div class="dashboard-grid">
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-vote-yea"></i></div>
-            <div class="stat-value" id="activeProposalsCount">5</div>
-            <div class="stat-label">Active Proposals</div>
-        </div>
-        
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-users"></i></div>
-            <div class="stat-value" id="totalVoters">342</div>
-            <div class="stat-label">Active Voters</div>
-        </div>
-        
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-            <div class="stat-value" id="passedProposals">18</div>
-            <div class="stat-label">Proposals Passed</div>
-        </div>
-        
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-crown"></i></div>
-            <div class="stat-value" id="governancePower">
-                {% if user_governance_role == 'board' %}10x
-                {% elif user_governance_role == 'subordinate' %}2x
-                {% else %}1x{% endif %}
-            </div>
-            <div class="stat-label">Your Voting Power</div>
-        </div>
-    </div>
 
-    <!-- Governance Tabs -->
-    <div class="governance-tabs">
-        <div class="tab-nav">
-            <button class="tab-btn active" data-tab="proposals">Active Proposals</button>
-            <button class="tab-btn" data-tab="structure">Governance Structure</button>
-            <button class="tab-btn" data-tab="my-votes">My Voting History</button>
-            <button class="tab-btn" data-tab="discussions">Forum Discussions</button>
-        </div>
-        
-        <!-- Proposals Tab -->
-        <div class="tab-content active" id="proposals-tab">
-            <div class="tab-header">
-                <h3>Active Governance Proposals</h3>
-                <div class="tab-actions">
-                    {% if user_governance_role == 'board' or user_governance_role == 'subordinate' %}
-                    <button class="action-btn btn-primary" onclick="openCreateProposalModal()">
-                        <i class="fas fa-plus"></i> Create Proposal
-                    </button>
-                    {% endif %}
-                    <button class="action-btn btn-secondary" onclick="refreshProposals()">
-                        <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
-                </div>
-            </div>
-            
-            <div class="proposals-grid">
-                <!-- Proposal 1 -->
-                <div class="proposal-card urgent">
-                    <div class="proposal-badge">URGENT</div>
-                    <div class="proposal-header">
-                        <div class="proposal-meta">
-                            <span class="proposal-category">Treasury Management</span>
-                            <span class="proposal-id">#GOV-2024-001</span>
-                        </div>
-                        <div class="proposal-time">
-                            <i class="fas fa-clock"></i>
-                            Ends in 2 days
-                        </div>
-                    </div>
-                    <h3 class="proposal-title">Increase Community Treasury Allocation to 40%</h3>
-                    <p class="proposal-description">
-                        Proposal to adjust the prize distribution formula, increasing the community project treasury allocation from 30% to 40% to fund more ecosystem development projects and long-term sustainability initiatives.
-                    </p>
-                    
-                    <div class="proposal-stats">
-                        <div class="stat">
-                            <span class="stat-value">68%</span>
-                            <span class="stat-label">Approval</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-value">892</span>
-                            <span class="stat-label">Votes</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-value">15</span>
-                            <span class="stat-label">Comments</span>
-                        </div>
-                    </div>
-                    
-                    <div class="vote-progress">
-                        <div class="progress-bar">
-                            <div class="progress-fill yes" style="width: 68%"></div>
-                            <div class="progress-fill no" style="width: 32%"></div>
-                        </div>
-                        <div class="progress-labels">
-                            <span>68% Yes (892 votes)</span>
-                            <span>32% No (421 votes)</span>
-                        </div>
-                    </div>
-                    
-                    <div class="proposal-actions">
-                        {% if user_governance_role == 'board' or user_governance_role == 'subordinate' %}
-                        <button class="vote-btn yes" onclick="openVoteModal(1, 'Increase Community Treasury Allocation to 40%', '0.0.7174439')">
-                            <i class="fas fa-thumbs-up"></i>
-                            Vote Yes
-                        </button>
-                        <button class="vote-btn no" onclick="openVoteModal(1, 'Increase Community Treasury Allocation to 40%', '0.0.7174439')">
-                            <i class="fas fa-thumbs-down"></i>
-                            Vote No
-                        </button>
-                        {% else %}
-                        <span class="vote-info">Governance NFT required to vote</span>
-                        {% endif %}
-                        <button class="action-btn btn-outline" onclick="viewProposalDetails(1)">
-                            <i class="fas fa-info-circle"></i>
-                            Details
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Proposal 2 -->
-                <div class="proposal-card">
-                    <div class="proposal-badge">NEW</div>
-                    <div class="proposal-header">
-                        <div class="proposal-meta">
-                            <span class="proposal-category">Platform Development</span>
-                            <span class="proposal-id">#GOV-2024-002</span>
-                        </div>
-                        <div class="proposal-time">
-                            <i class="fas fa-clock"></i>
-                            Ends in 7 days
-                        </div>
-                    </div>
-                    <h3 class="proposal-title">Mobile App Development Initiative</h3>
-                    <p class="proposal-description">
-                        Allocate 50,000 ASTRA from the development fund to create a mobile application for Astral Draw, improving accessibility and user experience across all devices.
-                    </p>
-                    
-                    <div class="proposal-stats">
-                        <div class="stat">
-                            <span class="stat-value">42%</span>
-                            <span class="stat-label">Approval</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-value">567</span>
-                            <span class="stat-label">Votes</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-value">23</span>
-                            <span class="stat-label">Comments</span>
-                        </div>
-                    </div>
-                    
-                    <div class="vote-progress">
-                        <div class="progress-bar">
-                            <div class="progress-fill yes" style="width: 42%"></div>
-                            <div class="progress-fill no" style="width: 58%"></div>
-                        </div>
-                        <div class="progress-labels">
-                            <span>42% Yes (567 votes)</span>
-                            <span>58% No (785 votes)</span>
-                        </div>
-                    </div>
-                    
-                    <div class="proposal-actions">
-                        {% if user_governance_role == 'board' or user_governance_role == 'subordinate' %}
-                        <button class="vote-btn yes" onclick="openVoteModal(2, 'Mobile App Development Initiative', '0.0.7174429')">
-                            <i class="fas fa-thumbs-up"></i>
-                            Vote Yes
-                        </button>
-                        <button class="vote-btn no" onclick="openVoteModal(2, 'Mobile App Development Initiative', '0.0.7174429')">
-                            <i class="fas fa-thumbs-down"></i>
-                            Vote No
-                        </button>
-                        {% else %}
-                        <span class="vote-info">Governance NFT required to vote</span>
-                        {% endif %}
-                        <button class="action-btn btn-outline" onclick="viewProposalDetails(2)">
-                            <i class="fas fa-info-circle"></i>
-                            Details
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Governance Structure Tab -->
-        <div class="tab-content" id="structure-tab">
-            <div class="governance-structure">
-                <div class="structure-grid">
-                    <div class="structure-card celestial">
-                        <div class="structure-header">
-                            <div class="structure-icon">
-                                <i class="fas fa-crown"></i>
-                            </div>
-                            <div class="structure-info">
-                                <h3>Celestial Board</h3>
-                                <div class="structure-badge">10 Members Max</div>
-                            </div>
-                        </div>
-                        <div class="structure-details">
-                            <div class="detail-item">
-                                <strong>Voting Power:</strong> 10x
-                            </div>
-                            <div class="detail-item">
-                                <strong>NFT Price:</strong> 10,000 ASTRA
-                            </div>
-                            <div class="detail-item">
-                                <strong>Available:</strong> 3/10 Slots
-                            </div>
-                        </div>
-                        <p class="structure-description">
-                            Strategic leadership with ultimate decision-making power. Board members set long-term vision and curate proposals.
-                        </p>
-                        <div class="structure-permissions">
-                            <h4>Privileges:</h4>
-                            <ul>
-                                <li><i class="fas fa-check"></i> Strategic vision setting</li>
-                                <li><i class="fas fa-check"></i> Proposal curation</li>
-                                <li><i class="fas fa-check"></i> Treasury oversight</li>
-                                <li><i class="fas fa-check"></i> Emergency powers</li>
-                            </ul>
-                        </div>
-                        <button class="action-btn btn-primary" onclick="showSection('marketplace')">
-                            <i class="fas fa-shopping-cart"></i> Acquire Board NFT
-                        </button>
-                    </div>
-
-                    <div class="structure-card stellar">
-                        <div class="structure-header">
-                            <div class="structure-icon">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <div class="structure-info">
-                                <h3>Stellar Assembly</h3>
-                                <div class="structure-badge">1,000 Members Max</div>
-                            </div>
-                        </div>
-                        <div class="structure-details">
-                            <div class="detail-item">
-                                <strong>Voting Power:</strong> 2x
-                            </div>
-                            <div class="detail-item">
-                                <strong>NFT Price:</strong> 1,000 ASTRA
-                            </div>
-                            <div class="detail-item">
-                                <strong>Available:</strong> 247/1,000 Slots
-                            </div>
-                        </div>
-                        <p class="structure-description">
-                            Primary voting body representing community interests. Assembly members vote on proposals and draft initiatives.
-                        </p>
-                        <div class="structure-permissions">
-                            <h4>Privileges:</h4>
-                            <ul>
-                                <li><i class="fas fa-check"></i> Vote on all proposals</li>
-                                <li><i class="fas fa-check"></i> Draft proposals</li>
-                                <li><i class="fas fa-check"></i> Direct communication</li>
-                                <li><i class="fas fa-check"></i> Community representation</li>
-                            </ul>
-                        </div>
-                        <button class="action-btn btn-primary" onclick="showSection('marketplace')">
-                            <i class="fas fa-shopping-cart"></i> Acquire Assembly NFT
-                        </button>
-                    </div>
-
-                    <div class="structure-card cosmic">
-                        <div class="structure-header">
-                            <div class="structure-icon">
-                                <i class="fas fa-globe"></i>
-                            </div>
-                            <div class="structure-info">
-                                <h3>Cosmic Community</h3>
-                                <div class="structure-badge">Unlimited</div>
-                            </div>
-                        </div>
-                        <div class="structure-details">
-                            <div class="detail-item">
-                                <strong>Voting Power:</strong> 1x
-                            </div>
-                            <div class="detail-item">
-                                <strong>NFT Price:</strong> 100 ASTRA
-                            </div>
-                            <div class="detail-item">
-                                <strong>Available:</strong> Unlimited
-                            </div>
-                        </div>
-                        <p class="structure-description">
-                            Foundation of Astral Draw. All players can participate in discussions and benefit from ecosystem growth.
-                        </p>
-                        <div class="structure-permissions">
-                            <h4>Privileges:</h4>
-                            <ul>
-                                <li><i class="fas fa-check"></i> Idea submission</li>
-                                <li><i class="fas fa-check"></i> Forum participation</li>
-                                <li><i class="fas fa-check"></i> Sentiment signaling</li>
-                                <li><i class="fas fa-check"></i> Project dividends</li>
-                            </ul>
-                        </div>
-                        <button class="action-btn btn-primary" onclick="showSection('marketplace')">
-                            <i class="fas fa-shopping-cart"></i> Acquire Community NFT
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- My Votes Tab -->
-        <div class="tab-content" id="my-votes-tab">
-            <div class="votes-history">
-                <h3>Your Voting History</h3>
-                {% if user_governance_role == 'board' or user_governance_role == 'subordinate' %}
-                <div class="data-table">
-                    <div class="table-content">
-                        <div class="table-row header">
-                            <div>Proposal</div>
-                            <div>Your Vote</div>
-                            <div>Voting Power</div>
-                            <div>Date</div>
-                            <div>Result</div>
-                            <div>Tx Hash</div>
-                        </div>
-                        <!-- Example vote history -->
-                        <div class="table-row">
-                            <div>
-                                <strong>Weekly Supernova Draws</strong>
-                                <div style="font-size: 0.8rem; opacity: 0.7;">#GOV-2023-045</div>
-                            </div>
-                            <div>
-                                <span class="vote-badge yes">Yes</span>
-                            </div>
-                            <div>
-                                {% if user_governance_role == 'board' %}
-                                <span style="color: var(--alien-green);">10x</span>
-                                {% else %}
-                                <span style="color: var(--alien-green);">2x</span>
-                                {% endif %}
-                            </div>
-                            <div>2024-01-15</div>
-                            <div>
-                                <span class="status-badge status-completed">Passed</span>
-                            </div>
-                            <div>
-                                <code style="font-size: 0.7rem;">0.0.123456...</code>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% else %}
-                <div class="no-votes-message">
-                    <i class="fas fa-vote-yea" style="font-size: 3rem; opacity: 0.3; margin-bottom: 1rem;"></i>
-                    <h4>No Voting History</h4>
-                    <p>You need a governance NFT to participate in voting.</p>
-                    <button class="action-btn btn-primary" onclick="showSection('marketplace')">
-                        <i class="fas fa-shopping-cart"></i> Get Governance NFT
-                    </button>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-
-        <!-- Discussions Tab -->
-        <div class="tab-content" id="discussions-tab">
-            <div class="forum-discussions">
-                <h3>Governance Forum</h3>
-                <div class="forum-topics">
-                    <div class="forum-topic">
-                        <div class="topic-header">
-                            <div class="topic-icon">
-                                <i class="fas fa-project-diagram"></i>
-                            </div>
-                            <div class="topic-info">
-                                <h4>The Launchpad</h4>
-                                <p>Project proposals and investment discussions</p>
-                                <div class="topic-stats">
-                                    <span><i class="fas fa-comments"></i> 342 posts</span>
-                                    <span><i class="fas fa-eye"></i> 2.1k views</span>
-                                </div>
-                            </div>
-                            <div class="topic-latest">
-                                <strong>Latest: Mobile App Development</strong>
-                                <div>2 hours ago</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="forum-topic">
-                        <div class="topic-header">
-                            <div class="topic-icon">
-                                <i class="fas fa-dice"></i>
-                            </div>
-                            <div class="topic-info">
-                                <h4>The Cosmic Clock</h4>
-                                <p>Lottery frequency and parameter discussions</p>
-                                <div class="topic-stats">
-                                    <span><i class="fas fa-comments"></i> 189 posts</span>
-                                    <span><i class="fas fa-eye"></i> 1.5k views</span>
-                                </div>
-                            </div>
-                            <div class="topic-latest">
-                                <strong>Latest: Daily Draws Proposal</strong>
-                                <div>5 hours ago</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Community Suggestions -->
-                <div class="community-suggestions">
-                    <h4>Community Ideas</h4>
-                    <div class="suggestion-list">
-                        <div class="suggestion-item">
-                            <div class="suggestion-content">
-                                <h5>Cross-Chain Integration</h5>
-                                <p>Explore integration with other blockchain networks to expand ecosystem reach.</p>
-                                <div class="suggestion-meta">
-                                    <span><i class="fas fa-users"></i> 89 supporters</span>
-                                    <span><i class="fas fa-clock"></i> 3 days ago</span>
-                                </div>
-                            </div>
-                            <button class="action-btn btn-governance" onclick="supportIdea('cross-chain')">
-                                <i class="fas fa-thumbs-up"></i> Support
-                            </button>
-                        </div>
-                    </div>
-                    
-                    {% if user_governance_role == 'community' %}
-                    <div class="suggestion-form">
-                        <button class="action-btn btn-primary" onclick="openModal('suggestionModal')">
-                            <i class="fas fa-lightbulb"></i> Share Your Idea
-                        </button>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-
-
-
-            <!-- NFT Marketplace Section -->
-            <section id="marketplace" class="content-section">
-                <div class="section-header">
-                    <h1 class="section-title">Cosmic Governance Marketplace</h1>
-                    <p class="section-subtitle">Acquire governance NFTs to participate in Astral Draw decision-making</p>
-                </div>
-                
-                <div class="hologram">
-                    <h3 style="margin-bottom: 1rem; color: var(--hologram-teal);">
-                        <i class="fas fa-info-circle"></i> Marketplace Information
-                    </h3>
-                    <p>Governance NFTs grant you voting rights and decision-making power in the Astral Draw ecosystem. Each NFT represents a specific governance tier with unique privileges.</p>
-                    <p><strong>Your Current Balance:</strong> <span style="color: var(--alien-green);">{{ astra_bal }} ASTRA</span></p>
-                </div>
-                
-                <div class="marketplace-grid">
-                    <!-- Board NFT -->
-                    <div class="nft-card">
-                        <div class="nft-image">
-                            <i class="fas fa-crown"></i>
-                            <span class="nft-badge board-badge-nft">Board</span>
-                        </div>
-                        <div class="nft-info">
-                            <h3 class="nft-title">
-                                <i class="fas fa-crown"></i>
-                                Celestial Board NFT
-                            </h3>
-                            <p class="nft-description">
-                                Ultimate governance power. Join the 10-member Celestial Board to shape the future of Astral Draw with strategic decision-making abilities.
-                            </p>
-                            <div class="nft-details">
-                                <div>
-                                    <div style="font-size: 0.8rem; opacity: 0.7;">Tier</div>
-                                    <div style="font-weight: 600;">Board Member</div>
-                                </div>
-                                <div>
-                                    <div style="font-size: 0.8rem; opacity: 0.7;">Voting Power</div>
-                                    <div style="font-weight: 600;">10x</div>
-                                </div>
-                            </div>
-                            <div class="nft-price">10,000 ASTRA</div>
-                            <div class="nft-availability">
-                                <i class="fas fa-users"></i> 
-                                3 of 10 available
-                            </div>
-                            <div class="nft-actions">
-                                <button class="action-btn btn-marketplace" onclick="viewNFTDetails('board-nft')">
-                                    <i class="fas fa-info-circle"></i> Details
-                                </button>
-                                <button class="action-btn btn-success" onclick="purchaseNFT('board-nft', 10000)">
-                                    <i class="fas fa-shopping-cart"></i> Purchase
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Subordinate NFT -->
-                    <div class="nft-card">
-                        <div class="nft-image">
-                            <i class="fas fa-users"></i>
-                            <span class="nft-badge subordinate-badge-nft">Assembly</span>
-                        </div>
-                        <div class="nft-info">
-                            <h3 class="nft-title">
-                                <i class="fas fa-users"></i>
-                                Stellar Assembly NFT
-                            </h3>
-                            <p class="nft-description">
-                                Join the 1000-member Stellar Assembly. Vote on proposals, draft initiatives, and directly influence the Astral Draw ecosystem.
-                            </p>
-                            <div class="nft-details">
-                                <div>
-                                    <div style="font-size: 0.8rem; opacity: 0.7;">Tier</div>
-                                    <div style="font-weight: 600;">Assembly Member</div>
-                                </div>
-                                <div>
-                                    <div style="font-size: 0.8rem; opacity: 0.7;">Voting Power</div>
-                                    <div style="font-weight: 600;">2x</div>
-                                </div>
-                            </div>
-                            <div class="nft-price">1,000 ASTRA</div>
-                            <div class="nft-availability">
-                                <i class="fas fa-users"></i> 
-                                247 of 1000 available
-                            </div>
-                            <div class="nft-actions">
-                                <button class="action-btn btn-marketplace" onclick="viewNFTDetails('subordinate-nft')">
-                                    <i class="fas fa-info-circle"></i> Details
-                                </button>
-                                <button class="action-btn btn-success" onclick="purchaseNFT('subordinate-nft', 1000)">
-                                    <i class="fas fa-shopping-cart"></i> Purchase
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Special Edition Board NFT #5 -->
-                    <div class="nft-card">
-                        <div class="nft-image" style="background: linear-gradient(135deg, var(--governance-gold), var(--plasma-orange));">
-                            <i class="fas fa-star"></i>
-                            <span class="nft-badge board-badge-nft">Board #5</span>
-                        </div>
-                        <div class="nft-info">
-                            <h3 class="nft-title">
-                                <i class="fas fa-star"></i>
-                                Board NFT #5 - "The Innovator"
-                            </h3>
-                            <p class="nft-description">
-                                Special edition Board NFT with enhanced proposal creation rights. This position focuses on technological innovation and platform development.
-                            </p>
-                            <div class="nft-details">
-                                <div>
-                                    <div style="font-size: 0.8rem; opacity: 0.7;">Rank</div>
-                                    <div style="font-weight: 600;">#5</div>
-                                </div>
-                                <div>
-                                    <div style="font-size: 0.8rem; opacity: 0.7;">Specialty</div>
-                                    <div style="font-weight: 600;">Innovation</div>
-                                </div>
-                            </div>
-                            <div class="nft-price">12,500 ASTRA</div>
-                            <div class="nft-availability">
-                                <i class="fas fa-users"></i> 
-                                1 of 1 available
-                            </div>
-                            <div class="nft-actions">
-                                <button class="action-btn btn-marketplace" onclick="viewNFTDetails('board-5-nft')">
-                                    <i class="fas fa-info-circle"></i> Details
-                                </button>
-                                <button class="action-btn btn-success" onclick="purchaseNFT('board-5-nft', 12500)">
-                                    <i class="fas fa-shopping-cart"></i> Purchase
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Special Edition Board NFT #8 -->
-                    <div class="nft-card">
-                        <div class="nft-image" style="background: linear-gradient(135deg, var(--quantum-blue), var(--nebula-purple));">
-                            <i class="fas fa-chart-line"></i>
-                            <span class="nft-badge board-badge-nft">Board #8</span>
-                        </div>
-                        <div class="nft-info">
-                            <h3 class="nft-title">
-                                <i class="fas fa-chart-line"></i>
-                                Board NFT #8 - "The Economist"
-                            </h3>
-                            <p class="nft-description">
-                                Special edition Board NFT with treasury management expertise. This position oversees economic strategy and prize distribution formulas.
-                            </p>
-                            <div class="nft-details">
-                                <div>
-                                    <div style="font-size: 0.8rem; opacity: 0.7;">Rank</div>
-                                    <div style="font-weight: 600;">#8</div>
-                                </div>
-                                <div>
-                                    <div style="font-size: 0.8rem; opacity: 0.7;">Specialty</div>
-                                    <div style="font-weight: 600;">Economics</div>
-                                </div>
-                            </div>
-                            <div class="nft-price">11,000 ASTRA</div>
-                            <div class="nft-availability">
-                                <i class="fas fa-users"></i> 
-                                1 of 1 available
-                            </div>
-                            <div class="nft-actions">
-                                <button class="action-btn btn-marketplace" onclick="viewNFTDetails('board-8-nft')">
-                                    <i class="fas fa-info-circle"></i> Details
-                                </button>
-                                <button class="action-btn btn-success" onclick="purchaseNFT('board-8-nft', 11000)">
-                                    <i class="fas fa-shopping-cart"></i> Purchase
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="data-table">
-                    <div class="table-header">
-                        <h3 class="table-title">Your Governance NFTs</h3>
-                        <p>NFTs that grant you governance rights in the Astral Draw ecosystem</p>
-                    </div>
-                    <div class="table-content">
-                        <div class="table-row header">
-                            <div>NFT Type</div>
-                            <div>Rank/ID</div>
-                            <div>Acquired</div>
-                            <div>Voting Power</div>
-                            <div>Status</div>
-                            <div>Actions</div>
-                        </div>
-                        <!-- Example owned NFT -->
-                        <div class="table-row">
-                            <div>
-                                <strong>Stellar Assembly NFT</strong>
-                            </div>
-                            <div>
-                                <span style="font-family: monospace;">#427</span>
-                            </div>
-                            <div>
-                                2023-11-15
-                            </div>
-                            <div>
-                                <span style="color: var(--alien-green);">2x</span>
-                            </div>
-                            <div>
-                                <span class="status-badge status-active">Active</span>
-                            </div>
-                            <div>
-                                <button class="action-btn btn-primary" onclick="viewNFTDetails('owned-427')">
-                                    <i class="fas fa-eye"></i> View
-                                </button>
-                                <button class="action-btn btn-warning" onclick="listForSale('owned-427')">
-                                    <i class="fas fa-tag"></i> Sell
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
             <!-- Admin Draws Section -->
             <section id="admin-draws" class="content-section">
                 <div class="section-header">
@@ -2677,764 +1859,133 @@
             </section>
         </main>
     </div>
-    
+
     <!-- Governance Modals -->
     <!-- Create Proposal Modal -->
-<div id="createProposalModal" class="modal">
-    <div class="modal-content">
-        <button class="modal-close" onclick="closeModal('createProposalModal')">&times;</button>
-        <h2 class="modal-title">
-            <i class="fas fa-edit"></i> Create Governance Proposal
-        </h2>
-
-        <div class="user-governance-status">
-            <div class="governance-badge" id="userGovernanceTier">
-                <i class="fas fa-crown"></i>
-                Celestial Board Member
-            </div>
-            <div class="voting-power">
-                Voting Power: <strong>10x</strong>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="form-label">Select Discussion Topic</label>
-            <div class="topic-selection">
-                <div class="topic-option active" data-topic="project" data-topic-id="0.0.7174429">
-                    <div class="topic-icon">
-                        <i class="fas fa-project-diagram"></i>
-                    </div>
-                    <div class="topic-info">
-                        <h4>The Launchpad</h4>
-                        <p>Project proposals and investments</p>
-                        <div class="hedera-topic">
-                            Topic: <code>0.0.7174429</code>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="topic-option" data-topic="lottery" data-topic-id="0.0.7174434">
-                    <div class="topic-icon">
-                        <i class="fas fa-dice"></i>
-                    </div>
-                    <div class="topic-info">
-                        <h4>The Cosmic Clock</h4>
-                        <p>Lottery frequency and parameters</p>
-                        <div class="hedera-topic">
-                            Topic: <code>0.0.7174434</code>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="topic-option" data-topic="prize" data-topic-id="0.0.7174439">
-                    <div class="topic-icon">
-                        <i class="fas fa-trophy"></i>
-                    </div>
-                    <div class="topic-info">
-                        <h4>The Nebula Split</h4>
-                        <p>Prize distribution formulas</p>
-                        <div class="hedera-topic">
-                            Topic: <code>0.0.7174439</code>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="topic-option" data-topic="general" data-topic-id="0.0.7174440">
-                    <div class="topic-icon">
-                        <i class="fas fa-comments"></i>
-                    </div>
-                    <div class="topic-info">
-                        <h4>The Galactic Forum</h4>
-                        <p>General platform discussions</p>
-                        <div class="hedera-topic">
-                            Topic: <code>0.0.7174440</code>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="form-label">Proposal Title</label>
-            <input type="text" class="form-input" id="proposalTitle" placeholder="Enter a clear and concise title...">
-        </div>
-
-        <div class="form-group">
-            <label class="form-label">Detailed Description</label>
-            <textarea class="form-input" id="proposalDescription" rows="6" placeholder="Describe your proposal in detail. Include the problem, solution, and expected impact..."></textarea>
-        </div>
-
-        <div class="form-group">
-            <label class="form-label">Expected Impact</label>
-            <textarea class="form-input" id="proposalImpact" rows="3" placeholder="How will this proposal benefit the Astral Draw ecosystem?"></textarea>
-        </div>
-
-        <div class="hedera-submission-info">
-            <h4><i class="fas fa-broadcast-tower"></i> Blockchain Recording</h4>
-            <p>This proposal will be permanently recorded on Hedera Consensus Service for complete transparency.</p>
-            <div class="submission-details">
-                <div class="detail">
-                    <strong>Topic ID:</strong>
-                    <code id="selectedTopicId">0.0.7174429</code>
-                </div>
-                <div class="detail">
-                    <strong>Your NFT:</strong>
-                    <span id="userNFTId">0.0.7174407#15</span>
-                </div>
-                <div class="detail">
-                    <strong>Voting Power:</strong>
-                    <span id="userVotingPower">10x</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-actions">
-            <button class="modal-btn btn-secondary" onclick="closeModal('createProposalModal')">
-                <i class="fas fa-times"></i> Cancel
-            </button>
-            <button class="modal-btn btn-primary" onclick="submitProposalToHedera()">
-                <i class="fas fa-paper-plane"></i> Submit to Blockchain
-            </button>
-        </div>
-    </div>
-</div>
-    
-    <div id="suggestionModal" class="modal">
+    <div id="createProposalModal" class="modal">
         <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('createProposalModal')">&times;</button>
             <div class="modal-header">
-                <h2 class="modal-title">Share Your Idea</h2>
-                <button class="modal-close" onclick="closeModal('suggestionModal')">&times;</button>
+                <h2 class="modal-title">
+                    <i class="fas fa-edit"></i> Create Governance Proposal
+                </h2>
             </div>
             <div class="modal-body">
+                <div id="proposalAlert" style="display: none;"></div>
+
                 <div class="form-group">
-                    <label class="form-label">Idea Title</label>
-                    <input type="text" class="form-input" placeholder="What's your idea?">
+                    <label class="form-label">Proposal Title</label>
+                    <input type="text" class="form-input" id="proposalTitle" placeholder="Enter a clear and concise title..." maxlength="200">
                 </div>
+
                 <div class="form-group">
-                    <label class="form-label">Category</label>
-                    <select class="form-input">
-                        <option value="feature">New Feature</option>
-                        <option value="improvement">Improvement</option>
-                        <option value="project">Project Idea</option>
-                        <option value="other">Other</option>
+                    <label class="form-label">Description</label>
+                    <textarea class="form-input" id="proposalDescription" rows="6" placeholder="Describe your proposal in detail..." maxlength="2000"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Topic</label>
+                    <select class="form-input" id="proposalTopic">
+                        <option value="">Select a topic...</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Detailed Description</label>
-                    <textarea class="form-input" rows="5" placeholder="Describe your idea in detail..."></textarea>
-                </div>
+
                 <div class="form-actions">
-                    <button class="action-btn btn-danger" onclick="closeModal('suggestionModal')">Cancel</button>
-                    <button class="action-btn btn-success">Submit Idea</button>
+                    <button class="action-btn btn-danger" onclick="closeModal('createProposalModal')">Cancel</button>
+                    <button class="action-btn btn-success" onclick="submitProposal()">Create Proposal</button>
                 </div>
             </div>
         </div>
     </div>
-    
+
+    <!-- Vote Modal -->
+    <div id="voteModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('voteModal')">&times;</button>
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i class="fas fa-vote-yea"></i> Cast Your Vote
+                </h2>
+            </div>
+            <div class="modal-body">
+                <div id="voteAlert" style="display: none;"></div>
+
+                <div class="proposal-header">
+                    <h3 id="voteProposalTitle">Proposal Title</h3>
+                    <p id="voteProposalDescription" style="opacity: 0.8; margin-bottom: 1rem;"></p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Your Vote</label>
+                    <div class="proposal-actions">
+                        <button class="vote-btn yes" onclick="selectVote('yes')">
+                            <i class="fas fa-thumbs-up"></i> Vote Yes
+                        </button>
+                        <button class="vote-btn no" onclick="selectVote('no')">
+                            <i class="fas fa-thumbs-down"></i> Vote No
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button class="action-btn btn-danger" onclick="closeModal('voteModal')">Cancel</button>
+                    <button class="action-btn btn-success" id="confirmVoteBtn" onclick="submitVote()" disabled>Confirm Vote</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Purchase NFT Modal -->
-<div id="purchaseNFTModal" class="modal">
-    <div class="modal-content">
-        <button class="modal-close" onclick="closeModal('purchaseNFTModal')">&times;</button>
-        <h2 class="modal-title">
-            <i class="fas fa-crown"></i> Acquire Governance NFT
-        </h2>
-        
-        <div class="modal-alert" id="nftPurchaseAlert" style="display: none;">
-            <i class="fas fa-exclamation-triangle"></i>
-            <span id="alertMessage"></span>
-        </div>
+    <div id="purchaseNFTModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('purchaseNFTModal')">&times;</button>
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i class="fas fa-shopping-cart"></i> Purchase Governance NFT
+                </h2>
+            </div>
+            <div class="modal-body">
+                <div id="purchaseAlert" style="display: none;"></div>
 
-        <div class="nft-selection-grid">
-            <!-- Celestial Board NFT -->
-            <div class="nft-option active" data-tier="board" data-price="10000">
-                <div class="nft-header">
-                    <div class="nft-icon" style="background: linear-gradient(135deg, var(--board-purple), var(--neon-magenta));">
-                        <i class="fas fa-crown"></i>
-                    </div>
-                    <div class="nft-badge board-badge">Board</div>
-                </div>
-                <h3 class="nft-name">Celestial Board NFT</h3>
-                <div class="nft-price">10,000 ASTRA</div>
-                <div class="nft-details">
-                    <div class="detail-item">
-                        <i class="fas fa-users"></i>
-                        <span>10 Members Maximum</span>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-vote-yea"></i>
-                        <span>10x Voting Power</span>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-bolt"></i>
-                        <span>Strategic Decision Making</span>
+                <div class="nft-purchase-details" style="text-align: center; margin-bottom: 2rem;">
+                    <div class="nft-icon" id="purchaseNFTIcon"></div>
+                    <h3 id="purchaseNFTName">NFT Name</h3>
+                    <div class="nft-price" id="purchaseNFTPrice">0 ASTRA</div>
+                    <div class="nft-details">
+                        <div class="nft-detail">
+                            <span>Tier:</span>
+                            <strong id="purchaseNFTTier">-</strong>
+                        </div>
+                        <div class="nft-detail">
+                            <span>Voting Power:</span>
+                            <strong id="purchaseNFTPower">0x</strong>
+                        </div>
+                        <div class="nft-detail">
+                            <span>Available:</span>
+                            <strong id="purchaseNFTAvailable">-</strong>
+                        </div>
                     </div>
                 </div>
-                <div class="hedera-info">
-                    <div class="hedera-badge">
-                        <i class="fas fa-link"></i>
-                        Hedera Token: <code>0.0.7174407</code>
-                    </div>
-                </div>
-                <div class="availability">
-                    <i class="fas fa-circle" style="color: var(--alien-green);"></i>
-                    <span id="board-availability">3/10 Slots Available</span>
-                </div>
-            </div>
 
-            <!-- Stellar Assembly NFT -->
-            <div class="nft-option" data-tier="subordinate" data-price="1000">
-                <div class="nft-header">
-                    <div class="nft-icon" style="background: linear-gradient(135deg, var(--subordinate-blue), var(--quantum-blue));">
-                        <i class="fas fa-users"></i>
+                <div class="purchase-info" style="background: rgba(0, 255, 255, 0.05); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span>Your Balance:</span>
+                        <strong id="userBalanceDisplay">0 ASTRA</strong>
                     </div>
-                    <div class="nft-badge assembly-badge">Assembly</div>
-                </div>
-                <h3 class="nft-name">Stellar Assembly NFT</h3>
-                <div class="nft-price">1,000 ASTRA</div>
-                <div class="nft-details">
-                    <div class="detail-item">
-                        <i class="fas fa-users"></i>
-                        <span>1,000 Members Maximum</span>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-vote-yea"></i>
-                        <span>2x Voting Power</span>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-comments"></i>
-                        <span>Proposal Drafting Rights</span>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>Cost:</span>
+                        <strong id="purchaseCost">0 ASTRA</strong>
                     </div>
                 </div>
-                <div class="hedera-info">
-                    <div class="hedera-badge">
-                        <i class="fas fa-link"></i>
-                        Hedera Token: <code>0.0.7174419</code>
-                    </div>
-                </div>
-                <div class="availability">
-                    <i class="fas fa-circle" style="color: var(--alien-green);"></i>
-                    <span id="assembly-availability">247/1000 Slots Available</span>
-                </div>
-            </div>
-        </div>
 
-        <div class="purchase-details">
-            <div class="detail-row">
-                <span>Selected Tier:</span>
-                <strong id="selectedTierName">Celestial Board</strong>
+                <div class="form-actions">
+                    <button class="action-btn btn-danger" onclick="closeModal('purchaseNFTModal')">Cancel</button>
+                    <button class="action-btn btn-success" onclick="confirmPurchase()">Purchase NFT</button>
+                </div>
             </div>
-            <div class="detail-row">
-                <span>Your Balance:</span>
-                <strong style="color: var(--alien-green);" id="userBalance">1,500 ASTRA</strong>
-            </div>
-            <div class="detail-row">
-                <span>Cost:</span>
-                <strong id="purchaseCost">10,000 ASTRA</strong>
-            </div>
-            <div class="detail-row total">
-                <span>Remaining After Purchase:</span>
-                <strong id="remainingBalance" style="color: var(--warning-red);">-8,500 ASTRA</strong>
-            </div>
-        </div>
-
-        <div class="hedera-transaction-info">
-            <h4><i class="fas fa-shield-alt"></i> Blockchain Verification</h4>
-            <p>This NFT will be minted on Hedera Testnet and recorded on the immutable ledger.</p>
-            <div class="verification-links">
-                <a href="https://hashscan.io/testnet/token/0.0.7174407" target="_blank" class="verification-link">
-                    <i class="fas fa-external-link-alt"></i>
-                    Verify Board Token
-                </a>
-                <a href="https://hashscan.io/testnet/token/0.0.7174419" target="_blank" class="verification-link">
-                    <i class="fas fa-external-link-alt"></i>
-                    Verify Assembly Token
-                </a>
-            </div>
-        </div>
-
-        <div class="form-actions">
-            <button class="modal-btn btn-secondary" onclick="closeModal('purchaseNFTModal')">
-                <i class="fas fa-times"></i> Cancel
-            </button>
-            <button class="modal-btn btn-primary" id="confirmPurchaseBtn" onclick="confirmNFTPurchase()">
-                <i class="fas fa-shopping-cart"></i> Purchase & Mint NFT
-            </button>
         </div>
     </div>
-</div>
 
-    <!-- NFT Details Modal -->
-<div id="nftDetailsModal" class="modal">
-    <div class="modal-content">
-        <button class="modal-close" onclick="closeModal('nftDetailsModal')">&times;</button>
-        
-        <div class="nft-header">
-            <div class="nft-visual">
-                <div class="nft-avatar" id="nftAvatar">
-                    <i class="fas fa-crown"></i>
-                </div>
-                <div class="nft-badge" id="nftBadge">Board</div>
-            </div>
-            <div class="nft-info">
-                <h2 id="nftName">Celestial Board NFT</h2>
-                <div class="nft-id">ID: <code id="nftFullId">0.0.7174407#15</code></div>
-                <div class="nft-rank">Rank: <strong id="nftRank">#5 - The Innovator</strong></div>
-            </div>
-        </div>
-
-        <div class="nft-stats">
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-vote-yea"></i>
-                </div>
-                <div class="stat-info">
-                    <div class="stat-value" id="votingPower">10x</div>
-                    <div class="stat-label">Voting Power</div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-calendar"></i>
-                </div>
-                <div class="stat-info">
-                    <div class="stat-value" id="acquisitionDate">2024-01-15</div>
-                    <div class="stat-label">Acquired</div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <div class="stat-info">
-                    <div class="stat-value" id="votesCast">47</div>
-                    <div class="stat-label">Votes Cast</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="nft-details-section">
-            <h3><i class="fas fa-info-circle"></i> NFT Details</h3>
-            <div class="details-grid">
-                <div class="detail-item">
-                    <strong>Token ID:</strong>
-                    <code>0.0.7174407</code>
-                </div>
-                <div class="detail-item">
-                    <strong>Serial Number:</strong>
-                    <span id="serialNumber">15</span>
-                </div>
-                <div class="detail-item">
-                    <strong>Governance Tier:</strong>
-                    <span id="governanceTier">Celestial Board</span>
-                </div>
-                <div class="detail-item">
-                    <strong>Specialty:</strong>
-                    <span id="nftSpecialty">Technological Innovation</span>
-                </div>
-                <div class="detail-item">
-                    <strong>Status:</strong>
-                    <span class="status-active" id="nftStatus">Active</span>
-                </div>
-                <div class="detail-item">
-                    <strong>Last Vote:</strong>
-                    <span id="lastVoteDate">2024-01-18</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="hedera-verification">
-            <h3><i class="fas fa-shield-alt"></i> Blockchain Verification</h3>
-            <div class="verification-links">
-                <a href="https://hashscan.io/testnet/token/0.0.7174407" target="_blank" class="verification-link">
-                    <i class="fas fa-external-link-alt"></i>
-                    View Token on HashScan
-                </a>
-                <a href="https://hashscan.io/testnet/token/0.0.7174407?serial=15" target="_blank" class="verification-link">
-                    <i class="fas fa-search"></i>
-                    Verify This NFT
-                </a>
-                <a href="https://hashscan.io/testnet/topic/0.0.7174429" target="_blank" class="verification-link">
-                    <i class="fas fa-broadcast-tower"></i>
-                    View Governance Topics
-                </a>
-            </div>
-        </div>
-
-        <div class="nft-permissions">
-            <h3><i class="fas fa-tasks"></i> Governance Permissions</h3>
-            <ul class="permissions-list">
-                <li><i class="fas fa-check"></i> Strategic decision-making power</li>
-                <li><i class="fas fa-check"></i> Proposal curation and formalization</li>
-                <li><i class="fas fa-check"></i> Treasury management oversight</li>
-                <li><i class="fas fa-check"></i> Emergency protocol activation</li>
-                <li><i class="fas fa-check"></i> 10x voting power on all proposals</li>
-            </ul>
-        </div>
-
-        <div class="form-actions">
-            <button class="modal-btn btn-secondary" onclick="closeModal('nftDetailsModal')">
-                <i class="fas fa-times"></i> Close
-            </button>
-            <button class="modal-btn btn-warning" onclick="listNFTForSale()">
-                <i class="fas fa-tag"></i> List for Sale
-            </button>
-            <button class="modal-btn btn-primary" onclick="viewOnHashScan()">
-                <i class="fas fa-external-link-alt"></i> View on Explorer
-            </button>
-        </div>
-    </div>
-</div>
-
-    <!-- Cast Vote Modal -->
-<div id="castVoteModal" class="modal">
-    <div class="modal-content">
-        <button class="modal-close" onclick="closeModal('castVoteModal')">&times;</button>
-        <h2 class="modal-title">
-            <i class="fas fa-vote-yea"></i> Cast Your Vote
-        </h2>
-
-        <div class="proposal-header">
-            <h3 id="voteProposalTitle">DeFi Protocol Integration</h3>
-            <div class="proposal-topic">
-                <i class="fas fa-project-diagram"></i>
-                The Launchpad • Topic: <code>0.0.7174429</code>
-            </div>
-        </div>
-
-        <div class="voting-power-display">
-            <div class="power-card">
-                <div class="power-icon">
-                    <i class="fas fa-crown"></i>
-                </div>
-                <div class="power-info">
-                    <div class="power-label">Your Voting Power</div>
-                    <div class="power-value">10x</div>
-                    <div class="power-source">Celestial Board NFT</div>
-                </div>
-            </div>
-            <div class="power-card">
-                <div class="power-icon">
-                    <i class="fas fa-fingerprint"></i>
-                </div>
-                <div class="power-info">
-                    <div class="power-label">NFT ID</div>
-                    <div class="power-value" style="font-size: 0.8rem;">0.0.7174407#15</div>
-                    <div class="power-source">Hedera Verified</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="vote-options">
-            <div class="vote-option" data-vote="yes">
-                <div class="vote-icon">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <div class="vote-content">
-                    <h4>Vote YES</h4>
-                    <p>Approve this proposal and move forward with implementation</p>
-                    <div class="vote-impact">
-                        <strong>Impact:</strong> 10 votes counted towards approval
-                    </div>
-                </div>
-            </div>
-
-            <div class="vote-option" data-vote="no">
-                <div class="vote-icon">
-                    <i class="fas fa-times-circle"></i>
-                </div>
-                <div class="vote-content">
-                    <h4>Vote NO</h4>
-                    <p>Reject this proposal and maintain current operations</p>
-                    <div class="vote-impact">
-                        <strong>Impact:</strong> 10 votes counted towards rejection
-                    </div>
-                </div>
-            </div>
-
-            <div class="vote-option" data-vote="abstain">
-                <div class="vote-icon">
-                    <i class="fas fa-minus-circle"></i>
-                </div>
-                <div class="vote-content">
-                    <h4>Abstain</h4>
-                    <p>Decline to vote on this proposal</p>
-                    <div class="vote-impact">
-                        <strong>Impact:</strong> No votes counted
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="current-results">
-            <h4>Current Voting Results</h4>
-            <div class="results-grid">
-                <div class="result-item yes">
-                    <div class="result-label">Yes Votes</div>
-                    <div class="result-bar">
-                        <div class="result-fill" style="width: 65%;"></div>
-                    </div>
-                    <div class="result-value">65% (130 votes)</div>
-                </div>
-                <div class="result-item no">
-                    <div class="result-label">No Votes</div>
-                    <div class="result-bar">
-                        <div class="result-fill" style="width: 35%;"></div>
-                    </div>
-                    <div class="result-value">35% (70 votes)</div>
-                </div>
-            </div>
-            <div class="approval-status">
-                <i class="fas fa-info-circle"></i>
-                Needs 60% approval • Currently: <strong style="color: var(--alien-green);">65%</strong>
-            </div>
-        </div>
-
-        <div class="hedera-vote-info">
-            <h4><i class="fas fa-shield-alt"></i> Blockchain Verification</h4>
-            <p>Your vote will be permanently recorded on Hedera Consensus Service for complete transparency.</p>
-            <div class="verification-details">
-                <div class="detail">
-                    <strong>Topic:</strong> The Launchpad (<code>0.0.7174429</code>)
-                </div>
-                <div class="detail">
-                    <strong>Your NFT:</strong> <code>0.0.7174407#15</code>
-                </div>
-                <div class="detail">
-                    <strong>Voting Power:</strong> 10x
-                </div>
-            </div>
-        </div>
-
-        <div class="form-actions">
-            <button class="modal-btn btn-secondary" onclick="closeModal('castVoteModal')">
-                <i class="fas fa-times"></i> Cancel
-            </button>
-            <button class="modal-btn btn-primary" id="confirmVoteBtn" onclick="submitVoteToHedera()" disabled>
-                <i class="fas fa-vote-yea"></i> Cast Vote on Blockchain
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- Transaction Status Modal -->
-<div id="transactionModal" class="modal">
-    <div class="modal-content">
-        <button class="modal-close" onclick="closeModal('transactionModal')">&times;</button>
-        
-        <div class="transaction-header">
-            <div class="transaction-icon">
-                <i class="fas fa-cube" id="transactionMainIcon"></i>
-            </div>
-            <h2 id="transactionTitle">Processing Transaction</h2>
-        </div>
-
-        <div class="transaction-progress">
-            <div class="progress-steps">
-                <div class="step active" id="step1">
-                    <div class="step-icon">
-                        <i class="fas fa-paper-plane"></i>
-                    </div>
-                    <div class="step-label">Submitting</div>
-                </div>
-                <div class="step" id="step2">
-                    <div class="step-icon">
-                        <i class="fas fa-cube"></i>
-                    </div>
-                    <div class="step-label">Hedera Consensus</div>
-                </div>
-                <div class="step" id="step3">
-                    <div class="step-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="step-label">Confirmed</div>
-                </div>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-        </div>
-
-        <div class="transaction-details">
-            <div class="detail-card">
-                <h4><i class="fas fa-info-circle"></i> Transaction Details</h4>
-                <div class="details-grid">
-                    <div class="detail-item">
-                        <strong>Type:</strong>
-                        <span id="txType">NFT Purchase</span>
-                    </div>
-                    <div class="detail-item">
-                        <strong>Hedera Token:</strong>
-                        <code id="txTokenId">0.0.7174407</code>
-                    </div>
-                    <div class="detail-item">
-                        <strong>Topic:</strong>
-                        <code id="txTopicId">0.0.7174429</code>
-                    </div>
-                    <div class="detail-item">
-                        <strong>Timestamp:</strong>
-                        <span id="txTimestamp">Just now</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="hedera-status">
-            <h4><i class="fas fa-broadcast-tower"></i> Hedera Network Status</h4>
-            <div class="status-indicators">
-                <div class="status-item">
-                    <i class="fas fa-circle" style="color: var(--alien-green);"></i>
-                    <span>Testnet: Operational</span>
-                </div>
-                <div class="status-item">
-                    <i class="fas fa-bolt" style="color: var(--alien-green);"></i>
-                    <span>Consensus: Active</span>
-                </div>
-                <div class="status-item">
-                    <i class="fas fa-shield-alt" style="color: var(--alien-green);"></i>
-                    <span>Security: Verified</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="transaction-output" id="transactionOutput" style="display: none;">
-            <h4><i class="fas fa-file-alt"></i> Transaction Result</h4>
-            <div class="output-content" id="outputContent">
-                <!-- Dynamic content will be inserted here -->
-            </div>
-        </div>
-
-        <div class="verification-links" id="verificationLinks" style="display: none;">
-            <h4><i class="fas fa-external-link-alt"></i> Verify on Explorer</h4>
-            <div class="links-grid">
-                <a href="#" target="_blank" class="verification-link" id="txHashScanLink">
-                    <i class="fas fa-search"></i>
-                    View on HashScan
-                </a>
-                <a href="#" target="_blank" class="verification-link" id="txTokenLink">
-                    <i class="fas fa-coins"></i>
-                    Verify Token
-                </a>
-                <a href="#" target="_blank" class="verification-link" id="txTopicLink">
-                    <i class="fas fa-broadcast-tower"></i>
-                    Check Topic
-                </a>
-            </div>
-        </div>
-
-        <div class="form-actions">
-            <button class="modal-btn btn-secondary" onclick="closeModal('transactionModal')" id="cancelBtn" style="display: none;">
-                <i class="fas fa-times"></i> Cancel
-            </button>
-            <button class="modal-btn btn-primary" onclick="closeModal('transactionModal')" id="doneBtn" style="display: none;">
-                <i class="fas fa-check"></i> Done
-            </button>
-            <button class="modal-btn btn-warning" onclick="retryTransaction()" id="retryBtn" style="display: none;">
-                <i class="fas fa-redo"></i> Retry
-            </button>
-        </div>
-    </div>
-</div>
-   <style>
-/* Add these styles to your existing CSS */
-.no-votes-message {
-    text-align: center;
-    padding: 3rem;
-    background: rgba(10, 10, 31, 0.6);
-    border: 1px solid rgba(0, 255, 255, 0.2);
-    border-radius: 10px;
-}
-
-.community-suggestions {
-    margin-top: 2rem;
-}
-
-.suggestion-list {
-    display: grid;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
-
-.suggestion-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(10, 10, 31, 0.6);
-    border: 1px solid rgba(0, 255, 255, 0.2);
-    border-radius: 10px;
-    padding: 1.5rem;
-}
-
-.suggestion-content h5 {
-    margin: 0 0 0.5rem 0;
-    color: var(--star-white);
-}
-
-.suggestion-content p {
-    margin: 0 0 1rem 0;
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.suggestion-meta {
-    display: flex;
-    gap: 1rem;
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.6);
-}
-
-.suggestion-form {
-    text-align: center;
-    padding: 2rem;
-    background: rgba(0, 255, 255, 0.05);
-    border: 1px dashed rgba(0, 255, 255, 0.3);
-    border-radius: 10px;
-}
-</style>
-
-<script>
-// Enhanced Governance JavaScript
-function openCreateProposalModal() {
-    if ('{{ user_governance_role }}' === 'community') {
-        showAlert('You need a governance NFT to create proposals', 'warning');
-        return;
-    }
-    openModal('createProposalModal');
-}
-
-function openVoteModal(proposalId, proposalTitle, topicId) {
-    currentProposal = { id: proposalId, title: proposalTitle, topicId: topicId };
-    document.getElementById('voteProposalTitle').textContent = proposalTitle;
-    document.getElementById('voteTopicId').textContent = topicId;
-    openModal('castVoteModal');
-}
-
-function refreshProposals() {
-    showAlert('Refreshing proposals...', 'success');
-    // In real implementation, this would fetch latest data from API
-}
-
-function viewProposalDetails(proposalId) {
-    // In real implementation, this would open a detailed view
-    showAlert(`Loading proposal ${proposalId} details...`, 'success');
-}
-
-function supportIdea(ideaId) {
-    showAlert(`Thanks for supporting the "${ideaId}" idea!`, 'success');
-}
-
-// Tab functionality
-document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        // Remove active class from all tabs
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        
-        // Add active class to clicked tab
-        this.classList.add('active');
-        const tabId = this.dataset.tab + '-tab';
-        document.getElementById(tabId).classList.add('active');
-    });
-});
-</script> 
     <script>
         // Create background stars
         function createStars() {
@@ -3570,179 +2121,6 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
                     console.error('Error with countdown:', error);
                 }
             }
-        }
-        
-        // Governance functions
-        function toggleTopic(topicId) {
-            const topicContent = document.getElementById(topicId);
-            if (topicContent) {
-                topicContent.classList.toggle('active');
-            }
-        }
-        
-        function castVote(proposalId, vote) {
-            alert(`Vote ${vote.toUpperCase()} cast for proposal ${proposalId}. This would be recorded on the blockchain in a real implementation.`);
-            // In a real implementation, this would make an API call to record the vote
-        }
-        
-        function viewProposalDetails(proposalId) {
-            alert(`Showing detailed information for proposal ${proposalId}`);
-            // In a real implementation, this would open a modal with full proposal details
-        }
-        
-        function supportProposal(proposalId) {
-            alert(`Your support for proposal ${proposalId} has been recorded. This helps the Board understand community sentiment.`);
-            // In a real implementation, this would record community support for a proposal
-        }
-        
-        function supportIdea(ideaId) {
-            alert(`Thank you for supporting the "${ideaId}" idea! Community support helps prioritize which ideas move forward.`);
-            // In a real implementation, this would record community support for an idea
-        }
-        
-        // NFT Marketplace Functions
-        function purchaseNFT(nftId, price) {
-            // Check if user has sufficient balance
-            const userBalance = parseFloat('{{ astra_bal }}') || 0;
-            
-            if (userBalance < price) {
-                alert(`Insufficient balance! You need ${price} ASTRA but only have ${userBalance} ASTRA.`);
-                return;
-            }
-            
-            // Set up purchase modal
-            const modalContent = document.getElementById('nftPurchaseDetails');
-            let nftName = '';
-            let nftDescription = '';
-            
-            switch(nftId) {
-                case 'board-nft':
-                    nftName = 'Celestial Board NFT';
-                    nftDescription = 'Join the 10-member Celestial Board with ultimate governance power.';
-                    break;
-                case 'subordinate-nft':
-                    nftName = 'Stellar Assembly NFT';
-                    nftDescription = 'Join the 1000-member Stellar Assembly with voting rights.';
-                    break;
-                case 'board-5-nft':
-                    nftName = 'Board NFT #5 - "The Innovator"';
-                    nftDescription = 'Special edition Board NFT focusing on technological innovation.';
-                    break;
-                case 'board-8-nft':
-                    nftName = 'Board NFT #8 - "The Economist"';
-                    nftDescription = 'Special edition Board NFT with treasury management expertise.';
-                    break;
-            }
-            
-            modalContent.innerHTML = `
-                <div style="text-align: center; margin-bottom: 2rem;">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">
-                        <i class="fas fa-crown"></i>
-                    </div>
-                    <h3 style="margin-bottom: 0.5rem;">${nftName}</h3>
-                    <p style="opacity: 0.7; margin-bottom: 1rem;">${nftDescription}</p>
-                    <div style="font-size: 1.5rem; color: var(--alien-green); margin-bottom: 1rem;">
-                        ${price} ASTRA
-                    </div>
-                </div>
-            `;
-            
-            // Store the current purchase details
-            window.currentPurchase = { nftId, price, nftName };
-            
-            openModal('purchaseNFTModal');
-        }
-        
-        function confirmPurchase() {
-            const { nftId, price, nftName } = window.currentPurchase;
-            
-            // Show processing state
-            const confirmBtn = document.querySelector('#purchaseNFTModal .btn-success');
-            const originalText = confirmBtn.innerHTML;
-            confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-            confirmBtn.disabled = true;
-            
-            // Simulate purchase processing
-            setTimeout(() => {
-                alert(`Successfully purchased ${nftName} for ${price} ASTRA!`);
-                closeModal('purchaseNFTModal');
-                confirmBtn.innerHTML = originalText;
-                confirmBtn.disabled = false;
-                
-                // In a real implementation, this would make an API call to process the purchase
-                // and update the user's balance and NFT ownership
-            }, 2000);
-        }
-        
-        function viewNFTDetails(nftId) {
-            const modalContent = document.getElementById('nftDetailsContent');
-            let detailsHtml = '';
-            
-            switch(nftId) {
-                case 'board-nft':
-                    detailsHtml = `
-                        <div style="text-align: center; margin-bottom: 2rem;">
-                            <div style="font-size: 4rem; margin-bottom: 1rem; color: var(--board-purple);">
-                                <i class="fas fa-crown"></i>
-                            </div>
-                            <h3 style="margin-bottom: 0.5rem;">Celestial Board NFT</h3>
-                            <p style="opacity: 0.7;">Ultimate Governance Power</p>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Description</label>
-                            <p>This NFT grants you a position on the 10-member Celestial Board, the highest governance body in the Astral Draw ecosystem.</p>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Privileges</label>
-                            <ul style="padding-left: 1.5rem;">
-                                <li>Strategic decision-making power</li>
-                                <li>Proposal curation and formalization</li>
-                                <li>Treasury management oversight</li>
-                                <li>Emergency protocol activation</li>
-                                <li>10x voting power</li>
-                            </ul>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Requirements</label>
-                            <p>Must maintain minimum balance of 1,000 ASTRA. Active participation required.</p>
-                        </div>
-                    `;
-                    break;
-                case 'subordinate-nft':
-                    detailsHtml = `
-                        <div style="text-align: center; margin-bottom: 2rem;">
-                            <div style="font-size: 4rem; margin-bottom: 1rem; color: var(--subordinate-blue);">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <h3 style="margin-bottom: 0.5rem;">Stellar Assembly NFT</h3>
-                            <p style="opacity: 0.7;">Community Governance Power</p>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Description</label>
-                            <p>This NFT grants you membership in the 1000-member Stellar Assembly, the primary voting body of Astral Draw.</p>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Privileges</label>
-                            <ul style="padding-left: 1.5rem;">
-                                <li>Vote on all Board proposals</li>
-                                <li>Draft and submit proposals to the Board</li>
-                                <li>Direct communication with Board members</li>
-                                <li>Community advocacy and representation</li>
-                                <li>2x voting power</li>
-                            </ul>
-                        </div>
-                    `;
-                    break;
-                // Add other NFT details cases as needed
-            }
-            
-            modalContent.innerHTML = detailsHtml;
-            openModal('nftDetailsModal');
-        }
-        
-        function listForSale(nftId) {
-            alert(`Listing NFT ${nftId} for sale on the marketplace.`);
-            // In a real implementation, this would open a modal to set sale price and list the NFT
         }
         
         // Initialize dashboard
@@ -3900,6 +2278,638 @@ function verifyPool(tokenId) {
 function verifyNFT(tokenId) {
     window.open(`https://hashscan.io/testnet/token/${tokenId}`, '_blank');
 }
+    </script>
+
+    <script>
+        // Governance State Management
+        let governanceState = {
+            proposals: [],
+            userNFTs: [],
+            availableNFTs: [],
+            userVotes: [],
+            topics: [],
+            currentProposal: null,
+            currentVote: null,
+            currentPurchase: null
+        };
+
+        // Utility Functions
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        async function apiCall(url, options = {}) {
+            const defaultOptions = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                credentials: 'same-origin'
+            };
+
+            const mergedOptions = { ...defaultOptions, ...options };
+            
+            try {
+                const response = await fetch(url, mergedOptions);
+                const data = await response.json();
+                return { success: response.ok, data, status: response.status };
+            } catch (error) {
+                console.error('API call failed:', error);
+                return { success: false, error: error.message };
+            }
+        }
+
+        function showAlert(message, type = 'info', containerId = null) {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                ${message}
+            `;
+
+            if (containerId) {
+                const container = document.getElementById(containerId);
+                container.innerHTML = '';
+                container.appendChild(alert);
+                container.style.display = 'block';
+            } else {
+                alert.style.position = 'fixed';
+                alert.style.top = '20px';
+                alert.style.right = '20px';
+                alert.style.zIndex = '10000';
+                alert.style.minWidth = '300px';
+                document.body.appendChild(alert);
+                
+                setTimeout(() => {
+                    alert.remove();
+                }, 5000);
+            }
+        }
+
+        // Tab Management
+        function initTabs() {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tabId = this.dataset.tab;
+                    switchTab(tabId);
+                });
+            });
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`${tabId}-tab`).classList.add('active');
+
+            switch(tabId) {
+                case 'proposals':
+                    loadProposals();
+                    break;
+                case 'nfts':
+                    loadNFTs();
+                    break;
+                case 'my-votes':
+                    loadUserActivity();
+                    break;
+            }
+        }
+
+        // Load Governance Data
+        async function loadGovernanceData() {
+            try {
+                const statsResponse = await apiCall('/api/governance/stats/');
+                if (statsResponse.success) {
+                    updateGovernanceStats(statsResponse.data);
+                }
+
+                const nftsResponse = await apiCall('/api/governance/nft/my-nfts/');
+                if (nftsResponse.success) {
+                    governanceState.userNFTs = nftsResponse.data.nfts || [];
+                    updateUserNFTsDisplay();
+                }
+
+                switchTab('proposals');
+
+            } catch (error) {
+                console.error('Error loading governance data:', error);
+                showAlert('Failed to load governance data', 'error');
+            }
+        }
+
+        function updateGovernanceStats(stats) {
+            document.getElementById('activeProposals').textContent = stats.proposal_stats?.active || 0;
+            document.getElementById('totalVoters').textContent = stats.voting_stats?.total_voters || 0;
+            document.getElementById('userVotingPower').textContent = stats.user_stats?.user_voting_power || '0x';
+            document.getElementById('userVotes').textContent = stats.user_stats?.user_votes || 0;
+        }
+
+        // Proposals Management
+        async function loadProposals() {
+            const container = document.getElementById('proposalsContainer');
+            container.innerHTML = '<div class="loading-placeholder"><i class="fas fa-spinner fa-spin"></i> Loading proposals...</div>';
+
+            try {
+                const response = await apiCall('/api/governance/proposals/active/');
+                if (response.success) {
+                    governanceState.proposals = response.data.proposals || [];
+                    renderProposals();
+                } else {
+                    throw new Error(response.data?.error || 'Failed to load proposals');
+                }
+            } catch (error) {
+                container.innerHTML = `<div class="alert alert-error">Error loading proposals: ${error.message}</div>`;
+            }
+        }
+
+        function renderProposals() {
+            const container = document.getElementById('proposalsContainer');
+            
+            if (governanceState.proposals.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; opacity: 0.5;">
+                        <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <h4>No Active Proposals</h4>
+                        <p>There are currently no active governance proposals.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = governanceState.proposals.map(proposal => `
+                <div class="proposal-card">
+                    <div class="proposal-header">
+                        <div class="proposal-meta">
+                            <span class="proposal-category">${proposal.topic?.name || 'General'}</span>
+                            <span class="proposal-id">#${proposal.id}</span>
+                        </div>
+                        <div class="proposal-time">
+                            <i class="fas fa-clock"></i>
+                            Ends ${new Date(proposal.voting_end).toLocaleDateString()}
+                        </div>
+                    </div>
+                    <h3 class="proposal-title">${proposal.title}</h3>
+                    <p class="proposal-description">${proposal.description}</p>
+                    
+                    <div class="proposal-stats">
+                        <div class="stat">
+                            <span class="stat-value">${proposal.yes_percentage || 0}%</span>
+                            <span class="stat-label">Approval</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">${proposal.total_votes || 0}</span>
+                            <span class="stat-label">Votes</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">${proposal.min_approval_percentage || 50}%</span>
+                            <span class="stat-label">Required</span>
+                        </div>
+                    </div>
+                    
+                    <div class="vote-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill yes" style="width: ${proposal.yes_percentage || 0}%"></div>
+                            <div class="progress-fill no" style="width: ${100 - (proposal.yes_percentage || 0)}%"></div>
+                        </div>
+                        <div class="progress-labels">
+                            <span>${proposal.yes_percentage || 0}% Yes</span>
+                            <span>${100 - (proposal.yes_percentage || 0)}% No</span>
+                        </div>
+                    </div>
+                    
+                    <div class="proposal-actions">
+                        ${proposal.has_voted ? `
+                            <span class="vote-info">
+                                <i class="fas fa-check-circle"></i>
+                                You voted: ${proposal.user_vote}
+                            </span>
+                        ` : governanceState.userNFTs.length > 0 ? `
+                            <button class="vote-btn yes" onclick="openVoteModal(${proposal.id})">
+                                <i class="fas fa-thumbs-up"></i> Vote Yes
+                            </button>
+                            <button class="vote-btn no" onclick="openVoteModal(${proposal.id})">
+                                <i class="fas fa-thumbs-down"></i> Vote No
+                            </button>
+                        ` : `
+                            <span class="vote-info">
+                                <i class="fas fa-crown"></i>
+                                Governance NFT required to vote
+                            </span>
+                        `}
+                        <button class="action-btn btn-outline" onclick="viewProposalDetails(${proposal.id})">
+                            <i class="fas fa-info-circle"></i> Details
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // NFT Management
+        async function loadNFTs() {
+            try {
+                const response = await apiCall('/api/governance/nft/available/');
+                if (response.success) {
+                    governanceState.availableNFTs = response.data.nfts || [];
+                    renderNFTMarketplace();
+                }
+                updateUserNFTsDisplay();
+            } catch (error) {
+                console.error('Error loading NFTs:', error);
+                showAlert('Failed to load NFTs', 'error');
+            }
+        }
+
+        function renderNFTMarketplace() {
+            const container = document.getElementById('nftMarketplace');
+            
+            if (governanceState.availableNFTs.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; opacity: 0.5;">
+                        <i class="fas fa-store-slash" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <h4>No NFTs Available</h4>
+                        <p>There are currently no governance NFTs available for purchase.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = governanceState.availableNFTs.map(nft => `
+                <div class="nft-card">
+                    <div class="nft-header">
+                        <div class="nft-icon ${nft.tier}">
+                            <i class="fas fa-${nft.tier === 'celestial' ? 'crown' : nft.tier === 'stellar' ? 'users' : 'globe'}"></i>
+                        </div>
+                        <div class="nft-badge badge-${nft.tier}">${nft.tier.toUpperCase()}</div>
+                    </div>
+                    <div class="nft-content">
+                        <h3 style="text-align: center; margin-bottom: 1rem;">${nft.name}</h3>
+                        <div class="nft-price">${nft.price} ASTRA</div>
+                        <div class="nft-details">
+                            <div class="nft-detail">
+                                <span>Voting Power:</span>
+                                <strong>${nft.voting_power}x</strong>
+                            </div>
+                            <div class="nft-detail">
+                                <span>Available:</span>
+                                <strong>${nft.available}/${nft.max_supply}</strong>
+                            </div>
+                        </div>
+                        <div class="nft-actions">
+                            <button class="action-btn btn-primary btn-full" onclick="openPurchaseModal('${nft.tier}')">
+                                <i class="fas fa-shopping-cart"></i> Purchase
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateUserNFTsDisplay() {
+            const container = document.getElementById('userNFTsTable');
+            
+            if (governanceState.userNFTs.length === 0) {
+                container.innerHTML = `
+                    <div class="table-row" style="text-align: center; padding: 2rem; opacity: 0.5;">
+                        <div>No governance NFTs owned</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="table-row header">
+                    <div>NFT Type</div>
+                    <div>Token ID</div>
+                    <div>Voting Power</div>
+                    <div>Acquired</div>
+                    <div>Status</div>
+                </div>
+                ${governanceState.userNFTs.map(nft => `
+                    <div class="table-row">
+                        <div>
+                            <strong>${nft.tier.toUpperCase()} NFT</strong>
+                        </div>
+                        <div>
+                            <code>${nft.token_id}#${nft.serial_number}</code>
+                        </div>
+                        <div>
+                            <span style="color: var(--alien-green);">${nft.voting_power}x</span>
+                        </div>
+                        <div>${new Date(nft.purchase_date).toLocaleDateString()}</div>
+                        <div>
+                            <span class="status-badge status-active">Active</span>
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        // User Activity
+        async function loadUserActivity() {
+            const container = document.getElementById('userActivityContent');
+            container.innerHTML = '<div class="loading-placeholder">Loading your activity...</div>';
+
+            try {
+                const response = await apiCall('/api/governance/user/activity/');
+                if (response.success) {
+                    governanceState.userVotes = response.data.votes || [];
+                    renderUserActivity();
+                }
+            } catch (error) {
+                container.innerHTML = `<div class="alert alert-error">Error loading activity: ${error.message}</div>`;
+            }
+        }
+
+        function renderUserActivity() {
+            const container = document.getElementById('userActivityContent');
+            
+            if (governanceState.userVotes.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; opacity: 0.5;">
+                        <i class="fas fa-history" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <h4>No Activity Yet</h4>
+                        <p>You haven't participated in any governance activities yet.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="data-table">
+                    <div class="table-content">
+                        <div class="table-row header">
+                            <div>Proposal</div>
+                            <div>Your Vote</div>
+                            <div>Voting Power</div>
+                            <div>Date</div>
+                            <div>Result</div>
+                        </div>
+                        ${governanceState.userVotes.map(vote => `
+                            <div class="table-row">
+                                <div>
+                                    <strong>${vote.proposal_title}</strong>
+                                    <div style="font-size: 0.8rem; opacity: 0.7;">${vote.topic_name}</div>
+                                </div>
+                                <div>
+                                    <span class="vote-badge ${vote.vote}">${vote.vote.toUpperCase()}</span>
+                                </div>
+                                <div>${vote.voting_power}x</div>
+                                <div>${new Date(vote.voted_at).toLocaleDateString()}</div>
+                                <div>
+                                    <span class="status-badge status-${vote.proposal_passed ? 'completed' : 'cancelled'}">
+                                        ${vote.proposal_passed ? 'Passed' : 'Rejected'}
+                                    </span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Modal Functions
+        function openCreateProposalModal() {
+            if (governanceState.userNFTs.length === 0) {
+                showAlert('You need a governance NFT to create proposals', 'error');
+                return;
+            }
+            openModal('createProposalModal');
+        }
+
+        function openVoteModal(proposalId) {
+            const proposal = governanceState.proposals.find(p => p.id === proposalId);
+            if (!proposal) return;
+
+            governanceState.currentProposal = proposal;
+            
+            document.getElementById('voteProposalTitle').textContent = proposal.title;
+            document.getElementById('voteProposalDescription').textContent = proposal.description;
+            
+            openModal('voteModal');
+        }
+
+        function openPurchaseModal(tier) {
+            const nft = governanceState.availableNFTs.find(n => n.tier === tier);
+            if (!nft) return;
+
+            governanceState.currentPurchase = nft;
+            
+            document.getElementById('purchaseNFTIcon').className = `nft-icon ${nft.tier}`;
+            document.getElementById('purchaseNFTIcon').innerHTML = `<i class="fas fa-${nft.tier === 'celestial' ? 'crown' : nft.tier === 'stellar' ? 'users' : 'globe'}"></i>`;
+            document.getElementById('purchaseNFTName').textContent = nft.name;
+            document.getElementById('purchaseNFTPrice').textContent = `${nft.price} ASTRA`;
+            document.getElementById('purchaseNFTTier').textContent = nft.tier.toUpperCase();
+            document.getElementById('purchaseNFTPower').textContent = `${nft.voting_power}x`;
+            document.getElementById('purchaseNFTAvailable').textContent = `${nft.available}/${nft.max_supply}`;
+            document.getElementById('purchaseCost').textContent = `${nft.price} ASTRA`;
+            document.getElementById('userBalanceDisplay').textContent = '{{ astra_bal }} ASTRA';
+            
+            openModal('purchaseNFTModal');
+        }
+
+        // Form Submissions
+        async function submitProposal() {
+            const title = document.getElementById('proposalTitle').value.trim();
+            const description = document.getElementById('proposalDescription').value.trim();
+            const topicId = document.getElementById('proposalTopic').value;
+
+            if (!title || !description || !topicId) {
+                showAlert('Please fill in all fields', 'error', 'proposalAlert');
+                return;
+            }
+
+            try {
+                const response = await apiCall('/api/governance/proposals/create/', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        topic_id: topicId,
+                        title: title,
+                        description: description
+                    })
+                });
+
+                if (response.success) {
+                    showAlert('Proposal created successfully!', 'success');
+                    closeModal('createProposalModal');
+                    loadProposals();
+                } else {
+                    throw new Error(response.data?.error || 'Failed to create proposal');
+                }
+            } catch (error) {
+                showAlert(`Error creating proposal: ${error.message}`, 'error', 'proposalAlert');
+            }
+        }
+
+        function selectVote(vote) {
+            governanceState.currentVote = vote;
+            document.getElementById('confirmVoteBtn').disabled = false;
+            
+            document.querySelectorAll('.vote-btn').forEach(btn => {
+                btn.style.opacity = '0.6';
+            });
+            document.querySelector(`.vote-btn.${vote}`).style.opacity = '1';
+        }
+
+        async function submitVote() {
+            if (!governanceState.currentVote || !governanceState.currentProposal) {
+                showAlert('Please select a vote', 'error', 'voteAlert');
+                return;
+            }
+
+            try {
+                const response = await apiCall(`/api/governance/proposals/${governanceState.currentProposal.id}/vote/`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        vote: governanceState.currentVote
+                    })
+                });
+
+                if (response.success) {
+                    showAlert('Vote cast successfully!', 'success');
+                    closeModal('voteModal');
+                    loadProposals();
+                    loadUserActivity();
+                } else {
+                    throw new Error(response.data?.error || 'Failed to cast vote');
+                }
+            } catch (error) {
+                showAlert(`Error casting vote: ${error.message}`, 'error', 'voteAlert');
+            }
+        }
+
+        async function confirmPurchase() {
+            if (!governanceState.currentPurchase) return;
+
+            try {
+                const response = await apiCall(`/api/governance/nft/purchase/${governanceState.currentPurchase.tier}/`, {
+                    method: 'POST'
+                });
+
+                if (response.success) {
+                    showAlert('NFT purchased successfully!', 'success');
+                    closeModal('purchaseNFTModal');
+                    loadNFTs();
+                    loadGovernanceData();
+                } else {
+                    throw new Error(response.data?.error || 'Failed to purchase NFT');
+                }
+            } catch (error) {
+                showAlert(`Error purchasing NFT: ${error.message}`, 'error', 'purchaseAlert');
+            }
+        }
+
+        // Utility Functions
+        function viewProposalDetails(proposalId) {
+            const proposal = governanceState.proposals.find(p => p.id === proposalId);
+            if (proposal) {
+                alert(`Proposal Details:\n\nTitle: ${proposal.title}\n\nDescription: ${proposal.description}\n\nStatus: ${proposal.status}\n\nVoting Ends: ${new Date(proposal.voting_end).toLocaleString()}`);
+            }
+        }
+
+        // Dashboard Navigation
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            const activeLink = document.querySelector(`.nav-link[data-section="${sectionId}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+
+            if (sectionId === 'governance') {
+                setTimeout(() => {
+                    loadGovernanceData();
+                }, 100);
+            }
+            
+            if (window.innerWidth <= 1024) {
+                toggleSidebar();
+            }
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) {
+                sidebar.classList.toggle('active');
+            }
+        }
+
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'flex';
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create stars
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.width = `${Math.random() * 3}px`;
+                star.style.height = star.style.width;
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                starsContainer.appendChild(star);
+            }
+
+            // Set up navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sectionId = this.getAttribute('data-section');
+                    if (sectionId) {
+                        showSection(sectionId);
+                    }
+                });
+            });
+
+            // Initialize tabs
+            initTabs();
+
+            // Close modals when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    event.target.style.display = 'none';
+                }
+            });
+        });
     </script>
 </body>
 </html>

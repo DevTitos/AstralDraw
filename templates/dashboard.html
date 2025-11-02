@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quantum Dashboard - Astral Draw</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600&family=Chakra+Petch:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
+        /* All CSS styles from previous implementation */
         :root {
             --cosmic-black: #050510;
             --deep-space: #0a0a1f;
@@ -22,6 +24,7 @@
             --board-purple: #9b59b6;
             --subordinate-blue: #3498db;
             --community-green: #2ecc71;
+            --marketplace-pink: #e84393;
         }
         
         * {
@@ -89,7 +92,7 @@
             min-height: 100vh;
         }
         
-        /* Header */
+        /* Header Styles */
         .header {
             grid-area: header;
             background: rgba(5, 5, 16, 0.8);
@@ -224,7 +227,7 @@
             box-shadow: 0 0 15px var(--neon-cyan);
         }
         
-        /* Sidebar */
+        /* Sidebar Styles */
         .sidebar {
             grid-area: sidebar;
             background: rgba(5, 5, 16, 0.9);
@@ -356,7 +359,15 @@
             color: var(--governance-gold);
         }
         
-        /* Main Content */
+        .marketplace-only {
+            border-left: 3px solid var(--marketplace-pink);
+        }
+        
+        .marketplace-only .nav-icon {
+            color: var(--marketplace-pink);
+        }
+        
+        /* Main Content Styles */
         .main-content {
             grid-area: main;
             padding: 2rem;
@@ -530,6 +541,106 @@
             color: var(--alien-green);
         }
         
+        /* NFT Marketplace */
+        .marketplace-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .nft-card {
+            background: linear-gradient(135deg, rgba(10, 10, 31, 0.8), rgba(5, 5, 16, 0.8));
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nft-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 255, 255, 0.2);
+            border-color: var(--neon-cyan);
+        }
+        
+        .nft-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, var(--nebula-purple), var(--neon-magenta));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nft-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .board-badge-nft {
+            background: var(--board-purple);
+            color: white;
+        }
+        
+        .subordinate-badge-nft {
+            background: var(--subordinate-blue);
+            color: white;
+        }
+        
+        .nft-info {
+            padding: 1.5rem;
+        }
+        
+        .nft-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .nft-description {
+            opacity: 0.7;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .nft-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .nft-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--alien-green);
+            margin-bottom: 1rem;
+        }
+        
+        .nft-availability {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-bottom: 1rem;
+        }
+        
+        .nft-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
         /* Countdown Timer */
         .countdown-timer {
             display: flex;
@@ -642,6 +753,18 @@
             border: 1px solid var(--warning-red);
         }
         
+        .status-sold-out {
+            background: rgba(255, 42, 109, 0.2);
+            color: var(--warning-red);
+            border: 1px solid var(--warning-red);
+        }
+        
+        .status-available {
+            background: rgba(0, 255, 102, 0.2);
+            color: var(--alien-green);
+            border: 1px solid var(--alien-green);
+        }
+        
         /* Action Buttons */
         .action-btn {
             background: transparent;
@@ -704,6 +827,16 @@
             box-shadow: 0 0 10px var(--governance-gold);
         }
         
+        .btn-marketplace {
+            border-color: var(--marketplace-pink);
+            color: var(--marketplace-pink);
+        }
+        
+        .btn-marketplace:hover {
+            background: rgba(232, 67, 147, 0.1);
+            box-shadow: 0 0 10px var(--marketplace-pink);
+        }
+        
         /* Modal Styles */
         .modal {
             display: none;
@@ -763,6 +896,227 @@
             background: rgba(255, 42, 109, 0.2);
             color: var(--warning-red);
         }
+
+        /* Modal Enhancements */
+.modal-content {
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.nft-selection-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.nft-option {
+    border: 2px solid rgba(0, 255, 255, 0.3);
+    border-radius: 10px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(10, 10, 31, 0.6);
+}
+
+.nft-option.active {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+}
+
+.nft-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.nft-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.nft-badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.board-badge {
+    background: var(--board-purple);
+    color: white;
+}
+
+.assembly-badge {
+    background: var(--subordinate-blue);
+    color: white;
+}
+
+.hedera-info {
+    margin-top: 1rem;
+    padding: 0.8rem;
+    background: rgba(0, 255, 255, 0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+.hedera-badge {
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.availability {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+.topic-selection {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+.topic-option {
+    border: 2px solid rgba(0, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    background: rgba(10, 10, 31, 0.6);
+}
+
+.topic-option.active {
+    border-color: var(--neon-cyan);
+    background: rgba(0, 255, 255, 0.1);
+}
+
+.topic-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(0, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--neon-cyan);
+}
+
+.hedera-topic {
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    opacity: 0.8;
+}
+
+.verification-links {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.verification-link {
+    background: rgba(0, 255, 255, 0.1);
+    border: 1px solid var(--neon-cyan);
+    color: var(--neon-cyan);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.verification-link:hover {
+    background: rgba(0, 255, 255, 0.2);
+}
+
+/* Progress Steps */
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.step {
+    text-align: center;
+    flex: 1;
+    position: relative;
+    z-index: 2;
+}
+
+.step-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.step.active .step-icon {
+    background: var(--neon-cyan);
+    color: var(--cosmic-black);
+}
+
+.step-label {
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+.progress-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    position: relative;
+    margin: -30px 20px 30px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--neon-cyan);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .nft-selection-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .verification-links {
+        flex-direction: column;
+    }
+    
+    .progress-steps {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+}
         
         .modal-body {
             padding: 2rem;
@@ -1030,6 +1384,10 @@
                 grid-template-columns: 1fr;
             }
             
+            .marketplace-grid {
+                grid-template-columns: 1fr;
+            }
+            
             .table-row {
                 grid-template-columns: 1fr;
                 gap: 0.5rem;
@@ -1080,6 +1438,10 @@
                 flex-direction: column;
                 gap: 0.5rem;
             }
+            
+            .nft-actions {
+                flex-direction: column;
+            }
         }
         
         @media (max-width: 480px) {
@@ -1127,9 +1489,12 @@
 <body>
     <div class="stars" id="stars"></div>
     <div class="grid-lines"></div>
+    
+    <!-- Include Modals -->
     {% include 'dashboard_modals.html' %}
     {% include 'draw_modals.html' %}
     {% include 'partials/_messages.html' %}
+    
     <div class="dashboard">
         <header class="header">
             <div class="user-info">
@@ -1205,6 +1570,12 @@
                         <a class="nav-link" data-section="governance">
                             <i class="fas fa-landmark nav-icon"></i>
                             <span>Cosmic Governance</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link marketplace-only" data-section="marketplace">
+                            <i class="fas fa-store nav-icon"></i>
+                            <span>NFT Marketplace</span>
                         </a>
                     </li>
                 </ul>
@@ -1472,287 +1843,671 @@
                 </div>
             </section>
             
-            <!-- Governance Section -->
-            <section id="governance" class="content-section">
+            <!-- Enhanced Governance Section -->
+<section id="governance" class="content-section">
+    <div class="section-header">
+        <h1 class="section-title">Cosmic Governance</h1>
+        <p class="section-subtitle">Shape the future of Astral Draw through decentralized decision-making</p>
+    </div>
+    
+    <!-- Governance Overview Cards -->
+    <div class="dashboard-grid">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-vote-yea"></i></div>
+            <div class="stat-value" id="activeProposalsCount">5</div>
+            <div class="stat-label">Active Proposals</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+            <div class="stat-value" id="totalVoters">342</div>
+            <div class="stat-label">Active Voters</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+            <div class="stat-value" id="passedProposals">18</div>
+            <div class="stat-label">Proposals Passed</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-crown"></i></div>
+            <div class="stat-value" id="governancePower">
+                {% if user_governance_role == 'board' %}10x
+                {% elif user_governance_role == 'subordinate' %}2x
+                {% else %}1x{% endif %}
+            </div>
+            <div class="stat-label">Your Voting Power</div>
+        </div>
+    </div>
+
+    <!-- Governance Tabs -->
+    <div class="governance-tabs">
+        <div class="tab-nav">
+            <button class="tab-btn active" data-tab="proposals">Active Proposals</button>
+            <button class="tab-btn" data-tab="structure">Governance Structure</button>
+            <button class="tab-btn" data-tab="my-votes">My Voting History</button>
+            <button class="tab-btn" data-tab="discussions">Forum Discussions</button>
+        </div>
+        
+        <!-- Proposals Tab -->
+        <div class="tab-content active" id="proposals-tab">
+            <div class="tab-header">
+                <h3>Active Governance Proposals</h3>
+                <div class="tab-actions">
+                    {% if user_governance_role == 'board' or user_governance_role == 'subordinate' %}
+                    <button class="action-btn btn-primary" onclick="openCreateProposalModal()">
+                        <i class="fas fa-plus"></i> Create Proposal
+                    </button>
+                    {% endif %}
+                    <button class="action-btn btn-secondary" onclick="refreshProposals()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+            </div>
+            
+            <div class="proposals-grid">
+                <!-- Proposal 1 -->
+                <div class="proposal-card urgent">
+                    <div class="proposal-badge">URGENT</div>
+                    <div class="proposal-header">
+                        <div class="proposal-meta">
+                            <span class="proposal-category">Treasury Management</span>
+                            <span class="proposal-id">#GOV-2024-001</span>
+                        </div>
+                        <div class="proposal-time">
+                            <i class="fas fa-clock"></i>
+                            Ends in 2 days
+                        </div>
+                    </div>
+                    <h3 class="proposal-title">Increase Community Treasury Allocation to 40%</h3>
+                    <p class="proposal-description">
+                        Proposal to adjust the prize distribution formula, increasing the community project treasury allocation from 30% to 40% to fund more ecosystem development projects and long-term sustainability initiatives.
+                    </p>
+                    
+                    <div class="proposal-stats">
+                        <div class="stat">
+                            <span class="stat-value">68%</span>
+                            <span class="stat-label">Approval</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">892</span>
+                            <span class="stat-label">Votes</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">15</span>
+                            <span class="stat-label">Comments</span>
+                        </div>
+                    </div>
+                    
+                    <div class="vote-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill yes" style="width: 68%"></div>
+                            <div class="progress-fill no" style="width: 32%"></div>
+                        </div>
+                        <div class="progress-labels">
+                            <span>68% Yes (892 votes)</span>
+                            <span>32% No (421 votes)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="proposal-actions">
+                        {% if user_governance_role == 'board' or user_governance_role == 'subordinate' %}
+                        <button class="vote-btn yes" onclick="openVoteModal(1, 'Increase Community Treasury Allocation to 40%', '0.0.7174439')">
+                            <i class="fas fa-thumbs-up"></i>
+                            Vote Yes
+                        </button>
+                        <button class="vote-btn no" onclick="openVoteModal(1, 'Increase Community Treasury Allocation to 40%', '0.0.7174439')">
+                            <i class="fas fa-thumbs-down"></i>
+                            Vote No
+                        </button>
+                        {% else %}
+                        <span class="vote-info">Governance NFT required to vote</span>
+                        {% endif %}
+                        <button class="action-btn btn-outline" onclick="viewProposalDetails(1)">
+                            <i class="fas fa-info-circle"></i>
+                            Details
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Proposal 2 -->
+                <div class="proposal-card">
+                    <div class="proposal-badge">NEW</div>
+                    <div class="proposal-header">
+                        <div class="proposal-meta">
+                            <span class="proposal-category">Platform Development</span>
+                            <span class="proposal-id">#GOV-2024-002</span>
+                        </div>
+                        <div class="proposal-time">
+                            <i class="fas fa-clock"></i>
+                            Ends in 7 days
+                        </div>
+                    </div>
+                    <h3 class="proposal-title">Mobile App Development Initiative</h3>
+                    <p class="proposal-description">
+                        Allocate 50,000 ASTRA from the development fund to create a mobile application for Astral Draw, improving accessibility and user experience across all devices.
+                    </p>
+                    
+                    <div class="proposal-stats">
+                        <div class="stat">
+                            <span class="stat-value">42%</span>
+                            <span class="stat-label">Approval</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">567</span>
+                            <span class="stat-label">Votes</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">23</span>
+                            <span class="stat-label">Comments</span>
+                        </div>
+                    </div>
+                    
+                    <div class="vote-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill yes" style="width: 42%"></div>
+                            <div class="progress-fill no" style="width: 58%"></div>
+                        </div>
+                        <div class="progress-labels">
+                            <span>42% Yes (567 votes)</span>
+                            <span>58% No (785 votes)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="proposal-actions">
+                        {% if user_governance_role == 'board' or user_governance_role == 'subordinate' %}
+                        <button class="vote-btn yes" onclick="openVoteModal(2, 'Mobile App Development Initiative', '0.0.7174429')">
+                            <i class="fas fa-thumbs-up"></i>
+                            Vote Yes
+                        </button>
+                        <button class="vote-btn no" onclick="openVoteModal(2, 'Mobile App Development Initiative', '0.0.7174429')">
+                            <i class="fas fa-thumbs-down"></i>
+                            Vote No
+                        </button>
+                        {% else %}
+                        <span class="vote-info">Governance NFT required to vote</span>
+                        {% endif %}
+                        <button class="action-btn btn-outline" onclick="viewProposalDetails(2)">
+                            <i class="fas fa-info-circle"></i>
+                            Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Governance Structure Tab -->
+        <div class="tab-content" id="structure-tab">
+            <div class="governance-structure">
+                <div class="structure-grid">
+                    <div class="structure-card celestial">
+                        <div class="structure-header">
+                            <div class="structure-icon">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                            <div class="structure-info">
+                                <h3>Celestial Board</h3>
+                                <div class="structure-badge">10 Members Max</div>
+                            </div>
+                        </div>
+                        <div class="structure-details">
+                            <div class="detail-item">
+                                <strong>Voting Power:</strong> 10x
+                            </div>
+                            <div class="detail-item">
+                                <strong>NFT Price:</strong> 10,000 ASTRA
+                            </div>
+                            <div class="detail-item">
+                                <strong>Available:</strong> 3/10 Slots
+                            </div>
+                        </div>
+                        <p class="structure-description">
+                            Strategic leadership with ultimate decision-making power. Board members set long-term vision and curate proposals.
+                        </p>
+                        <div class="structure-permissions">
+                            <h4>Privileges:</h4>
+                            <ul>
+                                <li><i class="fas fa-check"></i> Strategic vision setting</li>
+                                <li><i class="fas fa-check"></i> Proposal curation</li>
+                                <li><i class="fas fa-check"></i> Treasury oversight</li>
+                                <li><i class="fas fa-check"></i> Emergency powers</li>
+                            </ul>
+                        </div>
+                        <button class="action-btn btn-primary" onclick="showSection('marketplace')">
+                            <i class="fas fa-shopping-cart"></i> Acquire Board NFT
+                        </button>
+                    </div>
+
+                    <div class="structure-card stellar">
+                        <div class="structure-header">
+                            <div class="structure-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="structure-info">
+                                <h3>Stellar Assembly</h3>
+                                <div class="structure-badge">1,000 Members Max</div>
+                            </div>
+                        </div>
+                        <div class="structure-details">
+                            <div class="detail-item">
+                                <strong>Voting Power:</strong> 2x
+                            </div>
+                            <div class="detail-item">
+                                <strong>NFT Price:</strong> 1,000 ASTRA
+                            </div>
+                            <div class="detail-item">
+                                <strong>Available:</strong> 247/1,000 Slots
+                            </div>
+                        </div>
+                        <p class="structure-description">
+                            Primary voting body representing community interests. Assembly members vote on proposals and draft initiatives.
+                        </p>
+                        <div class="structure-permissions">
+                            <h4>Privileges:</h4>
+                            <ul>
+                                <li><i class="fas fa-check"></i> Vote on all proposals</li>
+                                <li><i class="fas fa-check"></i> Draft proposals</li>
+                                <li><i class="fas fa-check"></i> Direct communication</li>
+                                <li><i class="fas fa-check"></i> Community representation</li>
+                            </ul>
+                        </div>
+                        <button class="action-btn btn-primary" onclick="showSection('marketplace')">
+                            <i class="fas fa-shopping-cart"></i> Acquire Assembly NFT
+                        </button>
+                    </div>
+
+                    <div class="structure-card cosmic">
+                        <div class="structure-header">
+                            <div class="structure-icon">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <div class="structure-info">
+                                <h3>Cosmic Community</h3>
+                                <div class="structure-badge">Unlimited</div>
+                            </div>
+                        </div>
+                        <div class="structure-details">
+                            <div class="detail-item">
+                                <strong>Voting Power:</strong> 1x
+                            </div>
+                            <div class="detail-item">
+                                <strong>NFT Price:</strong> 100 ASTRA
+                            </div>
+                            <div class="detail-item">
+                                <strong>Available:</strong> Unlimited
+                            </div>
+                        </div>
+                        <p class="structure-description">
+                            Foundation of Astral Draw. All players can participate in discussions and benefit from ecosystem growth.
+                        </p>
+                        <div class="structure-permissions">
+                            <h4>Privileges:</h4>
+                            <ul>
+                                <li><i class="fas fa-check"></i> Idea submission</li>
+                                <li><i class="fas fa-check"></i> Forum participation</li>
+                                <li><i class="fas fa-check"></i> Sentiment signaling</li>
+                                <li><i class="fas fa-check"></i> Project dividends</li>
+                            </ul>
+                        </div>
+                        <button class="action-btn btn-primary" onclick="showSection('marketplace')">
+                            <i class="fas fa-shopping-cart"></i> Acquire Community NFT
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Votes Tab -->
+        <div class="tab-content" id="my-votes-tab">
+            <div class="votes-history">
+                <h3>Your Voting History</h3>
+                {% if user_governance_role == 'board' or user_governance_role == 'subordinate' %}
+                <div class="data-table">
+                    <div class="table-content">
+                        <div class="table-row header">
+                            <div>Proposal</div>
+                            <div>Your Vote</div>
+                            <div>Voting Power</div>
+                            <div>Date</div>
+                            <div>Result</div>
+                            <div>Tx Hash</div>
+                        </div>
+                        <!-- Example vote history -->
+                        <div class="table-row">
+                            <div>
+                                <strong>Weekly Supernova Draws</strong>
+                                <div style="font-size: 0.8rem; opacity: 0.7;">#GOV-2023-045</div>
+                            </div>
+                            <div>
+                                <span class="vote-badge yes">Yes</span>
+                            </div>
+                            <div>
+                                {% if user_governance_role == 'board' %}
+                                <span style="color: var(--alien-green);">10x</span>
+                                {% else %}
+                                <span style="color: var(--alien-green);">2x</span>
+                                {% endif %}
+                            </div>
+                            <div>2024-01-15</div>
+                            <div>
+                                <span class="status-badge status-completed">Passed</span>
+                            </div>
+                            <div>
+                                <code style="font-size: 0.7rem;">0.0.123456...</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="no-votes-message">
+                    <i class="fas fa-vote-yea" style="font-size: 3rem; opacity: 0.3; margin-bottom: 1rem;"></i>
+                    <h4>No Voting History</h4>
+                    <p>You need a governance NFT to participate in voting.</p>
+                    <button class="action-btn btn-primary" onclick="showSection('marketplace')">
+                        <i class="fas fa-shopping-cart"></i> Get Governance NFT
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Discussions Tab -->
+        <div class="tab-content" id="discussions-tab">
+            <div class="forum-discussions">
+                <h3>Governance Forum</h3>
+                <div class="forum-topics">
+                    <div class="forum-topic">
+                        <div class="topic-header">
+                            <div class="topic-icon">
+                                <i class="fas fa-project-diagram"></i>
+                            </div>
+                            <div class="topic-info">
+                                <h4>The Launchpad</h4>
+                                <p>Project proposals and investment discussions</p>
+                                <div class="topic-stats">
+                                    <span><i class="fas fa-comments"></i> 342 posts</span>
+                                    <span><i class="fas fa-eye"></i> 2.1k views</span>
+                                </div>
+                            </div>
+                            <div class="topic-latest">
+                                <strong>Latest: Mobile App Development</strong>
+                                <div>2 hours ago</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="forum-topic">
+                        <div class="topic-header">
+                            <div class="topic-icon">
+                                <i class="fas fa-dice"></i>
+                            </div>
+                            <div class="topic-info">
+                                <h4>The Cosmic Clock</h4>
+                                <p>Lottery frequency and parameter discussions</p>
+                                <div class="topic-stats">
+                                    <span><i class="fas fa-comments"></i> 189 posts</span>
+                                    <span><i class="fas fa-eye"></i> 1.5k views</span>
+                                </div>
+                            </div>
+                            <div class="topic-latest">
+                                <strong>Latest: Daily Draws Proposal</strong>
+                                <div>5 hours ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Community Suggestions -->
+                <div class="community-suggestions">
+                    <h4>Community Ideas</h4>
+                    <div class="suggestion-list">
+                        <div class="suggestion-item">
+                            <div class="suggestion-content">
+                                <h5>Cross-Chain Integration</h5>
+                                <p>Explore integration with other blockchain networks to expand ecosystem reach.</p>
+                                <div class="suggestion-meta">
+                                    <span><i class="fas fa-users"></i> 89 supporters</span>
+                                    <span><i class="fas fa-clock"></i> 3 days ago</span>
+                                </div>
+                            </div>
+                            <button class="action-btn btn-governance" onclick="supportIdea('cross-chain')">
+                                <i class="fas fa-thumbs-up"></i> Support
+                            </button>
+                        </div>
+                    </div>
+                    
+                    {% if user_governance_role == 'community' %}
+                    <div class="suggestion-form">
+                        <button class="action-btn btn-primary" onclick="openModal('suggestionModal')">
+                            <i class="fas fa-lightbulb"></i> Share Your Idea
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+            <!-- NFT Marketplace Section -->
+            <section id="marketplace" class="content-section">
                 <div class="section-header">
-                    <h1 class="section-title">Cosmic Governance</h1>
-                    <p class="section-subtitle">Shape the future of Astral Draw together</p>
+                    <h1 class="section-title">Cosmic Governance Marketplace</h1>
+                    <p class="section-subtitle">Acquire governance NFTs to participate in Astral Draw decision-making</p>
                 </div>
                 
-                <!-- Governance Structure -->
-                <div class="governance-card board-card">
-                    <h2 class="governance-title" style="color: var(--board-purple);">
-                        <i class="fas fa-crown"></i> The Celestial Board
-                    </h2>
-                    <p>The strategic leadership of Astral Draw. Board members set the vision and curate proposals for the community.</p>
-                    <div class="governance-permissions">
-                        <div class="permission-item">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Strategic vision and long-term planning</span>
-                        </div>
-                        <div class="permission-item">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Proposal curation and formalization</span>
-                        </div>
-                        <div class="permission-item">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Treasury management oversight</span>
-                        </div>
-                        <div class="permission-item">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Emergency decision-making powers</span>
-                        </div>
-                    </div>
-                    {% if user_governance_role == 'board' %}
-                    <div style="margin-top: 1rem;">
-                        <button class="action-btn btn-governance" onclick="openModal('createProposalModal')">
-                            <i class="fas fa-plus"></i> Create Proposal
-                        </button>
-                    </div>
-                    {% endif %}
+                <div class="hologram">
+                    <h3 style="margin-bottom: 1rem; color: var(--hologram-teal);">
+                        <i class="fas fa-info-circle"></i> Marketplace Information
+                    </h3>
+                    <p>Governance NFTs grant you voting rights and decision-making power in the Astral Draw ecosystem. Each NFT represents a specific governance tier with unique privileges.</p>
+                    <p><strong>Your Current Balance:</strong> <span style="color: var(--alien-green);">{{ astra_bal }} ASTRA</span></p>
                 </div>
                 
-                <div class="governance-card subordinate-card">
-                    <h2 class="governance-title" style="color: var(--subordinate-blue);">
-                        <i class="fas fa-users"></i> The Stellar Assembly
-                    </h2>
-                    <p>The primary voting body of Astral Draw. Assembly members vote on proposals and represent community interests.</p>
-                    <div class="governance-permissions">
-                        <div class="permission-item">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Vote on all Board proposals</span>
+                <div class="marketplace-grid">
+                    <!-- Board NFT -->
+                    <div class="nft-card">
+                        <div class="nft-image">
+                            <i class="fas fa-crown"></i>
+                            <span class="nft-badge board-badge-nft">Board</span>
                         </div>
-                        <div class="permission-item">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Draft and submit proposals to the Board</span>
-                        </div>
-                        <div class="permission-item">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Direct communication with Board members</span>
-                        </div>
-                        <div class="permission-item">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Community advocacy and representation</span>
-                        </div>
-                    </div>
-                    {% if user_governance_role == 'subordinate' %}
-                    <div style="margin-top: 1rem;">
-                        <button class="action-btn btn-governance" onclick="openModal('createProposalModal')">
-                            <i class="fas fa-plus"></i> Draft Proposal
-                        </button>
-                    </div>
-                    {% endif %}
-                </div>
-                
-                <div class="governance-card community-card">
-                    <h2 class="governance-title" style="color: var(--community-green);">
-                        <i class="fas fa-globe"></i> The Cosmic Community
-                    </h2>
-                    <p>The foundation of Astral Draw. All players can share ideas and participate in the ecosystem's growth.</p>
-                    <div class="governance-permissions">
-                        <div class="permission-item">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Post ideas and suggestions in General forum</span>
-                        </div>
-                        <div class="permission-item">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Read-only access to Board and Assembly discussions</span>
-                        </div>
-                        <div class="permission-item">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Participate in non-binding sentiment signaling</span>
-                        </div>
-                        <div class="permission-item">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Beneficial ownership through project investments</span>
-                        </div>
-                    </div>
-                    <div style="margin-top: 1rem;">
-                        <button class="action-btn btn-governance" onclick="openModal('suggestionModal')">
-                            <i class="fas fa-lightbulb"></i> Share Idea
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Governance Discussion Topics -->
-                <div class="discussion-topic">
-                    <div class="topic-header" onclick="toggleTopic('project-topic')">
-                        <div class="topic-title">
-                            <i class="fas fa-project-diagram topic-icon"></i>
-                            Project Topic
-                        </div>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="topic-content" id="project-topic">
-                        <div class="proposal-item">
-                            <div class="proposal-header">
+                        <div class="nft-info">
+                            <h3 class="nft-title">
+                                <i class="fas fa-crown"></i>
+                                Celestial Board NFT
+                            </h3>
+                            <p class="nft-description">
+                                Ultimate governance power. Join the 10-member Celestial Board to shape the future of Astral Draw with strategic decision-making abilities.
+                            </p>
+                            <div class="nft-details">
                                 <div>
-                                    <div class="proposal-title">DeFi Protocol Integration</div>
-                                    <div class="proposal-author">Proposed by Board Member #3</div>
+                                    <div style="font-size: 0.8rem; opacity: 0.7;">Tier</div>
+                                    <div style="font-weight: 600;">Board Member</div>
                                 </div>
-                                <span class="proposal-status status-pending">Voting Open</span>
+                                <div>
+                                    <div style="font-size: 0.8rem; opacity: 0.7;">Voting Power</div>
+                                    <div style="font-weight: 600;">10x</div>
+                                </div>
                             </div>
-                            <div class="proposal-description">
-                                Integrate a decentralized finance protocol to generate yield on the community treasury funds. This would provide additional revenue streams for all stakeholders.
+                            <div class="nft-price">10,000 ASTRA</div>
+                            <div class="nft-availability">
+                                <i class="fas fa-users"></i> 
+                                3 of 10 available
                             </div>
-                            <div class="proposal-actions">
-                                {% if user_governance_role == 'board' or user_governance_role == 'subordinate' %}
-                                <button class="action-btn btn-success" onclick="castVote('project-1', 'yes')">
-                                    <i class="fas fa-thumbs-up"></i> Vote Yes
-                                </button>
-                                <button class="action-btn btn-danger" onclick="castVote('project-1', 'no')">
-                                    <i class="fas fa-thumbs-down"></i> Vote No
-                                </button>
-                                {% endif %}
-                                <button class="action-btn btn-primary" onclick="viewProposalDetails('project-1')">
+                            <div class="nft-actions">
+                                <button class="action-btn btn-marketplace" onclick="viewNFTDetails('board-nft')">
                                     <i class="fas fa-info-circle"></i> Details
                                 </button>
-                            </div>
-                            <div class="vote-results">
-                                <div class="vote-bar">
-                                    <div class="vote-fill vote-yes" style="width: 72%;"></div>
-                                </div>
-                                <div class="vote-count">72% Yes (36 votes)</div>
-                                <div class="vote-count">28% No (14 votes)</div>
+                                <button class="action-btn btn-success" onclick="purchaseNFT('board-nft', 10000)">
+                                    <i class="fas fa-shopping-cart"></i> Purchase
+                                </button>
                             </div>
                         </div>
-                        
-                        <div class="proposal-item">
-                            <div class="proposal-header">
+                    </div>
+                    
+                    <!-- Subordinate NFT -->
+                    <div class="nft-card">
+                        <div class="nft-image">
+                            <i class="fas fa-users"></i>
+                            <span class="nft-badge subordinate-badge-nft">Assembly</span>
+                        </div>
+                        <div class="nft-info">
+                            <h3 class="nft-title">
+                                <i class="fas fa-users"></i>
+                                Stellar Assembly NFT
+                            </h3>
+                            <p class="nft-description">
+                                Join the 1000-member Stellar Assembly. Vote on proposals, draft initiatives, and directly influence the Astral Draw ecosystem.
+                            </p>
+                            <div class="nft-details">
                                 <div>
-                                    <div class="proposal-title">NFT Marketplace Development</div>
-                                    <div class="proposal-author">Proposed by Assembly Member #42</div>
+                                    <div style="font-size: 0.8rem; opacity: 0.7;">Tier</div>
+                                    <div style="font-weight: 600;">Assembly Member</div>
                                 </div>
-                                <span class="proposal-status status-active">Under Review</span>
+                                <div>
+                                    <div style="font-size: 0.8rem; opacity: 0.7;">Voting Power</div>
+                                    <div style="font-weight: 600;">2x</div>
+                                </div>
                             </div>
-                            <div class="proposal-description">
-                                Create a dedicated NFT marketplace for Astral Draw collectibles and governance tokens. This would enhance the ecosystem and create new revenue opportunities.
+                            <div class="nft-price">1,000 ASTRA</div>
+                            <div class="nft-availability">
+                                <i class="fas fa-users"></i> 
+                                247 of 1000 available
                             </div>
-                            <div class="proposal-actions">
-                                <button class="action-btn btn-primary" onclick="viewProposalDetails('project-2')">
+                            <div class="nft-actions">
+                                <button class="action-btn btn-marketplace" onclick="viewNFTDetails('subordinate-nft')">
                                     <i class="fas fa-info-circle"></i> Details
                                 </button>
-                                {% if user_governance_role == 'community' %}
-                                <button class="action-btn btn-governance" onclick="supportProposal('project-2')">
-                                    <i class="fas fa-heart"></i> Support
+                                <button class="action-btn btn-success" onclick="purchaseNFT('subordinate-nft', 1000)">
+                                    <i class="fas fa-shopping-cart"></i> Purchase
                                 </button>
-                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Special Edition Board NFT #5 -->
+                    <div class="nft-card">
+                        <div class="nft-image" style="background: linear-gradient(135deg, var(--governance-gold), var(--plasma-orange));">
+                            <i class="fas fa-star"></i>
+                            <span class="nft-badge board-badge-nft">Board #5</span>
+                        </div>
+                        <div class="nft-info">
+                            <h3 class="nft-title">
+                                <i class="fas fa-star"></i>
+                                Board NFT #5 - "The Innovator"
+                            </h3>
+                            <p class="nft-description">
+                                Special edition Board NFT with enhanced proposal creation rights. This position focuses on technological innovation and platform development.
+                            </p>
+                            <div class="nft-details">
+                                <div>
+                                    <div style="font-size: 0.8rem; opacity: 0.7;">Rank</div>
+                                    <div style="font-weight: 600;">#5</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.8rem; opacity: 0.7;">Specialty</div>
+                                    <div style="font-weight: 600;">Innovation</div>
+                                </div>
+                            </div>
+                            <div class="nft-price">12,500 ASTRA</div>
+                            <div class="nft-availability">
+                                <i class="fas fa-users"></i> 
+                                1 of 1 available
+                            </div>
+                            <div class="nft-actions">
+                                <button class="action-btn btn-marketplace" onclick="viewNFTDetails('board-5-nft')">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </button>
+                                <button class="action-btn btn-success" onclick="purchaseNFT('board-5-nft', 12500)">
+                                    <i class="fas fa-shopping-cart"></i> Purchase
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Special Edition Board NFT #8 -->
+                    <div class="nft-card">
+                        <div class="nft-image" style="background: linear-gradient(135deg, var(--quantum-blue), var(--nebula-purple));">
+                            <i class="fas fa-chart-line"></i>
+                            <span class="nft-badge board-badge-nft">Board #8</span>
+                        </div>
+                        <div class="nft-info">
+                            <h3 class="nft-title">
+                                <i class="fas fa-chart-line"></i>
+                                Board NFT #8 - "The Economist"
+                            </h3>
+                            <p class="nft-description">
+                                Special edition Board NFT with treasury management expertise. This position oversees economic strategy and prize distribution formulas.
+                            </p>
+                            <div class="nft-details">
+                                <div>
+                                    <div style="font-size: 0.8rem; opacity: 0.7;">Rank</div>
+                                    <div style="font-weight: 600;">#8</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.8rem; opacity: 0.7;">Specialty</div>
+                                    <div style="font-weight: 600;">Economics</div>
+                                </div>
+                            </div>
+                            <div class="nft-price">11,000 ASTRA</div>
+                            <div class="nft-availability">
+                                <i class="fas fa-users"></i> 
+                                1 of 1 available
+                            </div>
+                            <div class="nft-actions">
+                                <button class="action-btn btn-marketplace" onclick="viewNFTDetails('board-8-nft')">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </button>
+                                <button class="action-btn btn-success" onclick="purchaseNFT('board-8-nft', 11000)">
+                                    <i class="fas fa-shopping-cart"></i> Purchase
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="discussion-topic">
-                    <div class="topic-header" onclick="toggleTopic('lottery-topic')">
-                        <div class="topic-title">
-                            <i class="fas fa-dice topic-icon"></i>
-                            Lottery Topic
-                        </div>
-                        <i class="fas fa-chevron-down"></i>
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3 class="table-title">Your Governance NFTs</h3>
+                        <p>NFTs that grant you governance rights in the Astral Draw ecosystem</p>
                     </div>
-                    <div class="topic-content" id="lottery-topic">
-                        <div class="proposal-item">
-                            <div class="proposal-header">
-                                <div>
-                                    <div class="proposal-title">Weekly Supernova Draws</div>
-                                    <div class="proposal-author">Proposed by Board Member #7</div>
-                                </div>
-                                <span class="proposal-status status-completed">Implemented</span>
-                            </div>
-                            <div class="proposal-description">
-                                Introduce weekly high-stakes "Supernova" draws alongside the regular convergences. These would feature larger prize pools and special NFT rewards.
-                            </div>
-                            <div class="proposal-actions">
-                                <button class="action-btn btn-primary" onclick="viewProposalDetails('lottery-1')">
-                                    <i class="fas fa-info-circle"></i> Details
-                                </button>
-                            </div>
+                    <div class="table-content">
+                        <div class="table-row header">
+                            <div>NFT Type</div>
+                            <div>Rank/ID</div>
+                            <div>Acquired</div>
+                            <div>Voting Power</div>
+                            <div>Status</div>
+                            <div>Actions</div>
                         </div>
-                    </div>
-                </div>
-                
-                <div class="discussion-topic">
-                    <div class="topic-header" onclick="toggleTopic('prize-topic')">
-                        <div class="topic-title">
-                            <i class="fas fa-trophy topic-icon"></i>
-                            Prize Distribution
-                        </div>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="topic-content" id="prize-topic">
-                        <div class="proposal-item">
-                            <div class="proposal-header">
-                                <div>
-                                    <div class="proposal-title">New Nebula Split Formula</div>
-                                    <div class="proposal-author">Proposed by Board Member #1</div>
-                                </div>
-                                <span class="proposal-status status-upcoming">Discussion Phase</span>
+                        <!-- Example owned NFT -->
+                        <div class="table-row">
+                            <div>
+                                <strong>Stellar Assembly NFT</strong>
                             </div>
-                            <div class="proposal-description">
-                                Adjust the prize distribution formula to allocate more funds to the community project treasury, ensuring long-term sustainability and growth.
+                            <div>
+                                <span style="font-family: monospace;">#427</span>
                             </div>
-                            <div class="proposal-actions">
-                                <button class="action-btn btn-primary" onclick="viewProposalDetails('prize-1')">
-                                    <i class="fas fa-info-circle"></i> Details
+                            <div>
+                                2023-11-15
+                            </div>
+                            <div>
+                                <span style="color: var(--alien-green);">2x</span>
+                            </div>
+                            <div>
+                                <span class="status-badge status-active">Active</span>
+                            </div>
+                            <div>
+                                <button class="action-btn btn-primary" onclick="viewNFTDetails('owned-427')">
+                                    <i class="fas fa-eye"></i> View
                                 </button>
-                                {% if user_governance_role == 'community' %}
-                                <button class="action-btn btn-governance" onclick="supportProposal('prize-1')">
-                                    <i class="fas fa-heart"></i> Support
+                                <button class="action-btn btn-warning" onclick="listForSale('owned-427')">
+                                    <i class="fas fa-tag"></i> Sell
                                 </button>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="discussion-topic">
-                    <div class="topic-header" onclick="toggleTopic('general-topic')">
-                        <div class="topic-title">
-                            <i class="fas fa-comments topic-icon"></i>
-                            General Discussion
-                        </div>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="topic-content active" id="general-topic">
-                        <div class="proposal-item">
-                            <div class="proposal-header">
-                                <div>
-                                    <div class="proposal-title">Mobile App Development</div>
-                                    <div class="proposal-author">Suggested by Cosmic Citizen</div>
-                                </div>
-                                <span class="proposal-status status-pending">Community Feedback</span>
-                            </div>
-                            <div class="proposal-description">
-                                Develop a dedicated mobile application for Astral Draw to improve accessibility and user experience. This would allow players to participate in convergences and governance from their mobile devices.
-                            </div>
-                            <div class="proposal-actions">
-                                <button class="action-btn btn-governance" onclick="supportIdea('mobile-app')">
-                                    <i class="fas fa-thumbs-up"></i> Support This Idea
-                                </button>
-                                <span style="margin-left: 1rem; opacity: 0.7;">
-                                    <i class="fas fa-users"></i> 124 supporters
-                                </span>
-                            </div>
-                        </div>
-                        
-                        <div class="proposal-item">
-                            <div class="proposal-header">
-                                <div>
-                                    <div class="proposal-title">Cross-Chain Integration</div>
-                                    <div class="proposal-author">Suggested by Cosmic Citizen</div>
-                                </div>
-                                <span class="proposal-status status-pending">Community Feedback</span>
-                            </div>
-                            <div class="proposal-description">
-                                Explore integration with other blockchain networks to expand the Astral Draw ecosystem and attract users from different communities.
-                            </div>
-                            <div class="proposal-actions">
-                                <button class="action-btn btn-governance" onclick="supportIdea('cross-chain')">
-                                    <i class="fas fa-thumbs-up"></i> Support This Idea
-                                </button>
-                                <span style="margin-left: 1rem; opacity: 0.7;">
-                                    <i class="fas fa-users"></i> 89 supporters
-                                </span>
                             </div>
                         </div>
                     </div>
@@ -1924,40 +2679,125 @@
     </div>
     
     <!-- Governance Modals -->
-    <div id="createProposalModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Create Governance Proposal</h2>
-                <button class="modal-close" onclick="closeModal('createProposalModal')">&times;</button>
+    <!-- Create Proposal Modal -->
+<div id="createProposalModal" class="modal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('createProposalModal')">&times;</button>
+        <h2 class="modal-title">
+            <i class="fas fa-edit"></i> Create Governance Proposal
+        </h2>
+
+        <div class="user-governance-status">
+            <div class="governance-badge" id="userGovernanceTier">
+                <i class="fas fa-crown"></i>
+                Celestial Board Member
             </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label">Proposal Title</label>
-                    <input type="text" class="form-input" placeholder="Enter proposal title">
+            <div class="voting-power">
+                Voting Power: <strong>10x</strong>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Select Discussion Topic</label>
+            <div class="topic-selection">
+                <div class="topic-option active" data-topic="project" data-topic-id="0.0.7174429">
+                    <div class="topic-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div class="topic-info">
+                        <h4>The Launchpad</h4>
+                        <p>Project proposals and investments</p>
+                        <div class="hedera-topic">
+                            Topic: <code>0.0.7174429</code>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Topic</label>
-                    <select class="form-input">
-                        <option value="project">Project Topic</option>
-                        <option value="lottery">Lottery Topic</option>
-                        <option value="prize">Prize Distribution</option>
-                    </select>
+
+                <div class="topic-option" data-topic="lottery" data-topic-id="0.0.7174434">
+                    <div class="topic-icon">
+                        <i class="fas fa-dice"></i>
+                    </div>
+                    <div class="topic-info">
+                        <h4>The Cosmic Clock</h4>
+                        <p>Lottery frequency and parameters</p>
+                        <div class="hedera-topic">
+                            Topic: <code>0.0.7174434</code>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Proposal Description</label>
-                    <textarea class="form-input" rows="5" placeholder="Describe your proposal in detail..."></textarea>
+
+                <div class="topic-option" data-topic="prize" data-topic-id="0.0.7174439">
+                    <div class="topic-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="topic-info">
+                        <h4>The Nebula Split</h4>
+                        <p>Prize distribution formulas</p>
+                        <div class="hedera-topic">
+                            Topic: <code>0.0.7174439</code>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Expected Impact</label>
-                    <textarea class="form-input" rows="3" placeholder="What impact will this proposal have on the Astral Draw ecosystem?"></textarea>
-                </div>
-                <div class="form-actions">
-                    <button class="action-btn btn-danger" onclick="closeModal('createProposalModal')">Cancel</button>
-                    <button class="action-btn btn-success">Submit Proposal</button>
+
+                <div class="topic-option" data-topic="general" data-topic-id="0.0.7174440">
+                    <div class="topic-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="topic-info">
+                        <h4>The Galactic Forum</h4>
+                        <p>General platform discussions</p>
+                        <div class="hedera-topic">
+                            Topic: <code>0.0.7174440</code>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <div class="form-group">
+            <label class="form-label">Proposal Title</label>
+            <input type="text" class="form-input" id="proposalTitle" placeholder="Enter a clear and concise title...">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Detailed Description</label>
+            <textarea class="form-input" id="proposalDescription" rows="6" placeholder="Describe your proposal in detail. Include the problem, solution, and expected impact..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Expected Impact</label>
+            <textarea class="form-input" id="proposalImpact" rows="3" placeholder="How will this proposal benefit the Astral Draw ecosystem?"></textarea>
+        </div>
+
+        <div class="hedera-submission-info">
+            <h4><i class="fas fa-broadcast-tower"></i> Blockchain Recording</h4>
+            <p>This proposal will be permanently recorded on Hedera Consensus Service for complete transparency.</p>
+            <div class="submission-details">
+                <div class="detail">
+                    <strong>Topic ID:</strong>
+                    <code id="selectedTopicId">0.0.7174429</code>
+                </div>
+                <div class="detail">
+                    <strong>Your NFT:</strong>
+                    <span id="userNFTId">0.0.7174407#15</span>
+                </div>
+                <div class="detail">
+                    <strong>Voting Power:</strong>
+                    <span id="userVotingPower">10x</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button class="modal-btn btn-secondary" onclick="closeModal('createProposalModal')">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+            <button class="modal-btn btn-primary" onclick="submitProposalToHedera()">
+                <i class="fas fa-paper-plane"></i> Submit to Blockchain
+            </button>
+        </div>
     </div>
+</div>
     
     <div id="suggestionModal" class="modal">
         <div class="modal-content">
@@ -1991,6 +2831,610 @@
         </div>
     </div>
     
+    <!-- Purchase NFT Modal -->
+<div id="purchaseNFTModal" class="modal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('purchaseNFTModal')">&times;</button>
+        <h2 class="modal-title">
+            <i class="fas fa-crown"></i> Acquire Governance NFT
+        </h2>
+        
+        <div class="modal-alert" id="nftPurchaseAlert" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="alertMessage"></span>
+        </div>
+
+        <div class="nft-selection-grid">
+            <!-- Celestial Board NFT -->
+            <div class="nft-option active" data-tier="board" data-price="10000">
+                <div class="nft-header">
+                    <div class="nft-icon" style="background: linear-gradient(135deg, var(--board-purple), var(--neon-magenta));">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div class="nft-badge board-badge">Board</div>
+                </div>
+                <h3 class="nft-name">Celestial Board NFT</h3>
+                <div class="nft-price">10,000 ASTRA</div>
+                <div class="nft-details">
+                    <div class="detail-item">
+                        <i class="fas fa-users"></i>
+                        <span>10 Members Maximum</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-vote-yea"></i>
+                        <span>10x Voting Power</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-bolt"></i>
+                        <span>Strategic Decision Making</span>
+                    </div>
+                </div>
+                <div class="hedera-info">
+                    <div class="hedera-badge">
+                        <i class="fas fa-link"></i>
+                        Hedera Token: <code>0.0.7174407</code>
+                    </div>
+                </div>
+                <div class="availability">
+                    <i class="fas fa-circle" style="color: var(--alien-green);"></i>
+                    <span id="board-availability">3/10 Slots Available</span>
+                </div>
+            </div>
+
+            <!-- Stellar Assembly NFT -->
+            <div class="nft-option" data-tier="subordinate" data-price="1000">
+                <div class="nft-header">
+                    <div class="nft-icon" style="background: linear-gradient(135deg, var(--subordinate-blue), var(--quantum-blue));">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="nft-badge assembly-badge">Assembly</div>
+                </div>
+                <h3 class="nft-name">Stellar Assembly NFT</h3>
+                <div class="nft-price">1,000 ASTRA</div>
+                <div class="nft-details">
+                    <div class="detail-item">
+                        <i class="fas fa-users"></i>
+                        <span>1,000 Members Maximum</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-vote-yea"></i>
+                        <span>2x Voting Power</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-comments"></i>
+                        <span>Proposal Drafting Rights</span>
+                    </div>
+                </div>
+                <div class="hedera-info">
+                    <div class="hedera-badge">
+                        <i class="fas fa-link"></i>
+                        Hedera Token: <code>0.0.7174419</code>
+                    </div>
+                </div>
+                <div class="availability">
+                    <i class="fas fa-circle" style="color: var(--alien-green);"></i>
+                    <span id="assembly-availability">247/1000 Slots Available</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="purchase-details">
+            <div class="detail-row">
+                <span>Selected Tier:</span>
+                <strong id="selectedTierName">Celestial Board</strong>
+            </div>
+            <div class="detail-row">
+                <span>Your Balance:</span>
+                <strong style="color: var(--alien-green);" id="userBalance">1,500 ASTRA</strong>
+            </div>
+            <div class="detail-row">
+                <span>Cost:</span>
+                <strong id="purchaseCost">10,000 ASTRA</strong>
+            </div>
+            <div class="detail-row total">
+                <span>Remaining After Purchase:</span>
+                <strong id="remainingBalance" style="color: var(--warning-red);">-8,500 ASTRA</strong>
+            </div>
+        </div>
+
+        <div class="hedera-transaction-info">
+            <h4><i class="fas fa-shield-alt"></i> Blockchain Verification</h4>
+            <p>This NFT will be minted on Hedera Testnet and recorded on the immutable ledger.</p>
+            <div class="verification-links">
+                <a href="https://hashscan.io/testnet/token/0.0.7174407" target="_blank" class="verification-link">
+                    <i class="fas fa-external-link-alt"></i>
+                    Verify Board Token
+                </a>
+                <a href="https://hashscan.io/testnet/token/0.0.7174419" target="_blank" class="verification-link">
+                    <i class="fas fa-external-link-alt"></i>
+                    Verify Assembly Token
+                </a>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button class="modal-btn btn-secondary" onclick="closeModal('purchaseNFTModal')">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+            <button class="modal-btn btn-primary" id="confirmPurchaseBtn" onclick="confirmNFTPurchase()">
+                <i class="fas fa-shopping-cart"></i> Purchase & Mint NFT
+            </button>
+        </div>
+    </div>
+</div>
+
+    <!-- NFT Details Modal -->
+<div id="nftDetailsModal" class="modal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('nftDetailsModal')">&times;</button>
+        
+        <div class="nft-header">
+            <div class="nft-visual">
+                <div class="nft-avatar" id="nftAvatar">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <div class="nft-badge" id="nftBadge">Board</div>
+            </div>
+            <div class="nft-info">
+                <h2 id="nftName">Celestial Board NFT</h2>
+                <div class="nft-id">ID: <code id="nftFullId">0.0.7174407#15</code></div>
+                <div class="nft-rank">Rank: <strong id="nftRank">#5 - The Innovator</strong></div>
+            </div>
+        </div>
+
+        <div class="nft-stats">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-vote-yea"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value" id="votingPower">10x</div>
+                    <div class="stat-label">Voting Power</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-calendar"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value" id="acquisitionDate">2024-01-15</div>
+                    <div class="stat-label">Acquired</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value" id="votesCast">47</div>
+                    <div class="stat-label">Votes Cast</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nft-details-section">
+            <h3><i class="fas fa-info-circle"></i> NFT Details</h3>
+            <div class="details-grid">
+                <div class="detail-item">
+                    <strong>Token ID:</strong>
+                    <code>0.0.7174407</code>
+                </div>
+                <div class="detail-item">
+                    <strong>Serial Number:</strong>
+                    <span id="serialNumber">15</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Governance Tier:</strong>
+                    <span id="governanceTier">Celestial Board</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Specialty:</strong>
+                    <span id="nftSpecialty">Technological Innovation</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Status:</strong>
+                    <span class="status-active" id="nftStatus">Active</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Last Vote:</strong>
+                    <span id="lastVoteDate">2024-01-18</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="hedera-verification">
+            <h3><i class="fas fa-shield-alt"></i> Blockchain Verification</h3>
+            <div class="verification-links">
+                <a href="https://hashscan.io/testnet/token/0.0.7174407" target="_blank" class="verification-link">
+                    <i class="fas fa-external-link-alt"></i>
+                    View Token on HashScan
+                </a>
+                <a href="https://hashscan.io/testnet/token/0.0.7174407?serial=15" target="_blank" class="verification-link">
+                    <i class="fas fa-search"></i>
+                    Verify This NFT
+                </a>
+                <a href="https://hashscan.io/testnet/topic/0.0.7174429" target="_blank" class="verification-link">
+                    <i class="fas fa-broadcast-tower"></i>
+                    View Governance Topics
+                </a>
+            </div>
+        </div>
+
+        <div class="nft-permissions">
+            <h3><i class="fas fa-tasks"></i> Governance Permissions</h3>
+            <ul class="permissions-list">
+                <li><i class="fas fa-check"></i> Strategic decision-making power</li>
+                <li><i class="fas fa-check"></i> Proposal curation and formalization</li>
+                <li><i class="fas fa-check"></i> Treasury management oversight</li>
+                <li><i class="fas fa-check"></i> Emergency protocol activation</li>
+                <li><i class="fas fa-check"></i> 10x voting power on all proposals</li>
+            </ul>
+        </div>
+
+        <div class="form-actions">
+            <button class="modal-btn btn-secondary" onclick="closeModal('nftDetailsModal')">
+                <i class="fas fa-times"></i> Close
+            </button>
+            <button class="modal-btn btn-warning" onclick="listNFTForSale()">
+                <i class="fas fa-tag"></i> List for Sale
+            </button>
+            <button class="modal-btn btn-primary" onclick="viewOnHashScan()">
+                <i class="fas fa-external-link-alt"></i> View on Explorer
+            </button>
+        </div>
+    </div>
+</div>
+
+    <!-- Cast Vote Modal -->
+<div id="castVoteModal" class="modal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('castVoteModal')">&times;</button>
+        <h2 class="modal-title">
+            <i class="fas fa-vote-yea"></i> Cast Your Vote
+        </h2>
+
+        <div class="proposal-header">
+            <h3 id="voteProposalTitle">DeFi Protocol Integration</h3>
+            <div class="proposal-topic">
+                <i class="fas fa-project-diagram"></i>
+                The Launchpad • Topic: <code>0.0.7174429</code>
+            </div>
+        </div>
+
+        <div class="voting-power-display">
+            <div class="power-card">
+                <div class="power-icon">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <div class="power-info">
+                    <div class="power-label">Your Voting Power</div>
+                    <div class="power-value">10x</div>
+                    <div class="power-source">Celestial Board NFT</div>
+                </div>
+            </div>
+            <div class="power-card">
+                <div class="power-icon">
+                    <i class="fas fa-fingerprint"></i>
+                </div>
+                <div class="power-info">
+                    <div class="power-label">NFT ID</div>
+                    <div class="power-value" style="font-size: 0.8rem;">0.0.7174407#15</div>
+                    <div class="power-source">Hedera Verified</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="vote-options">
+            <div class="vote-option" data-vote="yes">
+                <div class="vote-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="vote-content">
+                    <h4>Vote YES</h4>
+                    <p>Approve this proposal and move forward with implementation</p>
+                    <div class="vote-impact">
+                        <strong>Impact:</strong> 10 votes counted towards approval
+                    </div>
+                </div>
+            </div>
+
+            <div class="vote-option" data-vote="no">
+                <div class="vote-icon">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="vote-content">
+                    <h4>Vote NO</h4>
+                    <p>Reject this proposal and maintain current operations</p>
+                    <div class="vote-impact">
+                        <strong>Impact:</strong> 10 votes counted towards rejection
+                    </div>
+                </div>
+            </div>
+
+            <div class="vote-option" data-vote="abstain">
+                <div class="vote-icon">
+                    <i class="fas fa-minus-circle"></i>
+                </div>
+                <div class="vote-content">
+                    <h4>Abstain</h4>
+                    <p>Decline to vote on this proposal</p>
+                    <div class="vote-impact">
+                        <strong>Impact:</strong> No votes counted
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="current-results">
+            <h4>Current Voting Results</h4>
+            <div class="results-grid">
+                <div class="result-item yes">
+                    <div class="result-label">Yes Votes</div>
+                    <div class="result-bar">
+                        <div class="result-fill" style="width: 65%;"></div>
+                    </div>
+                    <div class="result-value">65% (130 votes)</div>
+                </div>
+                <div class="result-item no">
+                    <div class="result-label">No Votes</div>
+                    <div class="result-bar">
+                        <div class="result-fill" style="width: 35%;"></div>
+                    </div>
+                    <div class="result-value">35% (70 votes)</div>
+                </div>
+            </div>
+            <div class="approval-status">
+                <i class="fas fa-info-circle"></i>
+                Needs 60% approval • Currently: <strong style="color: var(--alien-green);">65%</strong>
+            </div>
+        </div>
+
+        <div class="hedera-vote-info">
+            <h4><i class="fas fa-shield-alt"></i> Blockchain Verification</h4>
+            <p>Your vote will be permanently recorded on Hedera Consensus Service for complete transparency.</p>
+            <div class="verification-details">
+                <div class="detail">
+                    <strong>Topic:</strong> The Launchpad (<code>0.0.7174429</code>)
+                </div>
+                <div class="detail">
+                    <strong>Your NFT:</strong> <code>0.0.7174407#15</code>
+                </div>
+                <div class="detail">
+                    <strong>Voting Power:</strong> 10x
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button class="modal-btn btn-secondary" onclick="closeModal('castVoteModal')">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+            <button class="modal-btn btn-primary" id="confirmVoteBtn" onclick="submitVoteToHedera()" disabled>
+                <i class="fas fa-vote-yea"></i> Cast Vote on Blockchain
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Transaction Status Modal -->
+<div id="transactionModal" class="modal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('transactionModal')">&times;</button>
+        
+        <div class="transaction-header">
+            <div class="transaction-icon">
+                <i class="fas fa-cube" id="transactionMainIcon"></i>
+            </div>
+            <h2 id="transactionTitle">Processing Transaction</h2>
+        </div>
+
+        <div class="transaction-progress">
+            <div class="progress-steps">
+                <div class="step active" id="step1">
+                    <div class="step-icon">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <div class="step-label">Submitting</div>
+                </div>
+                <div class="step" id="step2">
+                    <div class="step-icon">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <div class="step-label">Hedera Consensus</div>
+                </div>
+                <div class="step" id="step3">
+                    <div class="step-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="step-label">Confirmed</div>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="transaction-details">
+            <div class="detail-card">
+                <h4><i class="fas fa-info-circle"></i> Transaction Details</h4>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <strong>Type:</strong>
+                        <span id="txType">NFT Purchase</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Hedera Token:</strong>
+                        <code id="txTokenId">0.0.7174407</code>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Topic:</strong>
+                        <code id="txTopicId">0.0.7174429</code>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Timestamp:</strong>
+                        <span id="txTimestamp">Just now</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hedera-status">
+            <h4><i class="fas fa-broadcast-tower"></i> Hedera Network Status</h4>
+            <div class="status-indicators">
+                <div class="status-item">
+                    <i class="fas fa-circle" style="color: var(--alien-green);"></i>
+                    <span>Testnet: Operational</span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-bolt" style="color: var(--alien-green);"></i>
+                    <span>Consensus: Active</span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-shield-alt" style="color: var(--alien-green);"></i>
+                    <span>Security: Verified</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="transaction-output" id="transactionOutput" style="display: none;">
+            <h4><i class="fas fa-file-alt"></i> Transaction Result</h4>
+            <div class="output-content" id="outputContent">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+        </div>
+
+        <div class="verification-links" id="verificationLinks" style="display: none;">
+            <h4><i class="fas fa-external-link-alt"></i> Verify on Explorer</h4>
+            <div class="links-grid">
+                <a href="#" target="_blank" class="verification-link" id="txHashScanLink">
+                    <i class="fas fa-search"></i>
+                    View on HashScan
+                </a>
+                <a href="#" target="_blank" class="verification-link" id="txTokenLink">
+                    <i class="fas fa-coins"></i>
+                    Verify Token
+                </a>
+                <a href="#" target="_blank" class="verification-link" id="txTopicLink">
+                    <i class="fas fa-broadcast-tower"></i>
+                    Check Topic
+                </a>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button class="modal-btn btn-secondary" onclick="closeModal('transactionModal')" id="cancelBtn" style="display: none;">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+            <button class="modal-btn btn-primary" onclick="closeModal('transactionModal')" id="doneBtn" style="display: none;">
+                <i class="fas fa-check"></i> Done
+            </button>
+            <button class="modal-btn btn-warning" onclick="retryTransaction()" id="retryBtn" style="display: none;">
+                <i class="fas fa-redo"></i> Retry
+            </button>
+        </div>
+    </div>
+</div>
+   <style>
+/* Add these styles to your existing CSS */
+.no-votes-message {
+    text-align: center;
+    padding: 3rem;
+    background: rgba(10, 10, 31, 0.6);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 10px;
+}
+
+.community-suggestions {
+    margin-top: 2rem;
+}
+
+.suggestion-list {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.suggestion-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(10, 10, 31, 0.6);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 1.5rem;
+}
+
+.suggestion-content h5 {
+    margin: 0 0 0.5rem 0;
+    color: var(--star-white);
+}
+
+.suggestion-content p {
+    margin: 0 0 1rem 0;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.suggestion-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.suggestion-form {
+    text-align: center;
+    padding: 2rem;
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px dashed rgba(0, 255, 255, 0.3);
+    border-radius: 10px;
+}
+</style>
+
+<script>
+// Enhanced Governance JavaScript
+function openCreateProposalModal() {
+    if ('{{ user_governance_role }}' === 'community') {
+        showAlert('You need a governance NFT to create proposals', 'warning');
+        return;
+    }
+    openModal('createProposalModal');
+}
+
+function openVoteModal(proposalId, proposalTitle, topicId) {
+    currentProposal = { id: proposalId, title: proposalTitle, topicId: topicId };
+    document.getElementById('voteProposalTitle').textContent = proposalTitle;
+    document.getElementById('voteTopicId').textContent = topicId;
+    openModal('castVoteModal');
+}
+
+function refreshProposals() {
+    showAlert('Refreshing proposals...', 'success');
+    // In real implementation, this would fetch latest data from API
+}
+
+function viewProposalDetails(proposalId) {
+    // In real implementation, this would open a detailed view
+    showAlert(`Loading proposal ${proposalId} details...`, 'success');
+}
+
+function supportIdea(ideaId) {
+    showAlert(`Thanks for supporting the "${ideaId}" idea!`, 'success');
+}
+
+// Tab functionality
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        // Remove active class from all tabs
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        // Add active class to clicked tab
+        this.classList.add('active');
+        const tabId = this.dataset.tab + '-tab';
+        document.getElementById(tabId).classList.add('active');
+    });
+});
+</script> 
     <script>
         // Create background stars
         function createStars() {
@@ -2156,6 +3600,151 @@
             // In a real implementation, this would record community support for an idea
         }
         
+        // NFT Marketplace Functions
+        function purchaseNFT(nftId, price) {
+            // Check if user has sufficient balance
+            const userBalance = parseFloat('{{ astra_bal }}') || 0;
+            
+            if (userBalance < price) {
+                alert(`Insufficient balance! You need ${price} ASTRA but only have ${userBalance} ASTRA.`);
+                return;
+            }
+            
+            // Set up purchase modal
+            const modalContent = document.getElementById('nftPurchaseDetails');
+            let nftName = '';
+            let nftDescription = '';
+            
+            switch(nftId) {
+                case 'board-nft':
+                    nftName = 'Celestial Board NFT';
+                    nftDescription = 'Join the 10-member Celestial Board with ultimate governance power.';
+                    break;
+                case 'subordinate-nft':
+                    nftName = 'Stellar Assembly NFT';
+                    nftDescription = 'Join the 1000-member Stellar Assembly with voting rights.';
+                    break;
+                case 'board-5-nft':
+                    nftName = 'Board NFT #5 - "The Innovator"';
+                    nftDescription = 'Special edition Board NFT focusing on technological innovation.';
+                    break;
+                case 'board-8-nft':
+                    nftName = 'Board NFT #8 - "The Economist"';
+                    nftDescription = 'Special edition Board NFT with treasury management expertise.';
+                    break;
+            }
+            
+            modalContent.innerHTML = `
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <h3 style="margin-bottom: 0.5rem;">${nftName}</h3>
+                    <p style="opacity: 0.7; margin-bottom: 1rem;">${nftDescription}</p>
+                    <div style="font-size: 1.5rem; color: var(--alien-green); margin-bottom: 1rem;">
+                        ${price} ASTRA
+                    </div>
+                </div>
+            `;
+            
+            // Store the current purchase details
+            window.currentPurchase = { nftId, price, nftName };
+            
+            openModal('purchaseNFTModal');
+        }
+        
+        function confirmPurchase() {
+            const { nftId, price, nftName } = window.currentPurchase;
+            
+            // Show processing state
+            const confirmBtn = document.querySelector('#purchaseNFTModal .btn-success');
+            const originalText = confirmBtn.innerHTML;
+            confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            confirmBtn.disabled = true;
+            
+            // Simulate purchase processing
+            setTimeout(() => {
+                alert(`Successfully purchased ${nftName} for ${price} ASTRA!`);
+                closeModal('purchaseNFTModal');
+                confirmBtn.innerHTML = originalText;
+                confirmBtn.disabled = false;
+                
+                // In a real implementation, this would make an API call to process the purchase
+                // and update the user's balance and NFT ownership
+            }, 2000);
+        }
+        
+        function viewNFTDetails(nftId) {
+            const modalContent = document.getElementById('nftDetailsContent');
+            let detailsHtml = '';
+            
+            switch(nftId) {
+                case 'board-nft':
+                    detailsHtml = `
+                        <div style="text-align: center; margin-bottom: 2rem;">
+                            <div style="font-size: 4rem; margin-bottom: 1rem; color: var(--board-purple);">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                            <h3 style="margin-bottom: 0.5rem;">Celestial Board NFT</h3>
+                            <p style="opacity: 0.7;">Ultimate Governance Power</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <p>This NFT grants you a position on the 10-member Celestial Board, the highest governance body in the Astral Draw ecosystem.</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Privileges</label>
+                            <ul style="padding-left: 1.5rem;">
+                                <li>Strategic decision-making power</li>
+                                <li>Proposal curation and formalization</li>
+                                <li>Treasury management oversight</li>
+                                <li>Emergency protocol activation</li>
+                                <li>10x voting power</li>
+                            </ul>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Requirements</label>
+                            <p>Must maintain minimum balance of 1,000 ASTRA. Active participation required.</p>
+                        </div>
+                    `;
+                    break;
+                case 'subordinate-nft':
+                    detailsHtml = `
+                        <div style="text-align: center; margin-bottom: 2rem;">
+                            <div style="font-size: 4rem; margin-bottom: 1rem; color: var(--subordinate-blue);">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h3 style="margin-bottom: 0.5rem;">Stellar Assembly NFT</h3>
+                            <p style="opacity: 0.7;">Community Governance Power</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <p>This NFT grants you membership in the 1000-member Stellar Assembly, the primary voting body of Astral Draw.</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Privileges</label>
+                            <ul style="padding-left: 1.5rem;">
+                                <li>Vote on all Board proposals</li>
+                                <li>Draft and submit proposals to the Board</li>
+                                <li>Direct communication with Board members</li>
+                                <li>Community advocacy and representation</li>
+                                <li>2x voting power</li>
+                            </ul>
+                        </div>
+                    `;
+                    break;
+                // Add other NFT details cases as needed
+            }
+            
+            modalContent.innerHTML = detailsHtml;
+            openModal('nftDetailsModal');
+        }
+        
+        function listForSale(nftId) {
+            alert(`Listing NFT ${nftId} for sale on the marketplace.`);
+            // In a real implementation, this would open a modal to set sale price and list the NFT
+        }
+        
         // Initialize dashboard
         document.addEventListener('DOMContentLoaded', function() {
             createStars();
@@ -2303,7 +3892,7 @@ function getCookie(name) {
         }
     }
     return cookieValue;
-}
+} 
 
 function verifyPool(tokenId) {
     window.open(`https://hashscan.io/testnet/token/${tokenId}`, '_blank');
