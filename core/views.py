@@ -19,7 +19,7 @@ import logging
 import requests
 import os
 from dotenv import load_dotenv
-
+from governance.models import GovernanceNFT, GovernanceTopic, GovernanceProposal, Vote, NFTMarketplace
 from core.models import UserWallet, Draw, ForgedKey, Alert
 from hiero.utils import create_new_account
 from hiero.ft import associate_token, transfer_tokens, fund_pool
@@ -230,8 +230,28 @@ def dashboard(request):
     cache_key = f"dashboard_{user_id}"
     cached_data = cache.get(cache_key)
     
-    #if cached_data:
-    #    return render(request, 'dash.html', cached_data)
+    user_nfts = GovernanceNFT.objects.filter(user=request.user, is_active=True)
+    user_governance_role = 'community'  # Default
+    
+    if user_nfts.filter(tier='celestial').exists():
+        user_governance_role = 'board'
+    elif user_nfts.filter(tier='stellar').exists():
+        user_governance_role = 'subordinate'
+    
+    # Get active proposals
+    active_proposals = GovernanceProposal.objects.filter(
+        status='active',
+        voting_end__gte=timezone.now()
+    )
+    
+    # Get governance topics
+    topics = GovernanceTopic.objects.filter(is_active=True)
+    
+    # Get user's votes
+    user_votes = Vote.objects.filter(voter=request.user).values_list('proposal_id', flat=True)
+    
+    # NFT marketplace data
+    available_nfts = NFTMarketplace.objects.filter(is_sold=False)
     
     # Get or create wallet efficiently
     user_wallet = UserWallet.objects.get(
@@ -275,6 +295,18 @@ def dashboard(request):
         'total_prizes':total_prizes,
         'pool_id':pool_id,
         'astra_bal':astra_bal,
+        'user_nfts': user_nfts,
+        'user_governance_role': user_governance_role,
+        'active_proposals': active_proposals,
+        'topics': topics,
+        'user_votes': list(user_votes),
+        'available_nfts': available_nfts,
+        'nft_stats': {
+            'board_available': 10 - GovernanceNFT.objects.filter(tier='celestial', is_active=True).count(),
+            'board_total': 10,
+            'assembly_available': 1000 - GovernanceNFT.objects.filter(tier='stellar', is_active=True).count(),
+            'assembly_total': 1000,
+        }
     }
     
     cache.set(cache_key, context, 120)  # 2 minute cache
