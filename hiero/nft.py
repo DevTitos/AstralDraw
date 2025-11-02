@@ -66,7 +66,7 @@ def create_test_account(client):
 # The Astral Council
 # Stellar Assembly SLA
 # Celestial Board CLB
-# Cosmic Community
+# Cosmic Community 
 def create_nft(title, symbol):
     """Create a non-fungible token EG"""
 
@@ -80,7 +80,7 @@ def create_nft(title, symbol):
         .set_treasury_account_id(operator_id)
         .set_token_type(TokenType.NON_FUNGIBLE_UNIQUE)
         .set_supply_type(SupplyType.FINITE)
-        .set_max_supply(1000000000)
+        .set_max_supply(10000000)
         .set_admin_key(operator_key)
         .set_supply_key(operator_key)
         .set_freeze_key(operator_key)

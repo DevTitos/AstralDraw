@@ -357,7 +357,7 @@ def purchase_nft(request, tier):
         token_ids = {
             'celestial': '0.0.7174407',
             'stellar': '0.0.7174419',
-            'cosmic': '0.0.7174420'
+            'cosmic': '0.0.7181084'
         }
         
         token_id = token_ids.get(tier)
@@ -371,9 +371,8 @@ def purchase_nft(request, tier):
             "tier": tier,
             "owner": user_wallet.recipient_id,
             "timestamp": str(timezone.now()),
-            "voting_power": GovernanceConfig.VOTING_POWER.get(tier, 1)
         })
-        
+        print(token_id)
         mint_result = mint_nft(token_id, metadata)
         
         if mint_result['status'] == 'success':
