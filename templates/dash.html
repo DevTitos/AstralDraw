@@ -1887,6 +1887,9 @@
                     <label class="form-label">Topic</label>
                     <select class="form-input" id="proposalTopic">
                         <option value="">Select a topic...</option>
+                        {% for topic in topics %}
+                        <option value="{{topic.topic_id}}">{{topic.name}}</option>
+                        {% endfor %}
                     </select>
                 </div>
 

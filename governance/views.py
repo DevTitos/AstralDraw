@@ -144,11 +144,12 @@ def create_proposal(request):
             )
             
             # Submit to Hedera
-            message = f"PROPOSAL:{proposal.id}:{request.user.username}:{validated_data['title']}"
+            message = f"PROPOSAL:{proposal.id}:{request.user.id}:{validated_data['title']}"
             hedera_result = submit_message(message, topic.topic_id)
             
             if hedera_result['status'] == 'success':
                 proposal.hedera_message_id = str(hedera_result['topic'])
+                proposal.status = "active"
                 proposal.save()
                 
                 logger.info(f"Proposal {proposal.id} created by user {request.user.id}")
@@ -395,7 +396,7 @@ def purchase_nft(request, tier):
                     voting_power=GovernanceConfig.VOTING_POWER.get(tier, 1)
                 )
 
-                # Deduct balance
+                # Deduct balance 
                 transfer = fund_pool(
                     recipient_id=user_wallet.recipient_id, 
                     amount=price, 
@@ -551,7 +552,7 @@ def get_user_nfts(request):
                 'token_id': nft.token_id,
                 'serial_number': nft.serial_number,
                 'voting_power': nft.voting_power,
-                'purchase_date': nft.created_at,
+                'purchase_date': nft.acquired_date,
                 'is_active': nft.is_active
             })
         
@@ -641,7 +642,7 @@ def get_proposal_detail(request, proposal_id):
             'voting_end': proposal.voting_end,
             'min_approval_percentage': proposal.min_approval_percentage,
             'hedera_message_id': proposal.hedera_message_id,
-            'created_at': proposal.created_at,
+            'created_at': proposal.created_date,
             'has_voted': user_vote is not None,
             'user_vote': user_vote.vote if user_vote else None,
             'user_voting_power': user_vote.voting_power if user_vote else 0
@@ -808,7 +809,7 @@ def get_user_nfts(request):
                 'token_id': nft.token_id,
                 'serial_number': nft.serial_number,
                 'voting_power': nft.voting_power,
-                'purchase_date': nft.created_at,
+                'purchase_date': nft.acquired_date,
                 'is_active': nft.is_active
             })
         
@@ -847,7 +848,7 @@ def get_user_activity(request):
                 'topic_name': vote.proposal.topic.name,
                 'vote': vote.vote,
                 'voting_power': vote.voting_power,
-                'voted_at': vote.created_at,
+                'voted_at': vote.voted_at,
                 'proposal_passed': passed
             })
         
